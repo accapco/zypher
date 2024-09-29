@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/index.css') }}">
+    <title>Zypher Philippines</title>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="header">
+                <div class="banner">
+                    <div id="facebook-link">
+                        <img class="icon" src="{{ url_for('static',filename='icons/facebook.svg') }}">
+                        <a href="https://www.facebook.com/zypherphofficial" target=”_blank”>
+                            Visit our facebook page
+                        </a>
+                    </div>
+                </div>
+                <div class="header-logo">
+                    <img src="{{ url_for('static',filename='assets/logo.png') }}">
+                </div>
+                <div class="header-navigation">
+                    <div class="nav">
+                        {% block nav %}
+                        {% endblock %}
+                    </div>
+                </div>
+                <div class="header-menu">
+                    <button>Account</button>
+                </div>
+        </div>
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+
+<script>
+    let mouseDown = false;
+    let startX, scrollLeft;
+    const slider = document.querySelector('.catalog-side');
+
+    const startDragging = (e) => {
+    mouseDown = true;
+    startX = e.pageX - slider.offsetLeft;
+    scrollLeft = slider.scrollLeft;
+    }
+
+    const stopDragging = (e) => {
+    mouseDown = false;
+    }
+
+    const move = (e) => {
+    e.preventDefault();
+    if(!mouseDown) { return; }
+    const x = e.pageX - slider.offsetLeft;
+    const scroll = x - startX;
+    slider.scrollLeft = scrollLeft - scroll;
+    }
+
+    slider.addEventListener('mousemove', move, false);
+    slider.addEventListener('mousedown', startDragging, false);
+    slider.addEventListener('mouseup', stopDragging, false);
+    slider.addEventListener('mouseleave', stopDragging, false);
+</script>
+</html>

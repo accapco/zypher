@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block nav %}
+<ul><button class="active" onclick="document.location='/home'">Home</button></ul>
+<ul><button onclick="document.location='/catalog'">Catalog</button></ul>
+<ul><button onclick="document.location='/cart'">Cart</button></ul>
+{% endblock %}
+
+{% block content %}
+<div class="home-main">
+    <img id="splash" src="{{ url_for('static',filename='assets/background.jpg') }}">
+</div>
+{% endblock %}

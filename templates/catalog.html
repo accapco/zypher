@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block nav %}
+<ul><button onclick="document.location='/home'">Home</button></ul>
+<ul><button class="active" onclick="document.location='/catalog'">Catalog</button></ul>
+<ul><button onclick="document.location='/cart'">Cart</button></ul>
+{% endblock %}
+
+{% block content %}
+<div class="catalog-side">
+    <div class="title">Filter</div>
+    <div class="filter">
+        <div class="category">Category</div>
+        <div class="option">
+            <input type="radio" class="radio" id="1" name="category" value="jackets">
+            <label class="label" for="1">Jackets</label>
+        </div>
+        <div class="option">
+            <input type="radio" class="radio" id="2" name="category" value="hoodies">
+            <label class="label" for="2">Hoodies</label>
+        </div>
+        <div class="option">
+            <input type="radio" class="radio" id="3" name="category" value="shirts">
+            <label class="label" for="3">Shirts</label>
+        </div>
+        <div class="option">
+            <input type="radio" class="radio" id="4" name="category" value="leg-wear">
+            <label class="label" for="4">Leg-Wear</label>
+        </div>
+        <div class="option">
+            <input type="radio" class="radio" id="5" name="category" value="caps">
+            <label class="label" for="5">Caps</label>
+        </div>
+    </div>
+    <div class="filter">
+        <div class="category">Color</div>
+        <div class="option">
+            <input type="radio" class="radio" id="1" name="color" value="1">
+            <label class="label" for="1">Black</label>
+        </div>
+        <div class="option">
+            <input type="radio" class="radio" id="2" name="color" value="2">
+            <label class="label" for="2">White</label>
+        </div>
+        <div class="option">
+            <input type="radio" class="radio" id="3" name="color" value="3">
+            <label class="label" for="3">Blue</label>
+        </div>
+        <div class="option">
+            <input type="radio" class="radio" id="4" name="color" value="3">
+            <label class="label" for="4">Red</label>
+        </div>
+        <div class="option">
+            <input type="radio" class="radio" id="5" name="color" value="4">
+            <label class="label" for="5">Brown</label>
+        </div>
+        <div class="option">
+            <input type="radio" class="radio" id="6" name="color" value="5">
+            <label class="label" for="6">Grey</label>
+        </div>
+    </div>
+    <div class="filter">
+        <div class="category">Fit Type</div>
+        <div class="option">
+            <input type="radio" class="radio" id="1" name="fit-type" value="1">
+            <label class="label" for="1">Oversized</label>
+        </div>
+        <div class="option">
+            <input type="radio" class="radio" id="2" name="fit-type" value="2">
+            <label class="label" for="2">Slim Fit</label>
+        </div>
+        <div class="option">
+            <input type="radio" class="radio" id="4" name="fit-type" value="3">
+            <label class="label" for="4">Loose</label>
+        </div>
+        <div class="option">
+            <input type="radio" class="radio" id="5" name="fit-type" value="4">
+            <label class="label" for="5">Regular Fit</label>
+        </div>
+    </div>
+    <div class="filter">
+        <div class="category">Material</div>
+        <div class="option">
+            <input type="radio" class="radio" id="1" name="material" value="1">
+            <label class="label" for="1">Cotton</label>
+        </div>
+        <div class="option">
+            <input type="radio" class="radio" id="2" name="material" value="2">
+            <label class="label" for="2">Denim</label>
+        </div>
+        <div class="option">
+            <input type="radio" class="radio" id="4" name="material" value="3">
+            <label class="label" for="4">Fabric</label>
+        </div>
+        <div class="option">
+            <input type="radio" class="radio" id="5" name="material" value="4">
+            <label class="label" for="5">Polyester</label>
+        </div>
+        <div class="option">
+            <input type="radio" class="radio" id="6" name="material" value="5">
+            <label class="label" for="6">Knitwear</label>
+        </div>
+    </div>
+</div>
+<div class="catalog-main">
+    <div id="sort">
+        <label class="label" for="sort">Sort by</label>
+        <select class="options" name="sort" id="sort">
+            <option>Recommended</option>
+            <option>Most Popular</option>
+            <option>New Arrivals</option>
+            <option>Top Rated</option>
+            <option>Price Low to High</option>
+            <option>Price High to Low</option>
+        </select>
+    </div>
+    <div class="clothing">
+        <div class="item">
+            <img class="image" src="https://via.placeholder.com/260x380" alt="Image 1">
+            <p class="name">T-Shirt</p>
+            <p class="price">₱350</p>
+        </div>
+        <div class="item">
+            <img class="image" src="https://via.placeholder.com/260x380" alt="Image 1">
+            <p class="name">T-Shirt</p>
+            <p class="price">₱350</p>
+        </div>
+        <div class="item">
+            <img class="image" src="https://via.placeholder.com/260x380" alt="Image 1">
+            <p class="name">T-Shirt</p>
+            <p class="price">₱350</p>
+        </div>
+        <div class="item">
+            <img class="image" src="https://via.placeholder.com/260x380" alt="Image 1">
+            <p class="name">T-Shirt</p>
+            <p class="price">₱350</p>
+        </div>
+        <div class="item">
+            <img class="image" src="https://via.placeholder.com/260x380" alt="Image 1">
+            <p class="name">T-Shirt</p>
+            <p class="price">₱350</p>
+        </div>
+        <div class="item">
+            <img class="image" src="https://via.placeholder.com/260x380" alt="Image 1">
+            <p class="name">T-Shirt</p>
+            <p class="price">₱350</p>
+        </div>
+        <div class="item">
+            <img class="image" src="https://via.placeholder.com/260x380" alt="Image 1">
+            <p class="name">T-Shirt</p>
+            <p class="price">₱350</p>
+        </div>
+        <div class="item">
+            <img class="image" src="https://via.placeholder.com/260x380" alt="Image 1">
+            <p class="name">T-Shirt</p>
+            <p class="price">₱350</p>
+        </div>
+        <div class="item">
+            <img class="image" src="https://via.placeholder.com/260x380" alt="Image 1">
+            <p class="name">T-Shirt</p>
+            <p class="price">₱350</p>
+        </div>
+        <div class="item">
+            <img class="image" src="https://via.placeholder.com/260x380" alt="Image 1">
+            <p class="name">T-Shirt</p>
+            <p class="price">₱350</p>
+        </div>
+        <div class="item">
+            <img class="image" src="https://via.placeholder.com/260x380" alt="Image 1">
+            <p class="name">T-Shirt</p>
+            <p class="price">₱350</p>
+        </div>
+        <div class="item">
+            <img class="image" src="https://via.placeholder.com/260x380" alt="Image 1">
+            <p class="name">T-Shirt</p>
+            <p class="price">₱350</p>
+        </div>
+        <div class="item">
+            <img class="image" src="https://via.placeholder.com/260x380" alt="Image 1">
+            <p class="name">T-Shirt</p>
+            <p class="price">₱350</p>
+        </div>
+        <div class="item">
+            <img class="image" src="https://via.placeholder.com/260x380" alt="Image 1">
+            <p class="name">T-Shirt</p>
+            <p class="price">₱350</p>
+        </div>
+        <div class="item">
+            <img class="image" src="https://via.placeholder.com/260x380" alt="Image 1">
+            <p class="name">T-Shirt</p>
+            <p class="price">₱350</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

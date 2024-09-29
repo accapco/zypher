@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block nav %}
+<ul><button onclick="document.location='/home'">Home</button></ul>
+<ul><button onclick="document.location='/catalog'">Catalog</button></ul>
+<ul><button class="active" onclick="document.location='/cart'">Cart</button></ul>
+{% endblock %}
+
+{% block content %}
+<div class="cart-main">
+    <div class="table">
+        <div class="title">Shopping Cart</div>
+        <div class="table-header">
+            <input type="checkbox">
+            <div class="item-col">
+                Item
+            </div>
+            <div>Item Price</div>
+            <div>Quantity</div>
+            <div>Actions</div>
+        </div>
+        <div class="table-rows">
+            <div class="table-row">
+                <input type="checkbox">
+                <div class="item-col">
+                    <img class="item-image" src="https://via.placeholder.com/260x380" alt="Image 1">
+                    <div class="item-name">T-Shirt</div>
+                </div>
+                <div>₱350</div>
+                <div>1</div>
+                <div class="remove">Remove</div>
+            </div>
+            <div class="table-row">
+                <input type="checkbox">
+                <div class="item-col">
+                    <img class="item-image" src="https://via.placeholder.com/260x380" alt="Image 1">
+                    <div class="item-name">Sweatshirt</div>
+                </div>
+                <div>₱1150</div>
+                <div>1</div>
+                <div class="remove">Remove</div>
+            </div>
+            <div class="table-row">
+                <input type="checkbox">
+                <div class="item-col">
+                    <img class="item-image" src="https://via.placeholder.com/260x380" alt="Image 1">
+                    <div class="item-name">Pants</div>
+                </div>
+                <div>₱550</div>
+                <div>1</div>
+                <div class="remove">Remove</div>
+            </div>
+            <div class="table-row">
+                <input type="checkbox">
+                <div class="item-col">
+                    <img class="item-image" src="https://via.placeholder.com/260x380" alt="Image 1">
+                    <div class="item-name">T-Shirt</div>
+                </div>
+                <div>₱350</div>
+                <div>1</div>
+                <div class="remove">Remove</div>
+            </div>
+            <div class="table-row">
+                <input type="checkbox">
+                <div class="item-col">
+                    <img class="item-image" src="https://via.placeholder.com/260x380" alt="Image 1">
+                    <div class="item-name">Sweatshirt</div>
+                </div>
+                <div>₱1150</div>
+                <div>1</div>
+                <div class="remove">Remove</div>
+            </div>
+        </div>
+    </div>
+    <div class="checkout">
+        <div class="title">Checkout Summary</div>
+        <div class="summary">
+            <div id="label">Order Total:</div>
+            <div id="total">₱ 2250</div>
+            <button>Checkout</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
