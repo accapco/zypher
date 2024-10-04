@@ -38,9 +38,9 @@ def catalog():
     products_list = response.json['products']
     return render_template('catalog.html', category_tree=category_tree, products_list=products_list)
 
-@app.route('/cart')
-def cart():
-    return render_template('cart.html')
+@app.route('/viewproduct')
+def viewproduct():
+    return render_template('viewproduct.html')
 
 @app.route('/admin')
 def admin():

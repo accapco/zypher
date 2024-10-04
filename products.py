@@ -177,3 +177,7 @@ def getarchiveproduct():
     ''')
     prdcts = cursor.fetchall()
     return render_template("archiveproduct.html", getproducts=prdcts)
+
+#@products_bp.route('/viewproduct')
+#def viewproduct():
+#    return render_template("viewproduct.html")
