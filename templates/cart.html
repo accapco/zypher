@@ -14,65 +14,79 @@
             <div>Actions</div>
         </div>
         <div class="table-rows">
-            <div class="table-row">
-                <input type="checkbox">
+            {% if cart_items %}
+                <!-- Loop through cart items and display each one -->
+                {% for item in cart_items %}
+            <div class="table-row" data-item-id="{{ item['cart_item_id'] }}">
+                <input type="checkbox" class="item-checkbox" onclick="updateTotal()">
                 <div class="item-col">
-                    <img class="item-image" src="https://via.placeholder.com/260x380" alt="Image 1">
-                    <div class="item-name">T-Shirt</div>
+                    <img class="item-image" src="https://via.placeholder.com/260x380" alt="Product Image">
+                    <div class="item-name">{{ item['product_name'] }}</div>
                 </div>
-                <div>₱350</div>
-                <div>1</div>
-                <div class="remove">Remove</div>
-            </div>
-            <div class="table-row">
-                <input type="checkbox">
-                <div class="item-col">
-                    <img class="item-image" src="https://via.placeholder.com/260x380" alt="Image 1">
-                    <div class="item-name">Sweatshirt</div>
+                <div class="item-price" data-unit-price="{{ item['price'] }}">₱{{ item['price'] }}</div>
+                <div>
+                    <button onclick="changeQuantity(this, -1)">-</button>
+                    <span class="item-quantity">{{ item['quantity'] }}</span>
+                    <button onclick="changeQuantity(this, 1)">+</button>
                 </div>
-                <div>₱1150</div>
-                <div>1</div>
-                <div class="remove">Remove</div>
+                <div class="remove"><a href="{{ url_for('removecart', cart_item_id=item['cart_item_id']) }}">Remove</a></div>
             </div>
-            <div class="table-row">
-                <input type="checkbox">
-                <div class="item-col">
-                    <img class="item-image" src="https://via.placeholder.com/260x380" alt="Image 1">
-                    <div class="item-name">Pants</div>
-                </div>
-                <div>₱550</div>
-                <div>1</div>
-                <div class="remove">Remove</div>
-            </div>
-            <div class="table-row">
-                <input type="checkbox">
-                <div class="item-col">
-                    <img class="item-image" src="https://via.placeholder.com/260x380" alt="Image 1">
-                    <div class="item-name">T-Shirt</div>
-                </div>
-                <div>₱350</div>
-                <div>1</div>
-                <div class="remove">Remove</div>
-            </div>
-            <div class="table-row">
-                <input type="checkbox">
-                <div class="item-col">
-                    <img class="item-image" src="https://via.placeholder.com/260x380" alt="Image 1">
-                    <div class="item-name">Sweatshirt</div>
-                </div>
-                <div>₱1150</div>
-                <div>1</div>
-                <div class="remove">Remove</div>
-            </div>
+                {% endfor %}
+            {% else %}
+                <p>Your cart is empty.</p>
+            {% endif %}
         </div>
     </div>
     <div class="checkout">
         <div class="title">Checkout Summary</div>
         <div class="summary">
             <div id="label">Order Total:</div>
-            <div id="total">₱ 2250</div>
+            <div id="total">₱ 0</div>
             <button>Checkout</button>
         </div>
     </div>
 </div>
+
+<script>
+    // Change the quantity of the item
+    function changeQuantity(button, change) {
+        var quantityElement = button.parentElement.querySelector('.item-quantity');
+        var quantity = parseInt(quantityElement.textContent) + change;
+        if (quantity < 1) return;  // Prevent quantity from going below 1
+
+        quantityElement.textContent = quantity;
+
+        // Update the item price based on new quantity
+        var row = button.closest('.table-row');
+        var unitPrice = parseFloat(row.querySelector('.item-price').getAttribute('data-unit-price'));
+        var newPrice = unitPrice * quantity;
+        row.querySelector('.item-price').textContent = '₱' + newPrice.toFixed(2);
+
+        updateTotal();
+    }
+
+    // Update total price based on selected items
+    function updateTotal() {
+        var checkboxes = document.querySelectorAll('.item-checkbox:checked');
+        var total = 0;
+        checkboxes.forEach(function(checkbox) {
+            var row = checkbox.closest('.table-row');
+            var itemPrice = parseFloat(row.querySelector('.item-price').textContent.replace('₱', ''));
+            total += itemPrice;
+        });
+        document.getElementById('total').textContent = '₱ ' + total.toFixed(2);
+    }
+
+    // Select or deselect all items
+    function selectAll(selectAllCheckbox) {
+        var checkboxes = document.querySelectorAll('.item-checkbox');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.checked = selectAllCheckbox.checked;
+        });
+        updateTotal();
+    }
+</script>
+
 {% endblock %}
+
+            

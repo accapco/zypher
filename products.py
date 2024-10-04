@@ -4,7 +4,7 @@ import MySQLdb.cursors
 import re
 from flask_wtf import FlaskForm
 from wtforms import FileField, SubmitField
-from app import mysql
+from app import mysql, app
 from config import config
 from werkzeug.utils import secure_filename
 import os
@@ -47,33 +47,55 @@ def add():
     msg = ''
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     if request.method == 'POST':
-        categoryid = request.form['category_id']
-        productname = request.form['product_name']
-        description = request.form['description']
-        price = request.form['price']
-        stockqty = request.form['stock_quantity']
-        size = request.form['size']
-        color = request.form['color']
-        images = request.files.getlist('images')
-        if images and allowed_file(images[0].filename):
-            first_image = images[0]
-            filename = secure_filename(first_image.filename)
-            image_path = os.path.join(config.UPLOAD_FOLDER, filename)
-            first_image.save(image_path)
-            cursor.execute('''INSERT INTO products (category_id, product_name, description, price, stock_quantity, size, color, image_url) 
-                                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''',
-                            (categoryid, productname, description, price, stockqty, size, color, filename))
-            product_id = cursor.lastrowid  
-            for image in images:
-                if allowed_file(image.filename):
-                    filename = secure_filename(image.filename)
-                    image_path = os.path.join(config.UPLOAD_FOLDER, filename)
-                    image.save(image_path)
-                    cursor.execute('INSERT INTO product_images (product_id, image_url) VALUES (%s, %s)', (product_id, filename))
-            mysql.connection.commit()
-            msg = 'Product and images added successfully!'
-        else:
-            msg = 'Please upload at least one valid image file.', 'danger'
+            categoryid = request.form['category_id']
+            productname = request.form['product_name']
+            description = request.form['description']
+            price = request.form['price']
+            stockqty = request.form['stock_quantity']
+            size = request.form['size']
+            color = request.form['color']
+            
+            images = request.files.getlist('images')
+
+            # Ensure that at least one image is uploaded and valid
+            if images and allowed_file(images[0].filename):
+                try:
+                    first_image = images[0]
+                    # Generate a secure filename with a timestamp
+                    filename = secure_filename(first_image.filename)
+                    image_path = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], filename)
+
+                    first_image.seek(0)
+                    first_image.save(image_path)
+
+                    # Insert product details into the products table
+                    cursor.execute('''INSERT INTO products (category_id, product_name, description, price, stock_quantity, size, color, image_url) 
+                                      VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''',
+                                   (categoryid, productname, description, price, stockqty, size, color, filename))
+                    product_id = cursor.lastrowid  # Get the product ID for the images
+
+                    # Loop through and save additional images
+                    for image in images:
+                        if allowed_file(image.filename):
+                            filename = secure_filename(image.filename)
+                            image_path = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], filename)
+                            image.seek(0)  # Ensure pointer is reset
+                            image.save(image_path)
+
+                            # Insert each image into the product_images table
+                            cursor.execute('INSERT INTO product_images (product_id, image_url) VALUES (%s, %s)', (product_id, filename))
+
+                    # Commit changes to the database after inserting product and images
+                    mysql.connection.commit()
+                    flash('Product and images added successfully!', 'success')
+
+                except Exception as e:
+                    print(f"Error: {e}")
+                    flash('An error occurred while uploading the files.', 'danger')
+                return redirect(url_for('getproducts'))
+            else:
+                flash('Please upload at least one valid image file.', 'danger')
+        # Get categories for the form dropdown
     cursor.execute('SELECT category_id, category_name FROM categories WHERE is_archived = FALSE')
     categories = cursor.fetchall()
     add_product_html = render_template('products/add.html', categories=categories)

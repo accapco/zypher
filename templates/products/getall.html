@@ -9,10 +9,11 @@
 		{% for product in products %}
 		<div class="product-card">
 			<div class="thumbnail">
-				<img src="{{ url_for('static', filename="uploads/{}".format(product.image_url)) }}">
+				<img src="{{ url_for('static', filename='uploads/' + product.image_url) }}" alt="{{ product.product_name }}" class="img-fluid"></p>			
 			</div>
 			<div class="name">
 				{{ product.product_name }}
+				{{ product.price}}
 				<span data-route="/products/{{product.product_id}}/edit" class="action edit">Edit</span>
 				<span data-route="/products/{{product.product_id}}/archive" class="action delete">Archive</span>
 			</div>

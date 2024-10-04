@@ -18,7 +18,7 @@ def account():
     if not user_id:
         user_id = session['user_id']
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('SELECT * FROM Users WHERE user_id = %s', (user_id,))
+    cursor.execute('SELECT * FROM tbl_users WHERE user_id = %s', (user_id,))
     user = cursor.fetchone()
     if request.method == 'POST' and 'username' in request.form and 'email' in request.form:
         # Get form data
@@ -37,7 +37,7 @@ def account():
             message = 'Username must contain only characters and numbers!'
         else:
             cursor.execute(
-                'UPDATE Users SET username=%s, email=%s, first_name=%s, last_name=%s, phone=%s, address=%s, city=%s, state=%s, zipcode=%s, country=%s WHERE user_id=%s', 
+                'UPDATE tbl_users SET username=%s, email=%s, first_name=%s, last_name=%s, phone=%s, address=%s, city=%s, state=%s, zipcode=%s, country=%s WHERE user_id=%s', 
                 (userName, email, first_name, last_name, phone, address, city, state, zipcode, country, userId)
             )
             mysql.connection.commit()
@@ -54,7 +54,7 @@ def login():
         email = request.form['email']
         password = request.form['password']
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM Users WHERE email = %s AND password_hash = %s', (email, password,))
+        cursor.execute('SELECT * FROM tbl_users WHERE email = %s AND password_hash = %s', (email, password,))
         user = cursor.fetchone()
         if user:
             session['loggedin'] = True
@@ -83,7 +83,7 @@ def register():
         password = request.form['password']
         email = request.form['email']
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM Users WHERE email = %s', (email,))
+        cursor.execute('SELECT * FROM tbl_users WHERE email = %s', (email,))
         account = cursor.fetchone()
         if account:
             message = 'Account already exists!'
@@ -92,7 +92,7 @@ def register():
         elif not userName or not password or not email:
             message = 'Please fill out the form!'
         else:
-            cursor.execute('INSERT INTO Users (username, email, password_hash) VALUES (%s, %s, %s)', (userName, email, password))
+            cursor.execute('INSERT INTO tbl_users (username, email, password_hash) VALUES (%s, %s, %s)', (userName, email, password))
             mysql.connection.commit()
             message = 'You have successfully registered!'
             return redirect(url_for('home'))

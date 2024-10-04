@@ -15,6 +15,7 @@ import account
 import users
 import products
 import categories
+import cart
 
 app.register_blueprint(account.account_bp, url_prefix='/account')
 app.register_blueprint(users.users_bp, url_prefix='/users')
