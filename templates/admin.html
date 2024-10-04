@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="admin-side">
+    <button data-id="/categories">Categories</button>
+    <button data-id="/products">Products</button>
+    <button data-id="/users">Users</button>
+</div>
+<div class="admin-main">
+</div>
+
+<script>
+    const page_buttons = document.querySelectorAll(".admin-side button");
+
+    async function fetchInnerHTML(route) {
+        try {
+            const response = await fetch(route);
+            const data = await response.json();
+            if (data.html) {
+                return data.html;
+            } else {
+                return null;
+            };
+        } catch (error) {
+            alert(error);
+            window.location.reload();
+        }
+    };
+
+    function setActiveButton(id) {
+        page_buttons.forEach((btn) => {
+            if (btn.getAttribute("data-id") != id) {
+                btn.classList.remove("active");
+            } else {
+                btn.classList.add("active");
+            }
+        });
+    }
+
+    function getActionButtons(html) {
+        const action_btns = html.querySelectorAll(".action");
+        action_btns.forEach(btn => {
+            btn.addEventListener("click", async () => {
+                try {
+                    var route = btn.getAttribute("data-route");
+                    const response = await fetch(route);
+                    const data = await response.json();
+                    openModal(data.html);
+                } catch (error) {
+                    alert(error);
+                };
+            });
+        });
+    }
+
+    function openModal(html) {
+        const modal = document.querySelector(".modal");
+        modal.innerHTML = html;
+        modal.style.display = "block";
+        attachCloseButton(modal);
+        handleSubmitAction(modal);
+    }
+
+    function handleSubmitAction(modal) {
+        const form = modal.querySelector("form");
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const action = form.getAttribute("action");
+            try {
+                const response = await fetch(action, {
+                    method: 'POST',
+                    body: new FormData(form)
+                });
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                alert(data.message);
+                modal.style.display = "none";
+            } catch (error) {
+                alert('There was an error submitting the form: ' + error.message);
+            }
+            window.location.reload();
+        });
+    }
+
+    function attachExpandIcons(html) {
+        const expand_icons = html.querySelectorAll('.expand-icon');
+        if (expand_icons) {
+            expand_icons.forEach(icon => {
+                console.log(icon);
+                icon.addEventListener('click', (event) => {
+                    const children_div = icon.parentElement.parentElement.parentElement.querySelector('.children');
+                    if (children_div) {
+                        if (children_div.style.display === 'none') {
+                            console.log("click")
+                            children_div.style.display = 'block';
+                            icon.querySelector('img').src = "{{ url_for('static', filename='icons/minus.svg') }}";
+                        } else {
+                            children_div.style.display = 'none';
+                            icon.querySelector('img').src = "{{ url_for('static', filename='icons/plus.svg') }}";
+                        }
+                    }
+                });
+            });
+        };
+    }
+
+    // main
+    page_buttons.forEach((btn) => {
+        btn.addEventListener("click", async (event) => {
+            event.preventDefault();
+            var id = btn.getAttribute("data-id");
+            const main_div = document.querySelector(".admin-main");
+            html = await fetchInnerHTML(id);
+            if (html) {
+                main_div.innerHTML = html;
+                getActionButtons(main_div);
+                attachExpandIcons(main_div);
+            };
+            setActiveButton(id)
+        });
+    });
+
+    page_buttons[0].click();
+</script>
+{% endblock %}

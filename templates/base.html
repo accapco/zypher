@@ -4,10 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static',filename='styles/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/modals.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/forms.css') }}"> 
     <title>Zypher Philippines</title>
 </head>
 <body>
     <div class="wrapper">
+        {% if not session['loggedin'] %}
+        <div id="login-modal" class="modal">
+        </div>
+        {% endif %}
         <div class="header">
                 <div class="banner">
                     <div id="facebook-link">
@@ -17,17 +23,44 @@
                         </a>
                     </div>
                 </div>
-                <div class="header-logo">
-                    <img src="{{ url_for('static',filename='assets/logo.png') }}">
-                </div>
+                <a href="/home">
+                    <div class="header-logo">
+                        <img src="{{ url_for('static',filename='assets/logo.png') }}">
+                    </div>
+                </a>
                 <div class="header-navigation">
                     <div class="nav">
-                        {% block nav %}
-                        {% endblock %}
+                        <button data-route="/home" onclick="document.location='/home'">
+                            Home
+                        </button>
+                        <button data-route="/catalog" onclick="document.location='/catalog'">
+                            Catalog
+                        </button>
+                        <button data-route="/cart" onclick="document.location='/cart'">
+                            Cart
+                        </button>
                     </div>
                 </div>
                 <div class="header-menu">
-                    <button>Account</button>
+                    {% if session['loggedin'] %}
+                    <div class="dropdown">
+                        <button class="dropdown-btn">Settings</button>
+                        <div class="dropdown-content">
+                            <button onclick="document.location='/account'">
+                                <img class="icon" src="{{ url_for('static',filename='icons/person.svg') }}">Account
+                            </button>
+                            <button onclick="document.location='/admin'">
+                                <img class="icon" src="{{ url_for('static',filename='icons/cog.svg') }}">Admin
+                            </button>
+                            <hr>
+                            <button onclick="document.location='/account/logout'">
+                                <img class="icon" src="{{ url_for('static',filename='icons/logout.svg') }}">Logout
+                            </button>
+                        </div>
+                    </div>
+                    {% else %}
+                    <button id="login-btn">Login</button>
+                    {% endif %}
                 </div>
         </div>
         {% block content %}
@@ -35,32 +68,126 @@
     </div>
 </body>
 
-<script>
+<!-- drag categories for smaller screen -->
+<script> 
     let mouseDown = false;
     let startX, scrollLeft;
     const slider = document.querySelector('.catalog-side');
 
-    const startDragging = (e) => {
-    mouseDown = true;
-    startX = e.pageX - slider.offsetLeft;
-    scrollLeft = slider.scrollLeft;
+    if (slider) {
+        const startDragging = (e) => {
+            mouseDown = true;
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+        }
+
+        const stopDragging = (e) => {
+            mouseDown = false;
+        }
+
+        const move = (e) => {
+            e.preventDefault();
+            if(!mouseDown) { return; }
+            const x = e.pageX - slider.offsetLeft;
+            const scroll = x - startX;
+            slider.scrollLeft = scrollLeft - scroll;
+        }
+
+        slider.addEventListener('mousemove', move, false);
+        slider.addEventListener('mousedown', startDragging, false);
+        slider.addEventListener('mouseup', stopDragging, false);
+        slider.addEventListener('mouseleave', stopDragging, false);
+    }
+</script>
+
+<!-- open login/register window -->
+<script>
+    // Function to fetch the modal content (login/register)
+    async function fetchModalContent(route) {
+        try {
+            const response = await fetch(route, { method: 'GET' });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            return data.html;
+        } catch (error) {
+            alert(error);
+            window.location.reload();
+        }
     }
 
-    const stopDragging = (e) => {
-    mouseDown = false;
+    // Function to handle the close button inside the modal
+    function attachCloseButton(modal) {
+        const close_btns = modal.querySelectorAll("#close, #close-btn, #cancel-btn");
+        close_btns.forEach(btn => {
+            btn.addEventListener('click', (event) => {
+                event.preventDefault();
+                modal.style.display = "none";
+            });
+        })
+        
     }
 
-    const move = (e) => {
-    e.preventDefault();
-    if(!mouseDown) { return; }
-    const x = e.pageX - slider.offsetLeft;
-    const scroll = x - startX;
-    slider.scrollLeft = scrollLeft - scroll;
+    // Function to display login modal content
+    async function showLoginModal(modal) {
+        const loginHtml = await fetchModalContent("/account/login");
+        if (loginHtml) {
+            modal.innerHTML = loginHtml;
+            modal.style.display = "block";
+            attachCloseButton(modal);
+            attachRegisterLink(modal);
+        }
     }
 
-    slider.addEventListener('mousemove', move, false);
-    slider.addEventListener('mousedown', startDragging, false);
-    slider.addEventListener('mouseup', stopDragging, false);
-    slider.addEventListener('mouseleave', stopDragging, false);
+    // Function to display register modal content
+    async function showRegisterModal(modal) {
+        const register_html = await fetchModalContent("/account/register");
+        if (register_html) {
+            modal.innerHTML = register_html;
+            attachCloseButton(modal);
+            attachlogin_link(modal);
+        }
+    }
+
+    // Function to handle register link inside the login modal
+    function attachRegisterLink(modal) {
+        const register_link = modal.querySelector("#register a");
+        register_link.addEventListener('click', async (event) => {
+            event.preventDefault();
+            await showRegisterModal(modal);
+        });
+    }
+
+    // Function to handle login link inside the register modal
+    function attachlogin_link(modal) {
+        const login_link = modal.querySelector("#login a");
+        login_link.addEventListener('click', async (event) => {
+            event.preventDefault();
+            await showLoginModal(modal);
+        });
+    }
+
+    // Main logic for the login button
+    const login_btn = document.getElementById("login-btn");
+    if (login_btn) {
+        login_btn.addEventListener('click', async (event) => {
+            event.preventDefault();
+            const modal = document.getElementById("login-modal");
+            await showLoginModal(modal);
+        });
+    }
+</script>
+
+<!-- set active buttons -->
+<script>
+    const buttons = document.querySelectorAll(".nav button, .dropdown");
+    var path = window.location.pathname;
+    buttons.forEach(btn => {
+        route = btn.getAttribute("data-route");
+        if (route === path) {
+            btn.classList.add("active");
+        };
+    });
 </script>
 </html>

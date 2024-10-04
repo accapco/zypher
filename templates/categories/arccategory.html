@@ -1,0 +1,48 @@
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Category Management</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">              
+</head>
+<body>
+<div class="container">
+    <div class="row">    
+        <h1>Category Management</h1>
+    </div>
+    <br>
+    <div class="row">    
+        Logged in: <strong>{{ session.username }}</strong> | 
+        <a href="{{ url_for('addcategory') }}"> Add Category </a> | 
+        <a href="{{ url_for('logout') }}"> Logout </a>
+    </div>
+    <br><br>
+    <div class="row">
+        <h3>Category Listing</h3>
+        <br>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Category Name</th>
+                    <th>Parent ID</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for category in archived_categories %}
+                <tr>
+                    <td>{{ category.category_name }}</td>
+                    <td>{{ category.parent_id }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('restore_category') }}" style="display:inline;">
+                        <input type="hidden" name="category_id" value="{{ category.category_id }}">
+                        <button type="submit" class="btn btn-success">Restore</button>
+                    </form></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>        
+</div>
+</body>
+</html>

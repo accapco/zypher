@@ -1,0 +1,67 @@
+<div id="modal-content" class="modal-content add-product">
+	<div class="row close-row">
+	    <span id="close" class="close">&#x2715</span>
+	</div>
+	<div>
+	    <form method="post" enctype="multipart/form-data" action="{{ url_for('products.edit', product_id=product.product_id) }}">
+	        {% if msg %}
+	            <div class="alert alert-warning">{{ msg }}</div>
+	        {% endif %}
+	        <div class="heading-2">
+				<div class="heading-2">Edit product details</div>
+	        </div>
+	        <hr>
+	        <div class="form-row">
+	            <div class="form-group">
+	                <label for="name">Product Name</label>
+					<input type="text" class="form-control" id="product_name" name="product_name" placeholder="Product Name" value="{{product.product_name}}">
+	            </div>
+				<div class="form-group">
+	                <label for="category_id">Category</label>
+                    <select id="category_id" name="category_id">
+                        {% for option in categories %}
+                        <option value="{{ option.category_id }}">{{ option.category_name }}</option>
+                        {% endfor %}
+                    </select>
+	            </div>
+	        </div>
+            <div class="form-row">
+	            <div class="form-group">
+	                <label for="description">Description</label>
+					<input type="text" class="form-control" id="description" name="description" placeholder="Description" value="{{product.description}}">
+	            </div>
+	        </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="price">Price</label>
+                    <input type="number" step="0.01" class="form-control" id="price" name="price" value="{{product.price}}" required>
+                </div>
+                <div class="form-group">
+                    <label for="stock_quantity">Stock Quantity</label>
+                    <input type="number" class="form-control" id="stock_quantity" name="stock_quantity" value="{{product.stock_quantity}}" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="size">Size</label>
+                    <input type="text" class="form-control" id="size" name="size" value="{{product.size}}">
+                </div>
+                <div class="form-group">
+                    <label for="color">Color</label>
+                    <input type="text" class="form-control" id="color" name="color" value="{{product.color}}">
+                </div>
+            </div>
+            <div class="form-row">
+            	<div class="form-group">
+	                <label for="images">Product Images</label>
+	                <input type="file" class="form-control" id="images" name="images" multiple>
+	            </div>
+            </div>
+	        <hr>
+	        <div class="form-row">
+	            <button type="button" id="close-btn" class="form-btn width-50">Cancel</button>
+				<button type="submit" id="save-btn" class="form-btn width-50">Add</button>
+	        </div>
+	    </form>
+	</div>
+</div>

@@ -1,0 +1,26 @@
+<div id="modal-content" class="modal-content">
+    <div class="row close-row">
+        <span id="close" class="close">&#x2715</span>
+    </div>
+    <form action="{{ url_for('account.login') }}" method="post">
+        <div class="heading">Login</div>
+        {% if message is defined and message %}
+            <div class="alert alert-warning">{{ message }}</div>
+        {% endif %}
+        <div class="form-row">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Enter email">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
+            </div> 
+        </div>   
+        <button type="submit" id="login-btn" class="form-btn">Login</button>
+        <hr>
+        <div id="register">Don't have an account? <a href="{{url_for('account.register')}}">Register here</a></div>
+    </form>
+</div>

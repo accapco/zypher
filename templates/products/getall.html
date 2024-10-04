@@ -1,0 +1,30 @@
+<div class="products-main">
+	<div class="products-header">
+		<div class="title">
+			Products List 
+			<span data-route="/products/add" class="action add">Add a product</span>
+		</div>
+	</div>
+	<div class="products-list">
+		{% for product in products %}
+		<div class="product-card">
+			<div class="thumbnail">
+				<img src="{{ url_for('static', filename="uploads/{}".format(product.image_url)) }}">
+			</div>
+			<div class="name">
+				{{ product.product_name }}
+				<span data-route="/products/{{product.product_id}}/edit" class="action edit">Edit</span>
+				<span data-route="/products/{{product.product_id}}/archive" class="action delete">Archive</span>
+			</div>
+			<div class="category">{{ product.category_name }}</div>
+			<div class="description"><span class="label">Description:</span> {{ product.description }}</div>
+			<div class="stock"><span class="label">Stock:</span> {{ product.stock_quantity }}</div>
+			<div class="price"><span class="label">Price:</span> ₱{{ product.price }}</div>
+			<div class="size"><span class="label">Size:</span> {{ product.size }}</div>
+			<div class="color"><span class="label">Color:</span> {{ product.color }}</div>
+		</div>
+		{% endfor %}
+	</div>
+	<div id="modal" class="modal">
+    </div>
+</div>

@@ -1,0 +1,24 @@
+<div class="users-main">
+	<div class="users-header">
+		<div class="title">
+			Users List
+		</div>
+	</div>
+	<div class="user-list">
+		{% for user in users %}
+		<div class="user-card">
+			<div class="username">@{{ user.username }}</div>
+			<div class="email">{{ user.email }}</div>
+			<div class="actions">
+				<button data-route="/users/{{user.user_id}}" class="action view">View</button>
+				<button data-route="/users/{{user.user_id}}/edit" class="action edit">Edit</button>
+				{% if user.user_id != session.user_id %}
+				<button data-route="/users/{{user.user_id}}/delete" class="action delete">Delete</button>
+				{% endif %}
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+	<div id="modal" class="modal">
+    </div>
+</div>
