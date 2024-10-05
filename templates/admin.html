@@ -89,12 +89,10 @@
         const expand_icons = html.querySelectorAll('.expand-icon');
         if (expand_icons) {
             expand_icons.forEach(icon => {
-                console.log(icon);
                 icon.addEventListener('click', (event) => {
                     const children_div = icon.parentElement.parentElement.parentElement.querySelector('.children');
                     if (children_div) {
                         if (children_div.style.display === 'none') {
-                            console.log("click")
                             children_div.style.display = 'block';
                             icon.querySelector('img').src = "{{ url_for('static', filename='icons/minus.svg') }}";
                         } else {

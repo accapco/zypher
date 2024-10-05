@@ -758,7 +758,7 @@ body {
                     cursor: pointer;
                 }
 
-                &.add {
+                &.add, &.restore {
                     color: darkblue;
                 }
 
@@ -771,26 +771,34 @@ body {
                 }
             }
 
+            .tables {
+                display: flex;
+                flex-direction: row;
+                width: 90%;
+                height: 100%;
 
-            .products-header {
-                height: 10%;
-                
-                .title {
-                    height: 100%;
+                .table-section {
                     display: flex;
+                    flex-direction: column;
                     align-items: center;
-                    font-size: 18px;
-                    letter-spacing: 0.05em;
-                    word-spacing: 0.1em;
-                    color: rgba(0, 0, 0, 0.8);
-
-                    .action {
-                        font-size: 11px;
-                        margin-left: 12px;
-                    }
+                    height: 100%;
                 }
             }
-    
+
+            .title {
+                height: 100px;
+                line-height: 86px;
+                text-align: center;
+                font-size: 18px;
+                letter-spacing: 0.05em;
+                color: rgba(0, 0, 0, 0.8);
+
+                .action {
+                    font-size: 11px;
+                    margin-left: 12px;
+                }
+            }
+
             .products-list {
                 display: flex;
                 flex-direction: column;
@@ -908,6 +916,23 @@ body {
             width: 100%;
             height: 100%;
 
+            .tables {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                gap: 26px;
+                height: 100%;
+                width: 80%;
+
+                .table-section {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    height: 100%;
+                }
+            }
+
             .action {
                 letter-spacing: 0.05em;
                 font-style: italic;
@@ -929,30 +954,24 @@ body {
                     color: darkred;
                 }
             }
-
-            .categories-header {
-                display: flex;
-                flex-direction: row;
-                height: 10%;
                 
-                .title {
-                    height: 100%;
-                    display: flex;
-                    align-items: center;
-                    font-size: 18px;
-                    letter-spacing: 0.05em;
-                    color: rgba(0, 0, 0, 0.8);
+            .title {
+                height: 100px;
+                line-height: 86px;
+                text-align: center;
+                font-size: 18px;
+                letter-spacing: 0.05em;
+                color: rgba(0, 0, 0, 0.8);
 
-                    .action {
-                        font-size: 11px;
-                        margin-left: 12px;
-                    }
+                .action {
+                    font-size: 11px;
+                    margin-left: 12px;
                 }
             }
 
             .categories-list {
                 height: 80%;
-                width: 30%;
+                width: 40%;
                 min-width: 728px;
                 background-color: white;
                 border: 1px solid darkgoldenrod;

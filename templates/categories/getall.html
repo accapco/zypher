@@ -1,65 +1,85 @@
 <div class="categories-main">
-	<div class="categories-header">
-		<div class="title">
-			Categories
-			<span data-route="/categories/0/add" class="action add">
-				Add root category
-			</span>
-		</div>
-		
-	</div>
-	<div class="categories-list">
-		{% for d1 in category_tree %}
-			<div class="layer depth-1">
-				<div class="card">
-					<div class="category-name"> 
-						{{ d1.category_name }}
-						{% if d1.children|length > 0 %}
-						<span class="expand-icon"><img src="{{ url_for('static',filename='icons/plus.svg') }}"></span>
-						{% endif %}
-					</div>
-					<div class="actions">
-						<span data-route="/categories/{{d1.category_id}}/add" class="action add"> Add </span>
-						<span data-route="/categories/{{d1.category_id}}/edit" class="action edit"> Edit </span>
-						<span data-route="/categories/{{d1.category_id}}/delete" class="action delete"> Archive </span>
-					</div>
-				</div>
-				<div class="children" style="display: none;">
-					{% for d2 in d1.children %}
-					<div class="layer depth-2">
+	<div class="tables">
+		<div class="table-section">
+			<div class="title">
+				Active Categories
+				<span data-route="/categories/0/add" class="action add">
+					Add root category
+				</span>
+			</div>
+			<div class="categories-list">
+				{% for d1 in category_tree %}
+					<div class="layer depth-1">
 						<div class="card">
 							<div class="category-name"> 
-								{{ d2.category_name }}
-								{% if d2.children|length > 0 %}
-								<span class="expand-icon"><img src="{{ url_for('static',filename='icons/plus.svg') }}"></span> 
+								{{ d1.category_name }}
+								{% if d1.children|length > 0 %}
+								<span class="expand-icon"><img src="{{ url_for('static',filename='icons/plus.svg') }}"></span>
 								{% endif %}
 							</div>
 							<div class="actions">
-								<span data-route="/categories/{{d2.category_id}}/add" class="action add"> Add </span>
-								<span data-route="/categories/{{d2.category_id}}/edit" class="action edit"> Edit </span>
-								<span data-route="/categories/{{d2.category_id}}/delete" class="action delete"> Archive </span>
+								<span data-route="/categories/{{d1.category_id}}/add" class="action add"> Add </span>
+								<span data-route="/categories/{{d1.category_id}}/edit" class="action edit"> Edit </span>
+								<span data-route="/categories/{{d1.category_id}}/archive" class="action delete"> Archive </span>
 							</div>
 						</div>
 						<div class="children" style="display: none;">
-							{% for d3 in d2.children %}
-							<div class="layer depth-3">
+							{% for d2 in d1.children %}
+							<div class="layer depth-2">
 								<div class="card">
 									<div class="category-name"> 
-										{{ d3.category_name }}
+										{{ d2.category_name }}
+										{% if d2.children|length > 0 %}
+										<span class="expand-icon"><img src="{{ url_for('static',filename='icons/plus.svg') }}"></span> 
+										{% endif %}
 									</div>
 									<div class="actions">
-										<span data-route="/categories/{{d3.category_id}}/edit" class="action edit"> Edit </span>
-										<span data-route="/categories/{{d3.category_id}}/delete" class="action delete"> Archive </span>
+										<span data-route="/categories/{{d2.category_id}}/add" class="action add"> Add </span>
+										<span data-route="/categories/{{d2.category_id}}/edit" class="action edit"> Edit </span>
+										<span data-route="/categories/{{d2.category_id}}/archive" class="action delete"> Archive </span>
 									</div>
+								</div>
+								<div class="children" style="display: none;">
+									{% for d3 in d2.children %}
+									<div class="layer depth-3">
+										<div class="card">
+											<div class="category-name"> 
+												{{ d3.category_name }}
+											</div>
+											<div class="actions">
+												<span data-route="/categories/{{d3.category_id}}/edit" class="action edit"> Edit </span>
+												<span data-route="/categories/{{d3.category_id}}/archive" class="action delete"> Archive </span>
+											</div>
+										</div>
+									</div>
+									{% endfor %}
 								</div>
 							</div>
 							{% endfor %}
 						</div>
 					</div>
-					{% endfor %}
-				</div>
+				{% endfor %}
 			</div>
-		{% endfor %}
+		</div>
+		<div class="table-section">
+			<div class="title">
+				Archived Categories
+			</div>
+			<div class="categories-list">
+				{% for category in archived_categories %}
+				<div class="layer depth-1">
+					<div class="card">
+						<div class="category-name"> 
+							{{ category.category_name }}
+						</div>
+						<div class="actions">
+							<span data-route="/categories/{{category.category_id}}/restore" class="action add"> Restore </span>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
 	</div>
 	<div id="modal" class="modal">
     </div>
