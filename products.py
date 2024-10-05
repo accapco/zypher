@@ -164,3 +164,4 @@ def getarchiveproduct():
 #@products_bp.route('/viewproduct')
 #def viewproduct():
 #    return render_template("viewproduct.html")
+

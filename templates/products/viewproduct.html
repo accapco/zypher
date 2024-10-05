@@ -1,1 +1,168 @@
 {% extends "base.html" %}
+
+{% block nav %}
+<ul><button onclick="document.location='/home'">Home</button></ul>
+<ul><button class="active" onclick="document.location='/catalog'">Catalog</button></ul>
+<ul><button onclick="document.location='/cart'">Cart</button></ul>
+{% endblock %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.product_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+    <div class="product-container">
+        <div class="product-image">
+            <!-- Main product image -->
+            <img src="{{ url_for('static', filename='uploads/' + product.image_url) }}" alt="{{ product.product_name }}">
+            
+            <!-- Thumbnails for additional images -->
+            <div class="thumbnail-container">
+                {% for image in product.images %}
+                    <img src="{{ url_for('static', filename='uploads/' + image['image_url']) }}" alt="Thumbnail">
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="product-details">
+            <h1>{{ product.product_name }}</h1>
+            <div class="price">
+                <span class="sale-price">₱{{ product.price }}</span>
+            </div>
+
+            <ul class="features">
+                <li>{{ product.description }}</li>
+            </ul>
+
+            <div class="buttons">
+                <form method="POST" action="{{ url_for('addtocart') }}">
+                    <input type="hidden" name="product_id" value="{{ product.product_id }}">
+                    <input type="hidden" name="price" value="{{ product.price }}">
+                    <button class="add-to-cart">Add to Cart</button>
+                </form>
+                <button class="buy-now">Buy it Now</button>
+            </div>
+
+            <div class="social-share">
+                <button>Share</button>
+                <button>Tweet</button>
+                <button>Pin it</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+{% endblock %}
+
+.product-container {
+    display: flex; /* Flex container for the layout */
+    max-width: 1200px;
+    margin: 20px auto;
+    background-color: white;
+    padding: 20px;
+}
+
+.product-image {
+    flex: 1; /* Takes up space on the left */
+    display: flex;
+    flex-direction: column; /* Stack images vertically */
+}
+
+.product-image img {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-bottom: 10px; /* Space between main image and thumbnails */
+}
+
+.thumbnail-container {
+    display: flex;
+    flex-direction: column; /* Stack thumbnails vertically */
+}
+
+.thumbnail-container img {
+    width: 60px;
+    height: 60px;
+    margin: 5px 0; /* Space between thumbnails */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.product-details {
+    flex: 2; /* Takes up space on the right */
+    margin-left: 20px; /* Space between image and details */
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.price {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.sale-price {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ff5722;
+    margin-right: 10px;
+}
+
+.buttons {
+    margin-bottom: 20px;
+}
+
+button {
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    top: 100px;
+    padding: 10px 20px;
+    margin-right: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #f57c00;
+}
+
+ul.features {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+ul.features li {
+    margin: 5px 0;
+}
+
+.social-share {
+    display: flex;
+}
+
+.social-share button {
+    background-color: #eee;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    margin-right: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.social-share button:hover {
+    background-color: #ddd;
+}

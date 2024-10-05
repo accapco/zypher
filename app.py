@@ -22,6 +22,7 @@ app.register_blueprint(users.users_bp, url_prefix='/users')
 app.register_blueprint(products.products_bp, url_prefix='/products')
 app.register_blueprint(categories.categories_bp, url_prefix='/categories')
 
+
 @app.route('/')
 def index():    
     return redirect(url_for('.home'))

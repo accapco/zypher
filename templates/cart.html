@@ -17,25 +17,26 @@
             {% if cart_items %}
                 <!-- Loop through cart items and display each one -->
                 {% for item in cart_items %}
-            <div class="table-row" data-item-id="{{ item['cart_item_id'] }}">
-                <input type="checkbox" class="item-checkbox" onclick="updateTotal()">
-                <div class="item-col">
-                    <img class="item-image" src="https://via.placeholder.com/260x380" alt="Product Image">
-                    <div class="item-name">{{ item['product_name'] }}</div>
-                </div>
-                <div class="item-price" data-unit-price="{{ item['price'] }}">₱{{ item['price'] }}</div>
-                <div>
-                    <button onclick="changeQuantity(this, -1)">-</button>
-                    <span class="item-quantity">{{ item['quantity'] }}</span>
-                    <button onclick="changeQuantity(this, 1)">+</button>
-                </div>
-                <div class="remove"><a href="{{ url_for('removecart', cart_item_id=item['cart_item_id']) }}">Remove</a></div>
-            </div>
+                    <div class="table-row" data-item-id="{{ item['cart_item_id'] }}">
+                        <input type="checkbox" class="item-checkbox" onclick="updateTotal()">
+                        <div class="item-col">
+                            <img src="{{ url_for('static', filename='uploads/' + item['image_url']) }}" alt="{{ item['product_name'] }}">
+                            <div class="item-name">{{ item['product_name'] }}</div>
+                        </div>
+                        <div class="item-price" data-unit-price="{{ item['price'] }}">₱{{ item['price'] }}</div>
+                        <div>
+                            <button onclick="changeQuantity(this, -1)">-</button>
+                            <span class="item-quantity">{{ item['quantity'] }}</span>
+                            <button onclick="changeQuantity(this, 1)">+</button>
+                        </div>
+                        <div class="remove"><a href="{{ url_for('removecart', cart_item_id=item['cart_item_id']) }}">Remove</a></div>
+                    </div>
                 {% endfor %}
             {% else %}
                 <p>Your cart is empty.</p>
             {% endif %}
         </div>
+        
     </div>
     <div class="checkout">
         <div class="title">Checkout Summary</div>
@@ -89,4 +90,4 @@
 
 {% endblock %}
 
-            
+
