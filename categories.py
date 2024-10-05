@@ -37,8 +37,9 @@ def _get_categories():
 def getall():
     categories = _get_categories()
     category_tree = structure_categories_into_tree(categories)
-    categories_html = render_template("categories/getall.html", category_tree=category_tree)
-    return jsonify({'html': categories_html, 'category_tree': category_tree})
+    archived_categories = _get_archived_categories()
+    categories_html = render_template("categories/getall.html", category_tree=category_tree, archived_categories=archived_categories)
+    return jsonify({'html': categories_html, 'category_tree': category_tree, 'archived_categories': archived_categories})
 
 @categories_bp.route('/<int:category_id>/add', methods=['GET', 'POST'])
 def add(category_id):
@@ -76,52 +77,48 @@ def edit(category_id):
     edit_category_html = render_template("categories/edit.html", category=category, parent_options=categories)
     return jsonify({'html': edit_category_html, 'message': msg})
 
-@categories_bp.route('/archive_category', methods=['POST'])
-def archive_category():
-    category_id = request.form.get('category_id')
-    
+def _get_archived_categories():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    
+    cursor.execute('SELECT * FROM categories WHERE is_archived = TRUE')
+    categories = cursor.fetchall()
+    return categories
+
+@categories_bp.route('/<int:category_id>/archive', methods=['GET', 'POST'])
+def archive(category_id):
+    msg = ''
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM Categories WHERE category_id = %s', (category_id,))
     category = cursor.fetchone()
-    
-    if category:     
-        cursor.execute('''
-            UPDATE Categories
-            SET is_archived = TRUE, archived_at = CURRENT_TIMESTAMP
-            WHERE category_id = %s
-        ''', (category_id,))
-        
-        mysql.connection.commit()
-    
-    return redirect(url_for('getcategories'))
-
-@categories_bp.route('/restore_category', methods=['POST'])
-def restore_category():
-    category_id = request.form.get('category_id')
-
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-
-    cursor.execute('SELECT * FROM categories WHERE category_id = %s', (category_id,))
-    archived_category = cursor.fetchone()
-
-    if archived_category:
+    if request.method == 'POST':
         cursor.execute('''
             UPDATE categories
-            SET is_archived = 0, archived_at = NULL
+            SET is_archived = TRUE
             WHERE category_id = %s
         ''', (category_id,))
-
         mysql.connection.commit()
+        msg = 'Successfully archived this category.'
+    archive_category_html = render_template("categories/archive.html", category=category)
+    return jsonify({'html': archive_category_html, 'message': msg})
 
-    return redirect(url_for('getcategories'))
-
-@categories_bp.route('/arccategory', methods =['GET', 'POST'])
-def archived_categories():
+@categories_bp.route('/<int:category_id>/restore', methods=['GET', 'POST'])
+def restore(category_id):
+    msg = ''
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('SELECT * FROM categories WHERE is_archived = TRUE')        
-    archived_categories = cursor.fetchall()
-    return render_template("arccategory.html", archived_categories=archived_categories)
-
-
+    cursor.execute('SELECT * FROM categories WHERE category_id = %s', (category_id,))
+    category = cursor.fetchone()
+    if category:
+        try:
+            cursor.execute('''
+                UPDATE categories
+                SET is_archived = FALSE
+                WHERE category_id = %s
+            ''', (category_id,))
+            mysql.connection.commit()
+            msg = 'Successfully restored this category.'
+        except Exception as e:
+            msg = 'Error: [{}]'.format(e)
+    else:
+        msg = 'Category not found or already unarchived.'
+    restore_category_html = render_template("categories/restore.html", category=category)
+    return jsonify({'html': restore_category_html, 'message': msg})
 

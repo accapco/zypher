@@ -1,0 +1,26 @@
+<div id="modal-content" class="modal-content restore-category">
+    <div class="row close-row">
+        <span id="close" class="close">&#x2715</span>
+    </div>
+    <div>
+        <form method="post" action="{{ url_for('categories.restore', category_id=category.category_id) }}">
+	        {% if msg %}
+	            <div class="alert alert-warning">{{ msg }}</div>
+	        {% endif %}
+	        <div class="heading-2">
+				<div class="heading-2">Are you sure you want to unarchive this category?</div>
+	        </div>
+	        <hr>
+	        <div class="form-row">
+	            <div class="form-group">
+					<input type="text" class="form-control" id="category_name" name="category_name" placeholder="Category Name" value="{{category.category_name}}" disabled>
+	            </div>
+	        </div>
+	        <hr>
+	        <div class="form-row">
+	            <button type="button" id="close-btn" class="form-btn width-50">Cancel</button>
+				<button type="submit" id="save-btn" class="form-btn width-50">Restore</button>
+	        </div>
+	    </form>
+    </div>
+</div>

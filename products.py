@@ -31,7 +31,8 @@ def getall():
         WHERE p.is_active = TRUE
     ''')
     products = cursor.fetchall()
-    products_html = render_template("products/getall.html", products=products)
+    archived_products = getall_archived()
+    products_html = render_template("products/getall.html", products=products, archived_products=archived_products)
     return jsonify({"html": products_html, "products": products})
 
 @products_bp.route('/<int:product_id>')
@@ -117,40 +118,7 @@ def edit(product_id):
     edit_product_html = render_template("products/edit.html", product=product, categories=categories) 
     return jsonify({'html': edit_product_html, 'message': msg})
 
-@products_bp.route('/archiveproduct', methods=['POST'])
-def archiveproduct():
-    product_id = request.form.get('product_id')       
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('SELECT * FROM products WHERE product_id = %s', (product_id,))
-    products = cursor.fetchone()
-    
-    if products:     
-        cursor.execute('''
-            UPDATE products
-            SET is_active = FALSE
-            WHERE product_id = %s
-        ''', (product_id,))
-        mysql.connection.commit()
-    return redirect(url_for('getproducts'))
-
-@products_bp.route('/restoreproduct', methods=['POST'])
-def restoreproduct():
-    product_id = request.form.get('product_id')
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('SELECT * FROM products WHERE product_id = %s', (product_id,))
-    archived_product = cursor.fetchone()
-
-    if archived_product:
-        cursor.execute('''
-            UPDATE products
-            SET is_active = 1
-            WHERE product_id = %s
-        ''', (product_id,))
-        mysql.connection.commit()
-    return redirect(url_for('getproducts'))
-
-@products_bp.route('/archiveproduct', methods=['GET', 'POST'])
-def getarchiveproduct():
+def getall_archived():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('''
         SELECT p.*, c.category_name 
@@ -158,8 +126,47 @@ def getarchiveproduct():
         JOIN categories c ON p.category_id = c.category_id 
         WHERE p.is_active = FALSE
     ''')
-    prdcts = cursor.fetchall()
-    return render_template("archiveproduct.html", getproducts=prdcts)
+    products = cursor.fetchall()
+    return products
+
+@products_bp.route('/<int:product_id>/archive', methods=['GET', 'POST'])
+def archive(product_id):     
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM products WHERE product_id = %s', (product_id,))
+    product = cursor.fetchone()
+    msg = ''
+    if request.method == 'POST':
+        cursor.execute('''
+            UPDATE products
+            SET is_active = FALSE
+            WHERE product_id = %s
+        ''', (product_id,))
+        mysql.connection.commit()
+        msg = 'Successfully archived this product.'
+    archive_product_html = render_template("products/archive.html", product=product)
+    return jsonify({'html': archive_product_html, 'message': msg})
+
+@products_bp.route('/<int:product_id>/restore', methods=['GET', 'POST'])
+def restore(product_id):
+    msg = ''
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM products WHERE product_id = %s', (product_id,))
+    product = cursor.fetchone()
+    if product:
+        try:
+            cursor.execute('''
+                UPDATE products
+                SET is_active = TRUE
+                WHERE product_id = %s
+            ''', (product_id,))
+            mysql.connection.commit()
+            msg = 'Successfully restored this product.'
+        except Exception as e:
+            msg = 'Error: [{}]'.format(e)
+    else:
+        msg = 'Product not found or already unarchived.'
+    restore_product_html = render_template("products/restore.html", product=product)
+    return jsonify({'html': restore_product_html, 'message': msg})
 
 #@products_bp.route('/viewproduct')
 #def viewproduct():
