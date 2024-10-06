@@ -41,21 +41,19 @@
     </div>
     <div class="clothing">
         {% for product in products_list %}
-        <div class="item">
-            <a href="{{ url_for('viewproduct', product_id=product.product_id) }}" class="product-link">
-                <p class="image">
-                    <img src="{{ url_for('static', filename='uploads/' + product.image_url) }}" alt="{{ product.product_name }}">
-                </p>
-                <p class="name"><b>{{ product.product_name }}</b></p>
-            </a>
+        <div class="item" data-url="{{ url_for('viewproduct', product_id=product.product_id) }}">
+            <img class="image" src="{{ url_for('static', filename='uploads/' + product.image_url) }}" alt="{{ product.product_name }}">
+            <div class="name">{{ product.product_name }}</div>
+            <div class="price">₱{{ product.price }}</div>
         </div>
         {% endfor %}
     </div>
 </div>
 
-<!-- for expand icons -->
+
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // for expand icons
         document.querySelectorAll('.expand-icon').forEach(icon => {
             icon.addEventListener('click', (event) => {
                 const children_div = icon.parentElement.querySelector('.children');
@@ -68,6 +66,15 @@
                         icon.querySelector('img').src = "{{ url_for('static', filename='icons/plus.svg') }}";
                     }
                 }
+            });
+        });
+
+        // link to product page
+        document.querySelectorAll('.item').forEach(item => {
+            item.addEventListener('click', (event) => {
+                event.preventDefault();
+                const url = item.getAttribute('data-url');
+                window.location.href = url;
             });
         });
     });

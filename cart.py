@@ -19,9 +19,7 @@ def cart():
             INNER JOIN products ON cart_items.product_id = products.product_id
             WHERE cart.user_id = %s
         ''', (user_id,))
-        print(user_id)
         cart_items = cursor.fetchall()
-        print(cart_items)  
         return render_template('cart.html', cart_items=cart_items)  
     
     return render_template('login.html')  
@@ -36,7 +34,6 @@ def removecart():
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('DELETE FROM cart_items WHERE cart_item_id = %s', (removecart_id,)) 
         mysql.connection.commit()
-        print(removecart_id)
         cursor.execute('''
             SELECT cart_items.cart_item_id, cart_items.cart_id, cart_items.price, 
                    cart_items.quantity, products.product_name, products.image_url
@@ -56,50 +53,36 @@ def addtocart():
     if 'loggedin' in session:
        if 'loggedin' in session and 'user_id' in session:
         user_id = request.args.get('user_id')
-        print(user_id)
         if request.method == 'POST':
             try:
                 product_id = request.form.get('product_id')
                 price = request.form.get('price')  
                 
-                print(f"Product ID received: {product_id}")
-                print(f"Price received: {price}")
-                print(user_id)
                 cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
                 cursor.execute('SELECT cart_id FROM Cart WHERE user_id = %s', (session['user_id'],))
                 cart = cursor.fetchone()
-
-                print(f"User cart: {cart}")
 
                 if not cart:
                     cursor.execute('INSERT INTO Cart (user_id) VALUES (%s)', (session['user_id'],))
                     mysql.connection.commit()  
                     cursor.execute('SELECT LAST_INSERT_ID() AS cart_id')
                     cart = cursor.fetchone()
-                    print(f"New cart created with cart_id: {cart['cart_id']}")
 
                 cart_id = cart['cart_id']
 
                 cursor.execute('SELECT * FROM Cart_Items WHERE product_id = %s AND cart_id = %s', (product_id, cart_id))
                 cart_item = cursor.fetchone()
 
-                print(f"Cart item before insert: {cart_item}")
-
                 if cart_item:
                     cursor.execute('UPDATE Cart_Items SET quantity = quantity + 1 WHERE product_id = %s AND cart_id = %s', (product_id, cart_id))
-                    print(f"Updated quantity for product {product_id} in cart {cart_id}")
                 else:
                     cursor.execute('INSERT INTO Cart_Items (cart_id, product_id, quantity, price) VALUES (%s, %s, %s, %s)', 
                                    (cart_id, product_id, 1, price))
-                    print(f"Inserted new cart item for product {product_id} with cart_id {cart_id} and price {price}")
 
                 mysql.connection.commit()
-                print("Database commit successful")
-
                 flash('Product added to cart successfully!', 'success')
 
             except Exception as e:
-                print(f"Error occurred: {str(e)}")
                 flash(f'Error adding product to cart: {str(e)}', 'danger')
 
             return redirect('/catalog')
