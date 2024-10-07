@@ -5,17 +5,23 @@
     <div class="product-image">
         <div class="thumbnail-container">
             {% for image in product.images %}
-                <img src="{{ url_for('static', filename='uploads/' + image['image_url']) }}" alt="Thumbnail">
+                <div class="thumbnail-image">
+                    <img src="{{ url_for('static', filename='uploads/' + image['image_url']) }}" alt="Thumbnail">
+                </div>
             {% endfor %}
         </div>
-        <img src="{{ url_for('static', filename='uploads/' + product.image_url) }}" alt="{{ product.product_name }}">
+        <div class="main-image">
+            <img src="{{ url_for('static', filename='uploads/' + product.image_url) }}" alt="{{ product.product_name }}">
+        </div>
     </div>
 
     <div class="product-details">
         <h1>{{ product.product_name }}</h1>
-        <div class="price">
+        <p>
             <span class="sale-price">₱{{ product.price }}</span>
-        </div>
+            <span class="rating-icon"><img src="{{ url_for('static', filename='icons/rating.png') }}"></span>
+            <span class="rating">4.5/5 rating</span>
+        </p>
 
         <ul class="features">
             <li class="description">{{ product.description }}</li>

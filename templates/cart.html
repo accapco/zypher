@@ -19,7 +19,9 @@
                     <div class="table-row" data-item-id="{{ item['cart_item_id'] }}">
                         <input type="checkbox" class="item-checkbox" onclick="updateTotal()">
                         <div class="item-col">
-                            <img class="item-image" src="{{ url_for('static', filename='uploads/' + item['image_url']) }}" alt="{{ item['product_name'] }}">
+                            <div class="image-container">
+                                <img src="{{ url_for('static', filename='uploads/' + item['image_url']) }}" alt="{{ item['product_name'] }}">
+                            </div>
                             <div class="item-name">{{ item['product_name'] }}</div>
                         </div>
                         <div class="item-price" data-unit-price="{{ item['price'] }}">₱{{ item['price'] }}</div>

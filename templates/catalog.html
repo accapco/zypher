@@ -14,7 +14,7 @@
                     <div class="d2">
                         {{ d2.category_name }}
                         {% if d2.children|length > 0 %}
-                        <span class="expand-icon"><img src="{{ url_for('static', filename='icons/plus.svg') }}"></span>
+                        <span class="expand-icon"><img src="{{ url_for('static', filename='icons/plus.svg') }}" loading="lazy"></span>
                         {% endif %}
                         <div class="children" style="display: none;">
                             {% for d3 in d2.children %}
@@ -42,7 +42,9 @@
     <div class="clothing">
         {% for product in products_list %}
         <div class="item" data-url="{{ url_for('viewproduct', product_id=product.product_id) }}">
-            <img class="image" src="{{ url_for('static', filename='uploads/' + product.image_url) }}" alt="{{ product.product_name }}">
+            <div class="image-container">
+                <img src="{{ url_for('static', filename='uploads/' + product.image_url) }}" alt="{{ product.product_name }}" fill>
+            </div>
             <div class="name">{{ product.product_name }}</div>
             <div class="price">₱{{ product.price }}</div>
         </div>

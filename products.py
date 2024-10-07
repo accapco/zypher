@@ -31,8 +31,20 @@ def getall():
         WHERE p.is_active = TRUE
     ''')
     products = cursor.fetchall()
-    archived_products = getall_archived()
-    products_html = render_template("products/getall.html", products=products, archived_products=archived_products)
+    products_html = render_template("products/getall.html", products=products)
+    return jsonify({"html": products_html, "products": products})
+
+@products_bp.route('/archived', methods=['GET'])
+def getall_archived():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('''
+        SELECT p.*, c.category_name 
+        FROM products p 
+        JOIN categories c ON p.category_id = c.category_id 
+        WHERE p.is_active = FALSE
+    ''')
+    products = cursor.fetchall()
+    products_html = render_template("products/getall_archived.html", products=products)
     return jsonify({"html": products_html, "products": products})
 
 @products_bp.route('/<int:product_id>')
@@ -83,7 +95,7 @@ def add():
     cursor.execute('SELECT category_id, category_name FROM categories WHERE is_archived = FALSE')
     categories = cursor.fetchall()
     add_product_html = render_template('products/add.html', categories=categories)
-    return jsonify({'html': add_product_html, 'message': msg})
+    return jsonify({'html': add_product_html, 'message': msg, 'redirect': url_for('.getall')})
 
 @products_bp.route('/<int:product_id>/edit', methods=['GET', 'POST'])
 def edit(product_id):
@@ -116,18 +128,7 @@ def edit(product_id):
         except:
             msg = 'Problem occured while making changes to product details.'
     edit_product_html = render_template("products/edit.html", product=product, categories=categories) 
-    return jsonify({'html': edit_product_html, 'message': msg})
-
-def getall_archived():
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('''
-        SELECT p.*, c.category_name 
-        FROM products p 
-        JOIN categories c ON p.category_id = c.category_id 
-        WHERE p.is_active = FALSE
-    ''')
-    products = cursor.fetchall()
-    return products
+    return jsonify({'html': edit_product_html, 'message': msg, 'redirect': url_for('.getall')})
 
 @products_bp.route('/<int:product_id>/archive', methods=['GET', 'POST'])
 def archive(product_id):     
@@ -144,7 +145,7 @@ def archive(product_id):
         mysql.connection.commit()
         msg = 'Successfully archived this product.'
     archive_product_html = render_template("products/archive.html", product=product)
-    return jsonify({'html': archive_product_html, 'message': msg})
+    return jsonify({'html': archive_product_html, 'message': msg, 'redirect': url_for('.getall')})
 
 @products_bp.route('/<int:product_id>/restore', methods=['GET', 'POST'])
 def restore(product_id):
@@ -166,7 +167,7 @@ def restore(product_id):
     else:
         msg = 'Product not found or already unarchived.'
     restore_product_html = render_template("products/restore.html", product=product)
-    return jsonify({'html': restore_product_html, 'message': msg})
+    return jsonify({'html': restore_product_html, 'message': msg, 'redirect': url_for('.getall_archived')})
 
 #@products_bp.route('/viewproduct')
 #def viewproduct():

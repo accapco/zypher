@@ -3,9 +3,19 @@
 {% block content %}
 
 <div class="admin-side">
-    <button data-id="/categories">Categories</button>
-    <button data-id="/products">Products</button>
-    <button data-id="/users">Users</button>
+    <div class="btn-group">
+        <button class="parent-btn">Categories</button>
+        <button class="child-btn collapsed" data-route="/categories">Active Categories</button>
+        <button class="child-btn collapsed" data-route="/categories/archived">Archived Categories</button>
+    </div>
+    <div class="btn-group">
+        <button class="parent-btn">Products</button>
+        <button class="child-btn collapsed" data-route="/products">Active Products</button>
+        <button class="child-btn collapsed" data-route="/products/archived">Archived Products</button>
+    </div>
+    <div class="btn-group" data-route="/users">
+        <button class="parent-btn" data-route="/users">Users</button>
+    </div>
 </div>
 <div class="admin-main">
 </div>
@@ -24,16 +34,17 @@
             };
         } catch (error) {
             alert(error);
-            window.location.reload();
         }
     };
 
-    function setActiveButton(id) {
+    function setActiveButton(route) {
         page_buttons.forEach((btn) => {
-            if (btn.getAttribute("data-id") != id) {
+            if (btn.getAttribute("data-route") != route) {
                 btn.classList.remove("active");
             } else {
                 btn.classList.add("active");
+                const parent_button = btn.parentElement.querySelector(".parent-btn");
+                parent_button.classList.add("active");
             }
         });
     }
@@ -77,11 +88,11 @@
                 }
                 const data = await response.json();
                 alert(data.message);
+                setMainDivContent(data.redirect)
                 modal.style.display = "none";
             } catch (error) {
                 alert('There was an error submitting the form: ' + error.message);
             }
-            window.location.reload();
         });
     }
 
@@ -105,22 +116,44 @@
         };
     }
 
+    async function setMainDivContent(route) {
+        const main_div = document.querySelector(".admin-main");
+        html = await fetchInnerHTML(route);
+        if (html) {
+            main_div.innerHTML = html;
+            getActionButtons(main_div);
+            attachExpandIcons(main_div);
+        } else {
+            window.location.reload()
+        }
+    }
+
+    async function handlePageButtonClick(btn) {
+        var route = btn.getAttribute("data-route");
+        await setMainDivContent(route);
+        setActiveButton(route);
+    }
+
     // main
     page_buttons.forEach((btn) => {
         btn.addEventListener("click", async (event) => {
             event.preventDefault();
-            var id = btn.getAttribute("data-id");
-            const main_div = document.querySelector(".admin-main");
-            html = await fetchInnerHTML(id);
-            if (html) {
-                main_div.innerHTML = html;
-                getActionButtons(main_div);
-                attachExpandIcons(main_div);
-            };
-            setActiveButton(id)
+            if (btn.classList.contains("parent-btn")) {
+                const child_btns = btn.parentElement.querySelectorAll(".child-btn");
+                if (child_btns.length > 0) {
+                    child_btns.forEach((child_btn) => {
+                        child_btn.classList.toggle("collapsed");
+                    });
+                } else {
+                    handlePageButtonClick(btn);
+                }
+            } else {
+                handlePageButtonClick(btn);
+            }
         });
     });
 
     page_buttons[0].click();
+    page_buttons[1].click();
 </script>
 {% endblock %}

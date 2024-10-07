@@ -24,8 +24,6 @@ def cart():
     
     return render_template('login.html')  
 
-
-
 @app.route('/removecart', methods=['GET', 'POST'])
 def removecart():
     if 'loggedin' in session:
