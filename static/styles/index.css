@@ -584,7 +584,81 @@ body {
         
         .social-share button:hover {
             background-color: #ddd;
-        }        
+        }
+
+        .reviews {
+            width: 90%;
+            max-height: 256px;
+            margin-top: 60px;
+            padding: 20px;
+            padding-right: 46px;
+            overflow-y: scroll;
+            overflow-x: hidden;
+
+            &::-webkit-scrollbar {
+                width: 6px;
+                background-color: #ffffff00;
+            }
+    
+            &::-webkit-scrollbar-thumb{
+                height: 120px;
+                border-radius: 6px;
+                background-color: #00000020;
+            }
+
+            h1 {
+                font-size: 18px;
+                font-weight: bold;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                color: rgba(0, 0, 0, 0.8);
+                line-height: 36px;
+                margin-bottom: 36px;
+                border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+                padding-bottom: 18px;
+            }
+
+            .review {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                padding-bottom: 56px;
+                margin-bottom: 40px;
+                border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+
+                .top {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    margin-bottom: 16px;
+
+                    h2 {
+                        font-weight: bold;
+                        font-size: 13px;
+                        letter-spacing: 0.04em;
+                        margin: 0px;
+                        margin-right: 20px;
+                        width: 120px;
+                        overflow: hidden;
+                        text-wrap: nowrap;
+                        text-overflow: ellipsis;
+                    }
+
+                    .rating {
+                        color: darkgoldenrod;
+                    }
+                }
+
+                .bottom {
+                    p {
+                        font-size: 14px;
+                        letter-spacing: 0.02em;
+                        line-height: 14px;
+                        margin: 0px;
+                    }
+                }
+            }
+        }
     }
 
     .cart-main {
