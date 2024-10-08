@@ -20,7 +20,8 @@ def cart():
             WHERE cart.user_id = %s
         ''', (user_id,))
         cart_items = cursor.fetchall()
-        return render_template('cart.html', cart_items=cart_items)  
+        cart_count = len(cart_items)
+        return render_template('cart.html', cart_items=cart_items, cart_count=cart_count)  
     
     return render_template('login.html')  
 
@@ -43,8 +44,8 @@ def removecart():
             WHERE cart.user_id = %s
         ''', (user_id,))
         cart_items = cursor.fetchall()
-        
-        return render_template('cart.html', cart_items=cart_items)  
+        cart_count = len(cart_items)
+        return render_template('cart.html', cart_items=cart_items, cart_count=cart_count)  
     return redirect(url_for('login'))
 
 
@@ -82,10 +83,11 @@ def addtocart():
                 mysql.connection.commit()
                 flash('Product added to cart successfully!', 'success')
 
+                return redirect(url_for('viewproduct', product_id=product_id))
             except Exception as e:
                 flash(f'Error adding product to cart: {str(e)}', 'danger')
 
-            return redirect('/catalog')
+            return redirect(url_for('viewproduct', product_id=product_id))
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM Products WHERE is_active = TRUE')
         products = cursor.fetchall()
@@ -112,16 +114,39 @@ def getarchiveproduct():
 @app.route('/viewproduct/<int:product_id>', methods=['GET'])
 def viewproduct(product_id):
     if 'loggedin' in session:
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM products WHERE product_id = %s AND is_active = TRUE', (product_id,))
-        product = cursor.fetchone()
+        user_id = session['user_id']
+        cart_items, cart_count = get_cart_items(user_id)  
+    else:
+        cart_items = []
+        cart_count = 0  
 
-        if product:
-            cursor.execute('SELECT image_url FROM product_images WHERE product_id = %s', (product_id,))
-            images = cursor.fetchall()
-            product['images'] = images
-            return render_template('products/viewproduct.html', product=product)
-        else:
-            flash('Product not found or inactive.', 'danger')
-            return redirect(url_for('getproducts'))
-    return redirect(url_for('login'))
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM products WHERE product_id = %s AND is_active = TRUE', (product_id,))
+    product = cursor.fetchone()
+
+    if product:
+        # Fetch product images
+        cursor.execute('SELECT image_url FROM product_images WHERE product_id = %s', (product_id,))
+        images = cursor.fetchall()
+        product['images'] = images
+        
+        return render_template('products/viewproduct.html', 
+                               product=product,
+                               cart_items=cart_items, 
+                               cart_count=cart_count)  
+    else:
+        flash('Product not found or inactive.', 'danger')
+        return redirect(url_for('getproducts'))
+
+def get_cart_items(user_id):
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('''
+        SELECT cart_items.cart_item_id, cart_items.cart_id, cart_items.price, 
+               cart_items.quantity, products.product_name, products.image_url
+        FROM cart_items
+        INNER JOIN cart ON cart_items.cart_id = cart.cart_id
+        INNER JOIN products ON cart_items.product_id = products.product_id
+        WHERE cart.user_id = %s
+    ''', (user_id,))
+    cart_items = cursor.fetchall()
+    return cart_items, len(cart_items)

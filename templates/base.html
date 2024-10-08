@@ -36,9 +36,30 @@
                         <button data-route="/catalog" onclick="document.location='/catalog'">
                             Catalog
                         </button>
-                        <button data-route="/cart" onclick="document.location='/cart'">
-                            Cart
-                        </button>
+                        <div class="cart-button" onmouseover="showCart()" onmouseout="hideCart()">
+                            <button data-route="/cart" onclick="document.location='/cart'">
+                                Cart
+                                {% if cart_count > 0 %}
+                                <span class="cart-count">{{ cart_count }}</span>
+                                {% endif %}</button>
+                            <div id="cart-preview" class="dropdown-content">
+                                {% if cart_items %}
+                                    <ul>
+                                        {% for item in cart_items[:3] %}
+                                            <li>
+                                                <img src="{{ url_for('static', filename='uploads/' + item['image_url']) }}" alt="{{ item['product_name'] }}">
+                                                <span class="product-name">{{ item['product_name'] }}</span>
+                                                <span class="product-price">₱{{ item['price'] }}</span>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                    <hr />
+                                    <a href="{{ url_for('cart') }}">View Cart</a>
+                                {% else %}
+                                    <p>Your cart is empty.</p>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="header-menu">
@@ -190,4 +211,16 @@
         };
     });
 </script>
+
+<script>
+    function showCart() {
+        document.getElementById('cart-preview').style.display = 'block';
+    }
+
+    function hideCart() {
+        document.getElementById('cart-preview').style.display = 'none';
+    }
+    
+</script>
+
 </html>

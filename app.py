@@ -1,5 +1,6 @@
-from flask import Flask, render_template, url_for, redirect
+from flask import Flask, render_template, url_for, redirect, session
 from flask_mysqldb import MySQL
+import MySQLdb.cursors
 from config import config
 import os
 
@@ -29,7 +30,22 @@ def index():
 
 @app.route('/home')
 def home():    
-    return render_template('home.html')
+    response = categories.getall()
+    category_tree = response.json['category_tree']
+    response = products.getall()
+    products_list = response.json['products']
+
+    cart_items = []
+    cart_count = 0
+    if 'loggedin' in session:
+        user_id = session['user_id']
+        cart_items, cart_count = get_cart_items(user_id)
+
+    return render_template('home.html', 
+                           category_tree=category_tree, 
+                           products_list=products_list, 
+                           cart_items=cart_items, 
+                           cart_count=cart_count)
 
 @app.route('/catalog')
 def catalog():
@@ -37,7 +53,42 @@ def catalog():
     category_tree = response.json['category_tree']
     response = products.getall()
     products_list = response.json['products']
-    return render_template('catalog.html', category_tree=category_tree, products_list=products_list)
+
+    cart_items = []
+    cart_count = 0
+    if 'loggedin' in session:
+        user_id = session['user_id']
+        cart_items, cart_count = get_cart_items(user_id)
+
+    return render_template('catalog.html', 
+                           category_tree=category_tree, 
+                           products_list=products_list, 
+                           cart_items=cart_items, 
+                           cart_count=cart_count)
+
+
+def get_cart_items(user_id):
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('''
+        SELECT cart_items.cart_item_id, cart_items.cart_id, cart_items.price, 
+               cart_items.quantity, products.product_name, products.image_url
+        FROM cart_items
+        INNER JOIN cart ON cart_items.cart_id = cart.cart_id
+        INNER JOIN products ON cart_items.product_id = products.product_id
+        WHERE cart.user_id = %s
+    ''', (user_id,))
+    cart_items = cursor.fetchall()
+    return cart_items, len(cart_items)
+
+@app.context_processor
+def inject_cart_info():
+    """Inject cart count into all templates."""
+    cart_count = 0
+    if 'loggedin' in session:
+        user_id = session['user_id']
+        cart_items, cart_count = get_cart_items(user_id)
+    return dict(cart_count=cart_count)
+
 
 #@app.route('/viewproduct')
 #def viewproduct():

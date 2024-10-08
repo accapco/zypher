@@ -11,12 +11,37 @@ def verify_loggedin():
     if 'loggedin' not in session:
         return redirect(url_for('home'))
 
+@users_bp.before_request
+def load_cart_items():
+    """Load cart items for the session before each request."""
+    cart_items = []
+    cart_count = 0
+    if 'loggedin' in session:
+        user_id = session['user_id']
+        cart_items, cart_count = get_cart_items(user_id)
+    session['cart_items'] = cart_items
+    session['cart_count'] = cart_count
+
+def get_cart_items(user_id):
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('''
+        SELECT cart_items.cart_item_id, cart_items.cart_id, cart_items.price, 
+               cart_items.quantity, products.product_name, products.image_url
+        FROM cart_items
+        INNER JOIN cart ON cart_items.cart_id = cart.cart_id
+        INNER JOIN products ON cart_items.product_id = products.product_id
+        WHERE cart.user_id = %s
+    ''', (user_id,))
+    cart_items = cursor.fetchall()
+    return cart_items, len(cart_items)
+
 @users_bp.route('/', methods=['GET', 'POST'])
 def getall():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM tbl_users')
     users = cursor.fetchall()
-    users_html = render_template("users/getall.html", users=users)    
+    cart_count = session.get('cart_count', 0)  
+    users_html = render_template("users/getall.html", users=users, cart_count=cart_count)    
     return jsonify({'html': users_html})
 
 @users_bp.route('/<int:user_id>', methods=['GET', 'POST'])
@@ -24,7 +49,8 @@ def get(user_id):
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM tbl_users WHERE user_id = %s', (user_id,))
     user = cursor.fetchone()
-    user_html = render_template("users/get.html", user=user)    
+    cart_count = session.get('cart_count', 0)  
+    user_html = render_template("users/get.html", user=user, cart_count=cart_count)    
     return jsonify({'html': user_html})
 
 @users_bp.route('/<int:user_id>/edit', methods=['GET', 'POST'])
@@ -33,7 +59,7 @@ def edit(user_id):
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM tbl_users WHERE user_id = %s', (user_id,))
     user = cursor.fetchone()
-
+    cart_count = session.get('cart_count', 0)  
     if request.method == 'POST' and 'username' in request.form and 'email' in request.form:
         # Get form data
         userName = request.form['username']   
@@ -58,7 +84,8 @@ def edit(user_id):
             msg = 'User details have been updated'
     elif request.method == 'POST':
         msg = 'Some required fields are empty'
-    edit_html = render_template("users/edit.html", user=user)    
+    
+    edit_html = render_template("users/edit.html", user=user, cart_count=cart_count)    
     return jsonify({'html': edit_html, 'message': msg})
 
 @users_bp.route('/<int:user_id>/delete', methods=['GET', 'POST'])
