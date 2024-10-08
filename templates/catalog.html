@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static',filename='styles/catalog.css') }}"> 
+{% endblock %}
+
 {% block content %}
 <div class="catalog-side">
     <div class="title">Filter</div>

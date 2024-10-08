@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static',filename='styles/index.css') }}">
     <link rel="stylesheet" href="{{ url_for('static',filename='styles/modals.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static',filename='styles/forms.css') }}"> 
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/forms.css') }}">     
+    {% block css %}
+    {% endblock %}
     <title>Zypher Philippines</title>
 </head>
 <body>
@@ -23,11 +25,11 @@
                         </a>
                     </div>
                 </div>
-                <a href="/home">
-                    <div class="header-logo">
+                <div class="header-logo">
+                    <a href="/home">
                         <img src="{{ url_for('static',filename='assets/logo.png') }}">
-                    </div>
-                </a>
+                    </a>
+                </div>
                 <div class="header-navigation">
                     <div class="nav">
                         <button data-route="/home" onclick="document.location='/home'">

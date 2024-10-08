@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static',filename='styles/productview.css') }}"> 
+{% endblock %}
+
 {% block content %}
 <div class="product-view">
     <div class="product-image">

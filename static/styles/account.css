@@ -1,0 +1,44 @@
+.account-side {
+    grid-row: 2 / 14;
+    grid-column: 1 / 4;
+    display: flex;
+    flex-direction: column;
+    padding-right: 44px;
+    width: 100%;
+    align-items: flex-end;
+    justify-content: center;
+
+    .label {
+        font-size: 18px;
+        margin-bottom: 12px;
+        letter-spacing: 0.05em;
+    }
+
+    .sublabel {
+        font-size: 14px;
+        color: rgba(0, 0, 0, 0.7);
+        letter-spacing: 0.05em;
+    }
+}
+
+.account-main {
+    grid-row: 2 / 14;
+    grid-column: 5 / 14;
+    overflow-y: scroll;
+    padding-left: 128px;
+    padding-right: 256px;
+    padding-top: 86px;
+    background-color: #F5F5F5;
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    
+    &::-webkit-scrollbar {
+        width: 6px;
+        background-color: #ffffff00;
+    }
+
+    &::-webkit-scrollbar-thumb{
+        height: 120px;
+        border-radius: 6px;
+        background-color: #00000020;
+    }
+}

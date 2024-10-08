@@ -1,0 +1,9 @@
+.home-main {
+    grid-row: 2 / 14;
+    grid-column: 1 / 14;
+
+    #splash {
+        width: 100%;
+        object-fit: cover;
+    }
+}

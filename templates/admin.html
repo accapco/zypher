@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static',filename='styles/index.css') }}">
+<link rel="stylesheet" href="{{ url_for('static',filename='styles/modals.css') }}">
+<link rel="stylesheet" href="{{ url_for('static',filename='styles/forms.css') }}"> 
+<link rel="stylesheet" href="{{ url_for('static',filename='styles/admin.css') }}"> 
+{% endblock %}
+
 {% block content %}
 
 <div class="admin-side">
