@@ -1,0 +1,25 @@
+<div class="categories-main">
+	<div class="tables">
+		<div class="table-section">
+			<div class="title">
+				Archived Categories
+			</div>
+			<div class="categories-list">
+				{% for category in categories %}
+				<div class="layer depth-1">
+					<div class="card">
+						<div class="category-name"> 
+							{{ category.category_name }}
+						</div>
+						<div class="actions">
+							<span data-route="/categories/{{category.category_id}}/restore" class="action add"> Restore </span>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+	<div id="modal" class="modal">
+    </div>
+</div>

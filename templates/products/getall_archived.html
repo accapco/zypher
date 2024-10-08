@@ -2,8 +2,7 @@
 	<div class="tables">
 		<div class="table-section">
 			<div class="title">
-				Products List 
-				<span data-route="/products/add" class="action add">Add a product</span>
+				Archived Products
 			</div>
 			<div class="products-list">
 				{% for product in products %}
@@ -13,8 +12,7 @@
 					</div>
 					<div class="name">
 						{{ product.product_name }}
-						<span data-route="/products/{{product.product_id}}/edit" class="action edit">Edit</span>
-						<span data-route="/products/{{product.product_id}}/archive" class="action delete">Archive</span>
+						<span data-route="/products/{{product.product_id}}/restore" class="action restore">Restore</span>
 					</div>
 					<div class="category">{{ product.category_name }}</div>
 					<div class="description"><span class="label">Description:</span> {{ product.description }}</div>

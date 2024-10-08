@@ -5,17 +5,23 @@
     <div class="product-image">
         <div class="thumbnail-container">
             {% for image in product.images %}
-                <img src="{{ url_for('static', filename='uploads/' + image['image_url']) }}" alt="Thumbnail">
+                <div class="thumbnail-image">
+                    <img src="{{ url_for('static', filename='uploads/' + image['image_url']) }}" alt="Thumbnail">
+                </div>
             {% endfor %}
         </div>
-        <img src="{{ url_for('static', filename='uploads/' + product.image_url) }}" alt="{{ product.product_name }}">
+        <div class="main-image">
+            <img src="{{ url_for('static', filename='uploads/' + product.image_url) }}" alt="{{ product.product_name }}">
+        </div>
     </div>
 
     <div class="product-details">
         <h1>{{ product.product_name }}</h1>
-        <div class="price">
+        <p>
             <span class="sale-price">₱{{ product.price }}</span>
-        </div>
+            <span class="rating-icon"><img src="{{ url_for('static', filename='icons/rating.png') }}"></span>
+            <span class="rating">4.5/5 rating</span>
+        </p>
 
         <ul class="features">
             <li class="description">{{ product.description }}</li>
@@ -45,6 +51,26 @@
                 <span class="icon"><img src="{{ url_for('static', filename='icons/pinterest.png') }}"></span>
                 Pin It
             </button>
+        </div>
+
+        <div class="reviews">
+            <h1>User Reviews</h1>
+            <div class="review">
+                <div class="top"><h2>Jane Doe</h2> <span class="rating">★★★★★</span></div>
+                <div class="bottom"><p>This dress is absolutely stunning! The fit is perfect, and it's so comfortable.</p></div>
+            </div>
+            <div class="review">
+                <div class="top"><h2>John Smith</h2> <span class="rating">★★★★☆</span></div>
+                <div class="bottom"><p>Really love the design, but the color is a bit brighter than I expected.</p></div>
+            </div>
+            <div class="review">
+                <div class="top"><h2>Alice Johnson</h2> <span class="rating">★★★☆☆</span></div>
+                <div class="bottom"><p>The dress is nice, but the fabric feels a bit cheap for the price.</p></div>
+            </div>
+            <div class="review">
+                <div class="top"><h2>Emily Davis</h2> <span class="rating">★★★★★</span></div>
+                <div class="bottom"><p>Perfect for summer! I received so many compliments when I wore it.</p></div>
+            </div>
         </div>
     </div>
 </div>

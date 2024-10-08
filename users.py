@@ -84,9 +84,14 @@ def edit(user_id):
             msg = 'User details have been updated'
     elif request.method == 'POST':
         msg = 'Some required fields are empty'
+<<<<<<< HEAD
     
     edit_html = render_template("users/edit.html", user=user, cart_count=cart_count)    
     return jsonify({'html': edit_html, 'message': msg})
+=======
+    edit_html = render_template("users/edit.html", user=user)    
+    return jsonify({'html': edit_html, 'message': msg, 'redirect': url_for('.getall')})
+>>>>>>> 327b1b5efe6f01714de6827f40623b13def78788
 
 @users_bp.route('/<int:user_id>/delete', methods=['GET', 'POST'])
 def delete(user_id):
@@ -100,10 +105,14 @@ def delete(user_id):
             msg = 'User deleted successfully'
         except Exception as e:
             msg = 'Error deleting user'
-        return jsonify({'message': msg})
+        return jsonify({'message': msg, 'redirect': url_for('.getall')})
     else:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM tbl_users WHERE user_id = %s', (user_id,))
         user = cursor.fetchone()
         delete_html = render_template("users/delete.html", user=user)   
+<<<<<<< HEAD
         return jsonify({'html': delete_html})
+=======
+        return jsonify({'html': delete_html, 'redirect': url_for('.getall')})
+>>>>>>> 327b1b5efe6f01714de6827f40623b13def78788
