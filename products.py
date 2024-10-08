@@ -18,20 +18,54 @@ def verify_loggedin():
     
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
-def allowed_file(filename):
+def _allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 @products_bp.route('/', methods=['GET'])
 def getall():
+    category = request.args.get("category")
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('''
-        SELECT p.*, c.category_name 
-        FROM products p 
-        JOIN categories c ON p.category_id = c.category_id 
-        WHERE p.is_active = TRUE
-    ''')
+    
+    if category:
+        cursor.execute('''
+            WITH RECURSIVE CategoryTree AS (
+                SELECT category_id, category_name, parent_id
+                FROM categories
+                WHERE category_id = %s
+                
+                UNION ALL
+                
+                SELECT c.category_id, c.category_name, c.parent_id
+                FROM categories c
+                INNER JOIN CategoryTree ct ON c.parent_id = ct.category_id
+            )
+            SELECT category_id FROM CategoryTree
+        ''', (category,))
+        
+        related_categories = cursor.fetchall()
+        category_ids = [row['category_id'] for row in related_categories]
+        
+        format_strings = ','.join(['%s'] * len(category_ids))
+        query = f'''
+            SELECT p.*, c.category_name 
+            FROM products p 
+            JOIN categories c ON p.category_id = c.category_id 
+            WHERE p.is_active = TRUE
+            AND c.category_id IN ({format_strings})
+        '''
+        cursor.execute(query, tuple(category_ids))
+    else:
+        cursor.execute('''
+            SELECT p.*, c.category_name 
+            FROM products p 
+            JOIN categories c ON p.category_id = c.category_id 
+            WHERE p.is_active = TRUE
+        ''')
+    
     products = cursor.fetchall()
     products_html = render_template("products/getall.html", products=products)
+    
     return jsonify({"html": products_html, "products": products})
 
 @products_bp.route('/archived', methods=['GET'])
@@ -68,7 +102,7 @@ def add():
             size = request.form['size']
             color = request.form['color']
             images = request.files.getlist('images')
-            if images and allowed_file(images[0].filename):
+            if images and _allowed_file(images[0].filename):
                 try:
                     first_image = images[0]
                     filename = secure_filename(first_image.filename)
@@ -80,7 +114,7 @@ def add():
                                    (categoryid, productname, description, price, stockqty, size, color, filename))
                     product_id = cursor.lastrowid
                     for image in images:
-                        if allowed_file(image.filename):
+                        if _allowed_file(image.filename):
                             filename = secure_filename(image.filename)
                             image_path = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], filename)
                             image.seek(0)

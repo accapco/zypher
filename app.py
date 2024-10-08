@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, session
+from flask import Flask, render_template, url_for, redirect, session, request
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 from config import config
@@ -29,30 +29,23 @@ def index():
     return redirect(url_for('.home'))
 
 @app.route('/home')
-def home():    
-    response = categories.getall()
-    category_tree = response.json['category_tree']
-    response = products.getall()
-    products_list = response.json['products']
-
+def home():
     cart_items = []
     cart_count = 0
     if 'loggedin' in session:
         user_id = session['user_id']
         cart_items, cart_count = get_cart_items(user_id)
 
-    return render_template('home.html', 
-                           category_tree=category_tree, 
-                           products_list=products_list, 
+    return render_template('home.html',
                            cart_items=cart_items, 
                            cart_count=cart_count)
 
 @app.route('/catalog')
 def catalog():
+    # get categories
     response = categories.getall()
     category_tree = response.json['category_tree']
-    response = products.getall()
-    products_list = response.json['products']
+    # get products and filter
 
     cart_items = []
     cart_count = 0
@@ -62,7 +55,6 @@ def catalog():
 
     return render_template('catalog.html', 
                            category_tree=category_tree, 
-                           products_list=products_list, 
                            cart_items=cart_items, 
                            cart_count=cart_count)
 

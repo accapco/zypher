@@ -58,7 +58,7 @@
                                     <hr />
                                     <a href="{{ url_for('cart') }}">View Cart</a>
                                 {% else %}
-                                    <p>Your cart is empty.</p>
+                                    <p class="centered-msg">Your cart is empty.</p>
                                 {% endif %}
                             </div>
                         </div>
@@ -222,7 +222,6 @@
     function hideCart() {
         document.getElementById('cart-preview').style.display = 'none';
     }
-    
 </script>
 
 </html>
