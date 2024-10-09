@@ -7,33 +7,51 @@
 {% block content %}
 <div class="catalog-side">
     <div class="title">Filter</div>
-    {% for d1 in category_tree %}
-        <div class="d1">
-            <input type="radio" name="category" value="{{ d1.category_id }}">
-            {{ d1.category_name }}
-            {% if d1.children|length > 0 %}
-            <span class="expand-icon"><img src="{{ url_for('static', filename='icons/plus.svg') }}"></span>
-            {% endif %}
-            <div class="children" style="display: none;">
-                {% for d2 in d1.children %}
-                    <div class="d2">
-                        <input type="radio" name="category" value="{{ d2.category_id }}">
-                        {{ d2.category_name }}
-                        {% if d2.children|length > 0 %}
-                        <span class="expand-icon"><img src="{{ url_for('static', filename='icons/plus.svg') }}" loading="lazy"></span>
-                        {% endif %}
-                        <div class="children" style="display: none;">
-                            {% for d3 in d2.children %}
-                                <div class="d3">
-                                    <input type="radio" name="category" value="{{ d3.category_id }}">
-                                    {{ d3.category_name }}
-                                </div>
-                            {% endfor %}
-                        </div>
+    <!-- Categories -->
+    <div class="filter-title">Categories</div>
+    {% for d1 in filters.category_tree %}
+    <div class="d1">
+        <input type="radio" name="category" value="{{ d1.category_id }}">
+        {{ d1.category_name }}
+        {% if d1.children|length > 0 %}
+        <span class="expand-icon"><img src="{{ url_for('static', filename='icons/plus.svg') }}"></span>
+        {% endif %}
+        <div class="children" style="display: none;">
+            {% for d2 in d1.children %}
+                <div class="d2">
+                    <input type="radio" name="category" value="{{ d2.category_id }}">
+                    {{ d2.category_name }}
+                    {% if d2.children|length > 0 %}
+                    <span class="expand-icon"><img src="{{ url_for('static', filename='icons/plus.svg') }}" loading="lazy"></span>
+                    {% endif %}
+                    <div class="children" style="display: none;">
+                        {% for d3 in d2.children %}
+                            <div class="d3">
+                                <input type="radio" name="category" value="{{ d3.category_id }}">
+                                {{ d3.category_name }}
+                            </div>
+                        {% endfor %}
                     </div>
-                {% endfor %}
-            </div>
+                </div>
+            {% endfor %}
         </div>
+    </div>
+    {% endfor %}
+    <!-- Colors -->
+    <div class="filter-title">Color</div>
+    {% for color in filters.colors %}
+    <div class="d1">
+        <input type="radio" name="color" value="{{ color }}">
+        {{ color }}
+    </div>
+    {% endfor %}
+    <!-- Size -->
+    <div class="filter-title">Size</div>
+    {% for size in filters.sizes %}
+    <div class="d1">
+        <input type="radio" name="size" value="{{ size }}">
+        {{ size }}
+    </div>
     {% endfor %}
 </div>
 <div class="catalog-main">
@@ -82,14 +100,32 @@
         }
 
         // load products
-        async function fetchProducts(category) { 
+        async function fetchProducts() { 
             const clothing_section = document.querySelector('.clothing');
             clothing_section.innerHTML = "";
 
             var products_url = "{{ url_for('products.getall') }}";
-            if (category) {
-                products_url = `${products_url}/?category=${category}`
-            }
+
+            const active_filters = document.querySelectorAll(".catalog-side input[type='radio']:checked");
+            let filters = [];
+            active_filters.forEach((filter) => {
+                query = {
+                    key: filter.name,
+                    value: filter.value
+                };
+                filters.push(query);
+            });
+
+            filters.forEach((query, index) => {
+                if (index === 0) {
+                    products_url += `?${query.key}=${query.value}`
+                } else {
+                    products_url += `&${query.key}=${query.value}`
+                }
+            });
+
+            console.log(products_url);
+
             const response = await fetch(products_url);
             const data = await response.json();
             const products = data.products;
@@ -118,27 +154,31 @@
 
         // add filter functionality
         let last_checked_category = null;
+        let last_checked_color = null;
+        let last_checked_size = null;
 
-        function attachFilters() {
-            const category_filters = document.querySelectorAll(".catalog-side input[type='radio'][name='category']");
+        function attachFilters(filter_type, active_filter) {
+            const filters = document.querySelectorAll(`.catalog-side input[type='radio'][name='${filter_type}']`);
             
-            category_filters.forEach((category) => {
-                category.addEventListener("click", (event) => {
-                    if (last_checked_category === category) {
-                        category.checked = false;
-                        last_checked_category = null;
+            filters.forEach((filter) => {
+                filter.addEventListener("click", (event) => {
+                    if (active_filter === filter) {
+                        filter.checked = false;
+                        active = null;
                         fetchProducts(null);
                     } else {
-                        last_checked_category = category;
-                        const category_value = category.value;
-                        fetchProducts(category_value);
+                        active_filter = filter;
+                        const value = filter.value;
+                        fetchProducts();
                     }
                 });
             });
         }
 
         fetchProducts();
-        attachFilters();
+        attachFilters('category', last_checked_category);
+        attachFilters('color', last_checked_color);
+        attachFilters('size', last_checked_size);
     });
 </script>
 {% endblock %}

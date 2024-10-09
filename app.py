@@ -42,22 +42,22 @@ def home():
 
 @app.route('/catalog')
 def catalog():
-    # get categories
-    response = categories.getall()
-    category_tree = response.json['category_tree']
-    # get products and filter
-
+    # get filters
+    filters = {
+        'category_tree': categories.getall().json['category_tree'],
+        'colors': products.get_colors().json['colors'],
+        'sizes': products.get_sizes().json['sizes']
+    }
+    # cart item counter
     cart_items = []
     cart_count = 0
     if 'loggedin' in session:
         user_id = session['user_id']
         cart_items, cart_count = get_cart_items(user_id)
-
     return render_template('catalog.html', 
-                           category_tree=category_tree, 
+                           filters=filters, 
                            cart_items=cart_items, 
                            cart_count=cart_count)
-
 
 def get_cart_items(user_id):
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -80,11 +80,6 @@ def inject_cart_info():
         user_id = session['user_id']
         cart_items, cart_count = get_cart_items(user_id)
     return dict(cart_count=cart_count)
-
-
-#@app.route('/viewproduct')
-#def viewproduct():
-#    return render_template('viewproduct.html')
 
 @app.route('/admin')
 def admin():
