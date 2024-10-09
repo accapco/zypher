@@ -71,13 +71,15 @@
         });
 
         // link to product page
-        document.querySelectorAll('.item').forEach(item => {
+        function attachProductPages(html) {
+            html.querySelectorAll('.item').forEach(item => {
             item.addEventListener('click', (event) => {
                 event.preventDefault();
                 const url = item.getAttribute('data-url');
                 window.location.href = url;
             });
         });
+        }
 
         // load products
         async function fetchProducts(category) { 
@@ -97,7 +99,10 @@
                 item_div.classList.add('item');
                 const uploads_folder = "{{ url_for('static', filename='uploads/') }}"
                 const img_url = `${uploads_folder}/${product.image_url}`;
-                
+                const product_base_url = "{{ url_for('viewproduct', product_id=0).replace('0', '') }}";
+                const product_url = `${product_base_url}/${product.product_id}`;
+
+                item_div.setAttribute("data-url", product_url);
                 item_div.innerHTML = `
                     <div class="image-container">
                         <img src="${img_url}" alt="${product.product_name}" fill>
@@ -107,6 +112,7 @@
                 `;
 
                 clothing_section.appendChild(item_div);
+                attachProductPages(clothing_section);
             });
         }
 
