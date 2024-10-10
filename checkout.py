@@ -12,7 +12,7 @@ def verify_loggedin():
     if 'loggedin' not in session:
         return redirect(url_for('home'))
 
-@checkout_bp.route('/checkout', methods=['POST', 'GET'])
+@checkout_bp.route('/', methods=['POST', 'GET'])
 def checkout():
     if request.method == 'POST':
         # Get selected items from the form
@@ -31,5 +31,5 @@ def checkout():
 
         return render_template("checkout/checkout.html", user_info=user_info, selected_items=selected_items, total=total)
 
-    return render_template('checkout.html', selected_items=[], total=0)
+    return render_template('checkout/checkout.html', selected_items=[], total=0)
 

@@ -1,42 +1,40 @@
-
-.wrapper{
-    overflow-y: auto;
-}
 .logo img {
     width: 150px;
 }
 
 .checkout-container {
+    grid-row: 3 / 13;
+    grid-column: 4 / 11;
     display: flex;
-    justify-content: space-between;
-    max-width: 1200px;
-    margin: 20px auto;
     padding: 20px;
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    grid-row: 2 / 14;
-    grid-column: 1 / 14;
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar {
+        width: 6px;
+        background-color: #ffffff00;
+    }
+
+    &::-webkit-scrollbar-thumb{
+        height: 120px;
+        border-radius: 6px;
+        background-color: #00000020;
+    }
 }
 
 .checkout-form {
     flex: 2;
-    margin-right: 20px;
-    max-height: 200vh; /* Set maximum height */
-    transition: max-height 0.3s ease; /* Smooth transition */
+    transition: max-height 0.3s ease;
 }
 
 h2 {
-    font-size: 18px;
-    margin-bottom: 10px;
-}
-
-input[type="text"], select {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    font-size: 16px;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.8);
+    letter-spacing: 0.1em;
+    margin: 30px 0px;
 }
 
 input[type="checkbox"] {
@@ -46,6 +44,7 @@ input[type="checkbox"] {
 label {
     display: block;
     margin-bottom: 10px;
+    font-size: 14px;
 }
 
 .payment-method {
@@ -86,12 +85,26 @@ button.pay-now:hover {
 
 .order-item {
     display: flex;
-    align-items: center;
-    margin-bottom: 20px;
+    align-items: flex-start;
+    margin-bottom: 40px;
+}
+
+.item-details {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    p {
+        height: 14px;
+        font-size: 13px;
+        margin: 0px;
+        color: rgba(0, 0, 0, 0.8);
+    }
 }
 
 .order-item img {
     width: 80px;
+    height: 80px;
     margin-right: 10px;
 }
 
@@ -100,24 +113,33 @@ button.pay-now:hover {
     color: #333;
 }
 
-.order-total h3 {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.form-group {
+.order-total {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-}
+    flex-direction: column;
+    gap: 6px;
 
-.form-group input {
-    flex: 1;
-    margin-right: 10px;
-}
+    p {
+        height: 20px;
+        font-size: 18px;
+        margin: 0px;
+    }
 
-.form-group input:last-child {
-    margin-right: 0; /* Remove margin from the last input */
+    .value {
+        margin-bottom: 30px;
+    }
+    
+    .label {
+        font-weight: bold;
+        font-size: 13px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(0, 0, 0, 0.7);
+    }
+
+    #total-price {
+        font-size: 20px;
+        font-weight: bold;
+    }
 }
 
 @media (max-width: 600px) {
@@ -222,8 +244,10 @@ button.pay-now:hover {
   padding: 10px; /* Padding around the option */
 }
 
+
 .billing-option input {
-    margin-right: 10px;
+    margin: 0px;
+    padding: 0px;
 }
 
 .billing-option:hover {
@@ -247,10 +271,10 @@ button.pay-now:hover {
     margin-top: 5px; /* Space between option and details */
     background-color: #f9f9f9; /* Light background for details */
 }
+
 .billing-details.visible {
     display: block; /* Show details when visible class is added */
 }
-
 
 button.pay-now {
     width: 100%;
@@ -261,6 +285,7 @@ button.pay-now {
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
+    margin-bottom: 50px;
 }
 
 button.pay-now:hover {

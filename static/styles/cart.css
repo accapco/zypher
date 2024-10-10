@@ -28,7 +28,7 @@
 
         .table-header {
             display: grid;
-            grid-template-columns: 0.4fr 2fr 1fr 1fr 1fr;
+            grid-template-columns: 0.4fr 3fr 1fr 1fr 1fr;
             font-size: 14px;
             align-items: center;
             padding: 16px 12px;
@@ -74,7 +74,7 @@
 
             .table-row {
                 display: grid;
-                grid-template-columns: 0.4fr 2fr 1fr 1fr 1fr;
+                grid-template-columns: 0.4fr 3fr 1fr 1fr 1fr;
                 font-size: 13px;
                 align-items: center;
                 padding: 18px 12px;
@@ -84,7 +84,7 @@
                 .item-col {
                     display: flex;
                     flex-direction: row;
-                    gap: 14px;
+                    gap: 20px;
                     align-items: center;
 
                     .image-container {
@@ -100,12 +100,28 @@
                             object-fit: cover;
                         }
                     }
+
+                    .item-details {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: flex-start;
+                        justify-content: center;
+                        gap: 6px;
+
+                        .item-name {
+                            max-width: 250px;
+                            font-weight: bold;
+                            font-size: 14px;
+                            margin-bottom: 4px;
+                            color: rgba(0, 0, 0, 0.8)
+                        }
+                    }
                 }
 
                 .item-quantity {
                     display: flex;
                     align-items: center;
-                    gap: 12px;
+                    gap: 20px;
 
                     .quantity {
                         display: flex;

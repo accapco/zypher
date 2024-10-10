@@ -19,12 +19,25 @@ function changeQuantity(button, change) {
 function updateTotal() {
     var checkboxes = document.querySelectorAll('.item-checkbox:checked');
     var total = 0;
+    var selectedItems = [];
+    
     checkboxes.forEach(function(checkbox) {
         var row = checkbox.closest('.table-row');
         var itemPrice = parseFloat(row.querySelector('.item-price').textContent.replace('₱', ''));
         total += itemPrice;
+
+        selectedItems.push({
+            product_id: checkbox.getAttribute('data-product-id'),
+            image_url: checkbox.getAttribute('data-image-url'),
+            price: checkbox.getAttribute('data-price'),
+            quantity: checkbox.getAttribute('data-quantity'),
+            size: checkbox.getAttribute('data-size'),
+            color: checkbox.getAttribute('data-color')
+        });
     });
+    
     document.getElementById('total').textContent = '₱ ' + total.toFixed(2);
+    document.getElementById('selected-items').value = JSON.stringify(selectedItems);
 }
 
 // Select or deselect all items
