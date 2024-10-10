@@ -91,11 +91,12 @@ def get_cart_items(user_id):
 @app.context_processor
 def inject_cart_info():
     """Inject cart count into all templates."""
+    cart_items = []
     cart_count = 0
     if 'loggedin' in session:
         user_id = session['user_id']
         cart_items, cart_count = get_cart_items(user_id)
-    return dict(cart_count=cart_count)
+    return dict(cart_count=cart_count, cart_items=cart_items)
 
 @app.route('/admin')
 def admin():

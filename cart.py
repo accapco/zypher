@@ -69,7 +69,7 @@ def get_cart_items(user_id):
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('''
         SELECT cart_items.cart_item_id, cart_items.cart_id, cart_items.price, 
-               cart_items.quantity, products.product_name, products.image_url, products.size, products.color
+               cart_items.quantity, products.product_name, products.image_url
         FROM cart_items
         INNER JOIN cart ON cart_items.cart_id = cart.cart_id
         INNER JOIN products ON cart_items.product_id = products.product_id
