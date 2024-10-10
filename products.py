@@ -21,12 +21,23 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 def _allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
 @products_bp.route('/', methods=['GET'])
 def getall():
     category = request.args.get("category")
+    color = request.args.get("color")
+    size = request.args.get("size")
+
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    
+    # Initialize base query and conditions
+    base_query = '''
+        SELECT p.*, c.category_name 
+        FROM products p 
+        JOIN categories c ON p.category_id = c.category_id 
+        WHERE p.is_active = TRUE
+    '''
+    conditions = []
+    params = []
+    # Filter by category (recursive category tree)
     if category:
         cursor.execute('''
             WITH RECURSIVE CategoryTree AS (
@@ -46,27 +57,47 @@ def getall():
         related_categories = cursor.fetchall()
         category_ids = [row['category_id'] for row in related_categories]
         
-        format_strings = ','.join(['%s'] * len(category_ids))
-        query = f'''
-            SELECT p.*, c.category_name 
-            FROM products p 
-            JOIN categories c ON p.category_id = c.category_id 
-            WHERE p.is_active = TRUE
-            AND c.category_id IN ({format_strings})
-        '''
-        cursor.execute(query, tuple(category_ids))
-    else:
-        cursor.execute('''
-            SELECT p.*, c.category_name 
-            FROM products p 
-            JOIN categories c ON p.category_id = c.category_id 
-            WHERE p.is_active = TRUE
-        ''')
-    
+        if category_ids:
+            format_strings = ','.join(['%s'] * len(category_ids))
+            conditions.append(f'c.category_id IN ({format_strings})')
+            params.extend(category_ids)
+    # Filter by color
+    if color:
+        conditions.append('p.color = %s')
+        params.append(color)
+    # Filter by size
+    if size:
+        conditions.append('p.size = %s')
+        params.append(size)
+    if conditions:
+        base_query += ' AND ' + ' AND '.join(conditions)
+    cursor.execute(base_query, tuple(params))
     products = cursor.fetchall()
     products_html = render_template("products/getall.html", products=products)
-    
     return jsonify({"html": products_html, "products": products})
+
+
+@products_bp.route('/colors', methods=['GET'])
+def get_colors():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('''
+        SELECT DISTINCT color
+        FROM products
+        WHERE products.is_active = TRUE
+    ''')
+    colors = cursor.fetchall()
+    return jsonify({"colors": [c['color'] for c in colors]})
+
+@products_bp.route('/sizes', methods=['GET'])
+def get_sizes():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('''
+        SELECT DISTINCT size
+        FROM products
+        WHERE products.is_active = TRUE
+    ''')
+    sizes = cursor.fetchall()
+    return jsonify({"sizes": [s['size'] for s in sizes]})
 
 @products_bp.route('/archived', methods=['GET'])
 def getall_archived():

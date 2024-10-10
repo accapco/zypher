@@ -21,8 +21,16 @@
     .title {
         font-size: 15px;
         line-height: 46px;
-        margin-bottom: 26px;
         border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    }
+
+    .filter-title {
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: rgba(0, 0, 0, 0.8);
+        letter-spacing: 0.08em;
+        margin-top: 42px;
     }
 
     .expand-icon:hover {
@@ -38,8 +46,8 @@
 
     .d1 {
         font-size: 14px;
-        margin-bottom: 18px;
         margin: 16px;
+        margin-bottom: 0px;
         margin-left: 0px;
 
         .expand-icon {
