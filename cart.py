@@ -13,7 +13,7 @@ def cart():
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('''
             SELECT cart_items.cart_item_id, cart_items.cart_id, cart_items.price, 
-                   cart_items.quantity, products.product_name, products.image_url
+                   cart_items.quantity, products.product_name, products.image_url, products.size, products.color
             FROM cart_items
             INNER JOIN cart ON cart_items.cart_id = cart.cart_id
             INNER JOIN products ON cart_items.product_id = products.product_id
@@ -35,7 +35,7 @@ def removecart():
         mysql.connection.commit()
         cursor.execute('''
             SELECT cart_items.cart_item_id, cart_items.cart_id, cart_items.price, 
-                   cart_items.quantity, products.product_name, products.image_url
+                   cart_items.quantity, products.product_name, products.image_url, products.size, products.color
             FROM cart_items
             INNER JOIN cart ON cart_items.cart_id = cart.cart_id
             INNER JOIN products ON cart_items.product_id = products.product_id
@@ -140,7 +140,7 @@ def get_cart_items(user_id):
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('''
         SELECT cart_items.cart_item_id, cart_items.cart_id, cart_items.price, 
-               cart_items.quantity, products.product_name, products.image_url
+               cart_items.quantity, products.product_name, products.image_url, products.size, products.color
         FROM cart_items
         INNER JOIN cart ON cart_items.cart_id = cart.cart_id
         INNER JOIN products ON cart_items.product_id = products.product_id
@@ -148,3 +148,4 @@ def get_cart_items(user_id):
     ''', (user_id,))
     cart_items = cursor.fetchall()
     return cart_items, len(cart_items)
+

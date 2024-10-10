@@ -1,0 +1,268 @@
+
+.wrapper{
+    overflow-y: auto;
+}
+.logo img {
+    width: 150px;
+}
+
+.checkout-container {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    grid-row: 2 / 14;
+    grid-column: 1 / 14;
+}
+
+.checkout-form {
+    flex: 2;
+    margin-right: 20px;
+    max-height: 200vh; /* Set maximum height */
+    transition: max-height 0.3s ease; /* Smooth transition */
+}
+
+h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+input[type="text"], select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.payment-method {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.payment-method img {
+    width: 150px;
+    margin-right: 10px;
+}
+
+button.pay-now {
+    width: 100%;
+    padding: 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button.pay-now:hover {
+    background-color: #0056b3;
+}
+
+.order-summary {
+    flex: 1;
+    padding: 20px;
+    border-left: 1px solid #ddd;
+    position: sticky; /* Make it sticky */
+    top: 20px; /* Offset from the top */
+    height: 80vh; /* Set a fixed height */
+    overflow: auto; /* Allow scrolling if needed */
+}
+
+.order-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.order-item img {
+    width: 80px;
+    margin-right: 10px;
+}
+
+.order-total {
+    font-size: 16px;
+    color: #333;
+}
+
+.order-total h3 {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.form-group {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.form-group input {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.form-group input:last-child {
+    margin-right: 0; /* Remove margin from the last input */
+}
+
+@media (max-width: 600px) {
+    .form-group {
+        flex-direction: column; /* Stack inputs vertically on small screens */
+    }
+
+    .form-group input {
+        margin-right: 0;
+        margin-bottom: 10px; /* Add bottom margin for spacing */
+    }
+}
+
+@media (max-width: 768px) {
+    .checkout-form {
+        margin-right: 0; /* Remove right margin on smaller screens */
+        padding: 10px; /* Add padding for smaller screens */
+    }
+}
+
+.shipping-info {
+    background-color: #f0f0f0; /* Light grey background */
+    padding: 15px; /* Padding for spacing */
+    border-radius: 5px; /* Optional: rounded corners */
+    margin-bottom: 20px; /* Space below the shipping info */
+}
+
+.payment-methods {
+    margin-bottom: 20px; /* Space below payment methods */
+}
+
+.card-radio-label {
+    display: block;
+    border: 2px solid transparent; /* Default border */
+    border-radius: 10px; /* Rounded edges */
+    background-color: white; /* Background color */
+    width: 100%; /* Set a width */
+    max-width: 200px; /* Limit max width for uniformity */
+    transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transition */
+    cursor: pointer; /* Change cursor on hover */
+}
+
+.card-radio {
+    padding: 20px; /* Padding inside the card */
+    text-align: center; /* Center text */
+    border-radius: 10px; /* Match parent border-radius */
+}
+
+.card-radio-input {
+    display: none; /* Hide radio button */
+}
+
+.card-radio-input:checked + .card-radio {
+    border-color: #007bff; /* Highlight checked option */
+    background-color: #f0f8ff; /* Light background for checked */
+    outline: 2px solid #007bff; /* Outline effect for selected option */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Optional shadow for emphasis */
+}
+
+.payment-details {
+    display: none; /* Hide details initially */
+    padding: 10px;
+    border-top: 1px solid #ccc; /* Border to connect with the option */
+    margin-top: 5px; /* Space between option and details */
+    background-color: #f9f9f9; /* Light background for details */
+}
+
+.payment-option.selected {
+    border-color: #007bff; /* Highlight border when selected */
+    background-color: #f0f8ff; /* Light background when selected */
+}
+
+.payment-option {
+    border: 2px solid #ccc; /* Default border */
+    border-radius: 5px;
+    margin-bottom: 0px;
+    transition: border-color 0.3s, background-color 0.3s;
+    padding: 10px; /* Padding around the option */
+}
+
+.payment-option input {
+    margin-right: 10px;
+}
+
+.payment-option:hover {
+    border-color: #007bff; /* Highlight on hover */
+}
+
+.payment-option input:checked + span {
+    background-color: #f0f8ff; /* Highlight background for checked option */
+    border-color: #007bff; /* Border color when selected */
+}
+.billing-address {
+    margin-bottom: 20px; /* Space below billing address */
+}
+
+.billing-option {
+  border: 2px solid #ccc; /* Default border */
+  border-radius: 5px;
+  margin-bottom: 0px;
+  transition: border-color 0.3s, background-color 0.3s;
+  padding: 10px; /* Padding around the option */
+}
+
+.billing-option input {
+    margin-right: 10px;
+}
+
+.billing-option:hover {
+    border-color: #007bff; /* Highlight on hover */
+}
+
+.billing-option input:checked + span {
+    background-color: #f0f8ff; /* Highlight background for checked option */
+    border-color: #007bff; /* Border color when selected */
+}
+
+.billing-option.selected {
+    border-color: #007bff; /* Highlight border when selected */
+    background-color: #f0f8ff; /* Light background when selected */
+}
+
+.billing-details {
+    display: none; /* Hide details initially */
+    padding: 10px;
+    border-top: 1px solid #ccc; /* Border to connect with the option */
+    margin-top: 5px; /* Space between option and details */
+    background-color: #f9f9f9; /* Light background for details */
+}
+.billing-details.visible {
+    display: block; /* Show details when visible class is added */
+}
+
+
+button.pay-now {
+    width: 100%;
+    padding: 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button.pay-now:hover {
+    background-color: #0056b3;
+}

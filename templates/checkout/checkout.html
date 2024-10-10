@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block css %}
+    <title>Zypher Checkout</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/checkout.css') }}"> 
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+{% endblock %}
+
+{% block content %}
+    <div class="checkout-container">
+        <div class="checkout-form">
+            <h2>Contact</h2>
+            <input type="text" placeholder="Email or mobile phone number" value="{{ user_info['email'] if user_info else '' }}" readonly>
+            <label><input type="checkbox"> Email me with news and offers</label>
+
+            <h2>Delivery</h2>
+            <select>
+                <option value="philippines">Philippines</option>
+            </select>
+            <div class="form-group">
+                <input type="text" placeholder="First name" value="{{ user_info['first_name'] if user_info else '' }}">
+                <input type="text" placeholder="Last name" value="{{ user_info['last_name'] if user_info else '' }}">
+            </div>
+            <input type="text" placeholder="Address" value="{{ user_info['address'] if user_info else '' }}">
+            <div class="form-group">
+                <input type="text" placeholder="Postal code">
+                <input type="text" placeholder="City" value="{{ user_info['city'] if user_info else '' }}">
+            </div>
+            <input type="text" placeholder="Region">
+            <input type="text" placeholder="Phone">
+            <label><input type="checkbox"> Save this information for next time</label>
+            <label><input type="checkbox"> Text me with news and offers</label>
+
+            <h2>Shipping method</h2>
+            <div class="shipping-info">
+                <p>Enter your shipping address to view available shipping methods.</p>
+            </div>
+
+            <h2>Payment</h2>
+            <p>All transactions are secure and encrypted.</p>
+            <div class="payment-methods">
+                <div class="payment-option" id="bank-option">
+                    <label>
+                        <input type="radio" name="payment" value="bank" onclick="togglePaymentDetails('bank-details')">
+                        Bank Deposit
+                    </label>
+                    <div id="bank-details" class="payment-details">
+                        <p>Details for Bank Deposit:</p>
+                        <ul>
+                            <li>Account Name: Your Name</li>
+                            <li>Account Number: 123456789</li>
+                            <li>Bank: Your Bank</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="payment-option" id="cod-option">
+                    <label>
+                        <input type="radio" name="payment" value="cod" onclick="togglePaymentDetails('cod-details')">
+                        Cash on Delivery
+                    </label>
+                    <div id="cod-details" class="payment-details">
+                        <p>Pay exact amount to the delivery agent.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Billing address</h2>
+            <div class="billing-address">
+                <div class="billing-option">
+                    <label>
+                        <input type="radio" name="billing" value="same" checked onclick="toggleBillingDetails('same')">
+                        Same as shipping address
+                    </label>
+                    <div id="same-details" class="billing-details visible">
+                        <p>Your billing address will be the same as your shipping address.</p>
+                    </div>
+                </div>
+
+                <div class="billing-option">
+                    <label>
+                        <input type="radio" name="billing" value="different" onclick="toggleBillingDetails('different')">
+                        Use a different billing address
+                    </label>
+                    <div id="different-details" class="billing-details">
+                        <h3>Enter your billing details:</h3>
+                        <input type="text" placeholder="Country/Region">
+                        <div class="form-group">
+                            <input type="text" placeholder="First name">
+                            <input type="text" placeholder="Last name">
+                        </div>
+                        <input type="text" placeholder="Address">
+                        <input type="text" placeholder="Apartment/Suite (optional)">
+                        <div class="form-group">
+                            <input type="text" placeholder="Postal code">
+                            <input type="text" placeholder="City">
+                        </div>
+                        <input type="text" placeholder="Region">
+                        <input type="text" placeholder="Phone (optional)">
+                    </div>
+                </div>
+            </div>
+
+            <button class="pay-now">Pay now</button>
+        </div>
+
+        <div class="order-summary">
+            <h2>Order Summary</h2>
+            <div class="order-items">
+                {% for item in selected_items %}
+                <div class="order-item">
+                    <img src="{{ url_for('static', filename='uploads/' + item['image_url']) }}" alt="Product Image">
+                    <div class="item-details">
+                        <p>Size: {{ item['size'] }}</p>
+                        <p>Color: {{ item['color'] }}</p>
+                        <p>Price: ₱{{ item['price'] }}</p>
+                        <p>Quantity: {{ item['quantity'] }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="order-total">
+                <p>Subtotal: ₱{{ total }}</p>
+                <p>Shipping: Enter shipping address</p>
+                <h3>Total: ₱{{ total }}</h3>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+    <script>
+        function togglePaymentDetails(detailsId) {
+            const details = document.querySelectorAll('.payment-details');
+            const options = document.querySelectorAll('.payment-option');
+
+            // Hide all details and remove selected class from all options
+            details.forEach(detail => {
+                detail.style.display = 'none'; // Hide all details
+            });
+            options.forEach(option => {
+                option.classList.remove('selected'); // Remove selected class
+            });
+
+            const selectedDetail = document.getElementById(detailsId);
+            if (selectedDetail) {
+                selectedDetail.style.display = 'block'; // Show selected details
+                selectedDetail.parentElement.classList.add('selected'); // Add selected class to parent
+            }
+        }
+    </script>
+
+    <script>
+    function toggleBillingDetails(selected) {
+      const sameDetails = document.getElementById('same-details');
+      const differentDetails = document.getElementById('different-details');
+      const billingOptions = document.querySelectorAll('.billing-option');
+
+      // Remove highlight from all options
+      billingOptions.forEach(option => {
+          option.classList.remove('selected');
+          option.querySelector('input').checked = false; // Uncheck all
+      });
+
+      if (selected === 'same') {
+          sameDetails.classList.add('visible');
+          differentDetails.classList.remove('visible');
+          billingOptions[0].classList.add('selected'); // Highlight the "same" option
+          billingOptions[0].querySelector('input').checked = true; // Check the radio button
+      } else {
+          sameDetails.classList.remove('visible');
+          differentDetails.classList.add('visible');
+          billingOptions[1].classList.add('selected'); // Highlight the "different" option
+          billingOptions[1].querySelector('input').checked = true; // Check the radio button
+      }
+  }
+    </script>
+

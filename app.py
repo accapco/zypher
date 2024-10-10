@@ -17,11 +17,13 @@ import users
 import products
 import categories
 import cart
+import checkout
 
 app.register_blueprint(account.account_bp, url_prefix='/account')
 app.register_blueprint(users.users_bp, url_prefix='/users')
 app.register_blueprint(products.products_bp, url_prefix='/products')
 app.register_blueprint(categories.categories_bp, url_prefix='/categories')
+app.register_blueprint(checkout.checkout_bp, url_prefix='/checkout')
 
 
 @app.route('/')

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('static',filename='styles/cart.css') }}"> 
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/cart.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -9,10 +9,8 @@
     <div class="table">
         <div class="title">Shopping Cart</div>
         <div class="table-header">
-            <input type="checkbox">
-            <div class="item-col">
-                Item
-            </div>
+            <input type="checkbox" onclick="selectAll(this)">
+            <div class="item-col">Item</div>
             <div>Item Price</div>
             <div>Quantity</div>
             <div>Actions</div>
@@ -21,12 +19,14 @@
             {% if cart_items %}
                 {% for item in cart_items %}
                     <div class="table-row" data-item-id="{{ item['cart_item_id'] }}">
-                        <input type="checkbox" class="item-checkbox" onclick="updateTotal()">
+                        <input type="checkbox" class="item-checkbox" onclick="updateTotal()" data-product-id="{{ item['product_id'] }}" data-image-url="{{ item['image_url'] }}" data-price="{{ item['price'] }}" data-quantity="{{ item['quantity'] }}" data-size="{{ item['size'] }}">
                         <div class="item-col">
                             <div class="image-container">
                                 <img src="{{ url_for('static', filename='uploads/' + item['image_url']) }}" alt="{{ item['product_name'] }}">
                             </div>
                             <div class="item-name">{{ item['product_name'] }}</div>
+                            <div class="item-size">Size: {{ item['size'] }}</div>
+                            <div class="item-color">Color: {{ item['color'] }}</div>
                         </div>
                         <div class="item-price" data-unit-price="{{ item['price'] }}">₱{{ item['price'] }}</div>
                         <div class="item-quantity">
@@ -47,14 +47,16 @@
                 </div>
             {% endif %}
         </div>
-        
     </div>
     <div class="checkout">
         <div class="title">Checkout Summary</div>
         <div class="summary">
             <div id="label">Order Total:</div>
             <div id="total">₱ 0</div>
-            <button>Checkout</button>
+            <form id="checkout-form" action="{{ url_for('checkout.checkout') }}" method="POST">
+                <input type="hidden" name="selected_items" id="selected-items" value="">
+                <button type="submit">Checkout</button>
+            </form>
         </div>
     </div>
 </div>
@@ -81,12 +83,24 @@
     function updateTotal() {
         var checkboxes = document.querySelectorAll('.item-checkbox:checked');
         var total = 0;
+        var selectedItems = [];
+        
         checkboxes.forEach(function(checkbox) {
             var row = checkbox.closest('.table-row');
             var itemPrice = parseFloat(row.querySelector('.item-price').textContent.replace('₱', ''));
             total += itemPrice;
+
+            selectedItems.push({
+                product_id: checkbox.getAttribute('data-product-id'),
+                image_url: checkbox.getAttribute('data-image-url'),
+                price: checkbox.getAttribute('data-price'),
+                quantity: checkbox.getAttribute('data-quantity'),
+                size: checkbox.getAttribute('data-size')
+            });
         });
+        
         document.getElementById('total').textContent = '₱ ' + total.toFixed(2);
+        document.getElementById('selected-items').value = JSON.stringify(selectedItems);
     }
 
     // Select or deselect all items
@@ -100,5 +114,3 @@
 </script>
 
 {% endblock %}
-
-
