@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 
 {% block css %}
-<title>Zypher Products</title>
-<link rel="stylesheet" href="{{ url_for('static',filename='styles/productview.css') }}"> 
+<link rel="stylesheet" href="{{ url_for('static',filename='styles/catalog_item.css') }}"> 
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static',filename='js/catalog_item.js') }}" defer></script>
 {% endblock %}
 
 {% block content %}
@@ -35,27 +38,23 @@
         </ul>
 
         <div class="buttons">
-            <form method="POST" action="{{ url_for('addtocart') }}">
-                <input type="hidden" name="product_id" value="{{ product.product_id }}">
-                <input type="hidden" name="price" value="{{ product.price }}">
-                <button type="submit" class="add-to-cart">Add to Cart</button>
-                <button type="button" class="buy-now">Buy it Now</button>
-            </form>
-        </div>
+            <button type="button" class="buy-btn" id="add-to-cart" data-product-id="{{product.product_id}}" data-price="{{product.price}}">Add to Cart</button>
+            <button type="button" class="buy-btn" id="buy-now">Buy it Now</button>
 
-        <div class="social-share">
-            <button>
-                <span class="icon"><img src="{{ url_for('static', filename='icons/facebook.png') }}"></span>
-                Share
-            </button>
-            <button>
-                <span class="icon"><img src="{{ url_for('static', filename='icons/x.png') }}"></span>
-                Post
-            </button>
-            <button>
-                <span class="icon"><img src="{{ url_for('static', filename='icons/pinterest.png') }}"></span>
-                Pin It
-            </button>
+            <div class="social-share">
+                <button>
+                    <span class="icon"><img src="{{ url_for('static', filename='icons/facebook.png') }}"></span>
+                    Share
+                </button>
+                <button>
+                    <span class="icon"><img src="{{ url_for('static', filename='icons/x.png') }}"></span>
+                    Post
+                </button>
+                <button>
+                    <span class="icon"><img src="{{ url_for('static', filename='icons/pinterest.png') }}"></span>
+                    Pin It
+                </button>
+            </div>
         </div>
 
         <div class="reviews">

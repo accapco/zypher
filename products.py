@@ -1,4 +1,4 @@
-from flask import Flask, render_template,request, redirect, url_for, session, flash, Blueprint, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, flash, Blueprint, jsonify
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import re
@@ -10,11 +10,6 @@ from werkzeug.utils import secure_filename
 import os
 
 products_bp = Blueprint('products', __name__)
-
-@products_bp.before_request
-def verify_loggedin():
-    if 'loggedin' not in session:
-        return redirect(url_for('home'))
     
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
@@ -76,6 +71,20 @@ def getall():
     products_html = render_template("products/getall.html", products=products)
     return jsonify({"html": products_html, "products": products})
 
+@products_bp.route('/<int:product_id>', methods=['GET'])
+def get(product_id):
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM products WHERE product_id = %s AND is_active = TRUE', (product_id,))
+    product = cursor.fetchone()
+    if product:
+        # Fetch product images
+        cursor.execute('SELECT image_url FROM product_images WHERE product_id = %s', (product_id,))
+        images = cursor.fetchall()
+        product['images'] = images
+        msg = "Successfully fetched product."
+    else:
+        msg = "Product not found."
+    return jsonify({'product': product, 'message': msg})
 
 @products_bp.route('/colors', methods=['GET'])
 def get_colors():
@@ -111,14 +120,6 @@ def getall_archived():
     products = cursor.fetchall()
     products_html = render_template("products/getall_archived.html", products=products)
     return jsonify({"html": products_html, "products": products})
-
-@products_bp.route('/<int:product_id>')
-def get(product_id):
-    cursor = mysql.connection(MySQLdb.cursors.DictCursor)
-    cursor.execute('SELECT * FROM products WHERE product_id = %s', (product_id,))
-    product = cursor.fetchone()
-    product_html = render_template("products/get.html", product=product)
-    return jsonify({"html": product_html})
 
 @products_bp.route('/add', methods=['GET', 'POST'])
 def add():
@@ -233,8 +234,3 @@ def restore(product_id):
         msg = 'Product not found or already unarchived.'
     restore_product_html = render_template("products/restore.html", product=product)
     return jsonify({'html': restore_product_html, 'message': msg, 'redirect': url_for('.getall_archived')})
-
-#@products_bp.route('/viewproduct')
-#def viewproduct():
-#    return render_template("viewproduct.html")
-

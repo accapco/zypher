@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zypher Philippines</title>
+    <link rel="icon" href="{{ url_for('static',filename='assets/ZypherLogo.jpg') }}">
     <link rel="stylesheet" href="{{ url_for('static',filename='styles/index.css') }}">
     <link rel="stylesheet" href="{{ url_for('static',filename='styles/modals.css') }}">
     <link rel="stylesheet" href="{{ url_for('static',filename='styles/forms.css') }}">     
     {% block css %}
     {% endblock %}
-    <title>Zypher Philippines</title>
-    <link rel="icon" href="{{ url_for('static',filename='assets/ZypherLogo.jpg') }}">
+    <script src="{{ url_for('static',filename='js/base.js') }}" defer></script>
+    {% block js %}
+    {% endblock %}
 </head>
 <body>
     <div class="wrapper">
@@ -33,33 +36,46 @@
                 </div>
                 <div class="header-navigation">
                     <div class="nav">
-                        <button data-route="/home" onclick="document.location='/home'">
+                        <button data-route="/home" onclick="document.location='/home'"
+                            {% if 'home' in request.path %}
+                            class="active"   
+                            {% endif %}
+                            >
                             Home
                         </button>
-                        <button data-route="/catalog" onclick="document.location='/catalog'">
+                        <button data-route="/catalog" onclick="document.location='/catalog'"
+                            {% if 'catalog' in request.path %}
+                            class="active"   
+                            {% endif %}
+                            >
                             Catalog
                         </button>
-                        <div class="cart-button" onmouseover="showCart()" onmouseout="hideCart()">
-                            <button data-route="/cart" onclick="document.location='/cart'">
+                        <div class="cart-button">
+                            <button data-route="/cart" onclick="document.location='/cart'"
+                            {% if 'cart' in request.path %}
+                            class="active"   
+                            {% endif %}
+                            >
                                 Cart
                                 {% if cart_count > 0 %}
                                 <span class="cart-count">{{ cart_count }}</span>
-                                {% endif %}</button>
+                                {% endif %}
+                            </button>
                             <div id="cart-preview" class="dropdown-content">
                                 {% if cart_items %}
-                                    <ul>
-                                        {% for item in cart_items[:3] %}
-                                            <li>
-                                                <img src="{{ url_for('static', filename='uploads/' + item['image_url']) }}" alt="{{ item['product_name'] }}">
-                                                <span class="product-name">{{ item['product_name'] }}</span>
-                                                <span class="product-price">₱{{ item['price'] }}</span>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                    <hr />
-                                    <a href="{{ url_for('cart') }}">View Cart</a>
+                                <ul>
+                                    {% for item in cart_items[:3] %}
+                                        <li>
+                                            <img src="{{ url_for('static', filename='uploads/' + item['image_url']) }}" alt="{{ item['product_name'] }}">
+                                            <span class="product-name">{{ item['product_name'] }}</span>
+                                            <span class="product-price">₱{{ item['price'] }}</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                <hr />
+                                <a href="{{ url_for('cart.get') }}">View Cart</a>
                                 {% else %}
-                                    <p class="centered-msg">Your cart is empty.</p>
+                                <p class="centered-msg">Your cart is empty.</p>
                                 {% endif %}
                             </div>
                         </div>
@@ -91,138 +107,4 @@
         {% endblock %}
     </div>
 </body>
-
-<!-- drag categories for smaller screen -->
-<script> 
-    let mouseDown = false;
-    let startX, scrollLeft;
-    const slider = document.querySelector('.catalog-side');
-
-    if (slider) {
-        const startDragging = (e) => {
-            mouseDown = true;
-            startX = e.pageX - slider.offsetLeft;
-            scrollLeft = slider.scrollLeft;
-        }
-
-        const stopDragging = (e) => {
-            mouseDown = false;
-        }
-
-        const move = (e) => {
-            e.preventDefault();
-            if(!mouseDown) { return; }
-            const x = e.pageX - slider.offsetLeft;
-            const scroll = x - startX;
-            slider.scrollLeft = scrollLeft - scroll;
-        }
-
-        slider.addEventListener('mousemove', move, false);
-        slider.addEventListener('mousedown', startDragging, false);
-        slider.addEventListener('mouseup', stopDragging, false);
-        slider.addEventListener('mouseleave', stopDragging, false);
-    }
-</script>
-
-<!-- open login/register window -->
-<script>
-    // Function to fetch the modal content (login/register)
-    async function fetchModalContent(route) {
-        try {
-            const response = await fetch(route, { method: 'GET' });
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-            return data.html;
-        } catch (error) {
-            alert(error);
-            window.location.reload();
-        }
-    }
-
-    // Function to handle the close button inside the modal
-    function attachCloseButton(modal) {
-        const close_btns = modal.querySelectorAll("#close, #close-btn, #cancel-btn");
-        close_btns.forEach(btn => {
-            btn.addEventListener('click', (event) => {
-                event.preventDefault();
-                modal.style.display = "none";
-            });
-        })
-        
-    }
-
-    // Function to display login modal content
-    async function showLoginModal(modal) {
-        const loginHtml = await fetchModalContent("/account/login");
-        if (loginHtml) {
-            modal.innerHTML = loginHtml;
-            modal.style.display = "block";
-            attachCloseButton(modal);
-            attachRegisterLink(modal);
-        }
-    }
-
-    // Function to display register modal content
-    async function showRegisterModal(modal) {
-        const register_html = await fetchModalContent("/account/register");
-        if (register_html) {
-            modal.innerHTML = register_html;
-            attachCloseButton(modal);
-            attachlogin_link(modal);
-        }
-    }
-
-    // Function to handle register link inside the login modal
-    function attachRegisterLink(modal) {
-        const register_link = modal.querySelector("#register a");
-        register_link.addEventListener('click', async (event) => {
-            event.preventDefault();
-            await showRegisterModal(modal);
-        });
-    }
-
-    // Function to handle login link inside the register modal
-    function attachlogin_link(modal) {
-        const login_link = modal.querySelector("#login a");
-        login_link.addEventListener('click', async (event) => {
-            event.preventDefault();
-            await showLoginModal(modal);
-        });
-    }
-
-    // Main logic for the login button
-    const login_btn = document.getElementById("login-btn");
-    if (login_btn) {
-        login_btn.addEventListener('click', async (event) => {
-            event.preventDefault();
-            const modal = document.getElementById("login-modal");
-            await showLoginModal(modal);
-        });
-    }
-</script>
-
-<!-- set active buttons -->
-<script>
-    const buttons = document.querySelectorAll(".nav button, .dropdown");
-    var path = window.location.pathname;
-    buttons.forEach(btn => {
-        route = btn.getAttribute("data-route");
-        if (route === path) {
-            btn.classList.add("active");
-        };
-    });
-</script>
-
-<script>
-    function showCart() {
-        document.getElementById('cart-preview').style.display = 'block';
-    }
-
-    function hideCart() {
-        document.getElementById('cart-preview').style.display = 'none';
-    }
-</script>
-
 </html>

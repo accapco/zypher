@@ -24,7 +24,7 @@ app.register_blueprint(users.users_bp, url_prefix='/users')
 app.register_blueprint(products.products_bp, url_prefix='/products')
 app.register_blueprint(categories.categories_bp, url_prefix='/categories')
 app.register_blueprint(checkout.checkout_bp, url_prefix='/checkout')
-
+app.register_blueprint(cart.cart_bp, url_prefix='/cart')
 
 @app.route('/')
 def index():    
@@ -58,6 +58,20 @@ def catalog():
         cart_items, cart_count = get_cart_items(user_id)
     return render_template('catalog.html', 
                            filters=filters, 
+                           cart_items=cart_items, 
+                           cart_count=cart_count)
+
+@app.route('/catalog/<int:product_id>')
+def catalog_get(product_id):
+    # cart item counter
+    cart_items = []
+    cart_count = 0
+    if 'loggedin' in session:
+        user_id = session['user_id']
+        cart_items, cart_count = get_cart_items(user_id)
+    product = products.get(product_id).json['product']
+    return render_template('catalog_item.html', 
+                           product=product,
                            cart_items=cart_items, 
                            cart_count=cart_count)
 

@@ -4,8 +4,11 @@
 <link rel="stylesheet" href="{{ url_for('static',filename='styles/account.css') }}"> 
 {% endblock %}
 
-{% block content %}
+{% block js %}
+<script src="{{ url_for('static',filename='js/account.js') }}" defer></script>
+{% endblock %}
 
+{% block content %}
 <div class="account-side">
     <div class="label">
         Account Information
@@ -76,23 +79,4 @@
         </div>
     </form>
 </div>
-
-<script>
-    const edit_btn = document.getElementById("edit-btn");
-    const form_fields = document.querySelectorAll("input[type=text], input[type=email]");
-
-    edit_btn.addEventListener("click", () => {
-        if (edit_btn.innerText == "Enable Editing") {
-            form_fields.forEach(field => {
-                field.removeAttribute('disabled');
-            });
-            edit_btn.innerText = "Disable Editing";
-        } else {
-            form_fields.forEach(field => {
-                field.setAttribute('disabled', true);
-            });
-            edit_btn.innerText = "Enable Editing";
-        }
-    });
-</script>
 {% endblock %}

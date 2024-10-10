@@ -91,31 +91,42 @@
         margin-bottom: 20px;
     }
 
-    form {
+    .buttons {
         padding: 0px;
-        margin-bottom: 40px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
 
-        button {
+        .buy-btn {
+            padding: 16px;
+            width: 60%;
+            cursor: pointer;
+            font-size: 16px;
+
+            &:hover {
+                opacity: 60%;
+            }
+        }
+        
+        #add-to-cart {
             background-color: white;
             color: darkgoldenrod;
             border: 2px solid darkgoldenrod;
-            padding: 16px;
-            width: 256px;
-            margin-right: 10px;
-            cursor: pointer;
-            font-size: 16px;
         }
-        
-        button:hover {
+
+        #buy-now {
             background-color: darkgoldenrod;
             color: white;
+            border: 2px solid darkgoldenrod;
+            margin-bottom: 12px;
         }
     }
     
     ul.features {
         list-style-type: none;
         padding: 0;
-        margin-bottom: 46px;
+        margin-bottom: 26px;
         border-top: 1px dashed rgba(0, 0, 0, 0.1);
         padding-top: 32px
     }
@@ -139,6 +150,9 @@
     
     .social-share {
         display: flex;
+        justify-content: flex-start;
+        width: 60%;
+        gap: 10px;
     }
     
     .social-share button {
@@ -146,7 +160,6 @@
         color: rgba(0, 0, 0, 0.8);
         border: 1px solid rgba(0, 0, 0, 0.2);
         padding: 8px 16px;
-        margin-right: 10px;
         cursor: pointer;
         font-size: 14px;
         text-transform: uppercase;
@@ -173,7 +186,7 @@
     .reviews {
         width: 90%;
         max-height: 256px;
-        margin-top: 60px;
+        margin-top: 20px;
         padding: 20px;
         padding-right: 46px;
         overflow-y: scroll;

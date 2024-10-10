@@ -135,8 +135,8 @@
                     }
                 }
 
-                .remove a {
-                    color: #C70000;
+                .remove {
+                    color: darkred;
                     text-decoration: none;
                     
                     &:hover {
