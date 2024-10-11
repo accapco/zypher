@@ -13,3 +13,19 @@ add_to_cart_btn.addEventListener("click", async (event) => {
     alert(data.message);
     window.location.replace(data.redirect);
 });
+
+function changeMainImage(newImageUrl, clickedThumbnail) {
+    // Change the main image source
+    var mainImage = document.getElementById('main-image');
+    mainImage.src = newImageUrl;
+
+    // Remove 'selected' class from all thumbnails
+    var thumbnails = document.querySelectorAll('.thumbnail-image img');
+    thumbnails.forEach(function(thumbnail) {
+        thumbnail.classList.remove('selected');
+    });
+
+    // Add 'selected' class to the clicked thumbnail
+    clickedThumbnail.classList.add('selected');
+}
+

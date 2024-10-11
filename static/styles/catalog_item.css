@@ -40,6 +40,8 @@
             border: 1px solid #ccc;
             border-radius: 6px;
             overflow: hidden;
+            cursor: pointer;
+
 
             img {
                 max-height: 100%;
@@ -48,6 +50,7 @@
                 cursor: pointer;
             }
         }
+        
     }
 
     .product-details {
