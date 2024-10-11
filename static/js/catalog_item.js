@@ -14,7 +14,9 @@ add_to_cart_btn.addEventListener("click", async (event) => {
     window.location.replace(data.redirect);
 });
 
-function changeMainImage(newImageUrl, clickedThumbnail) {
+function changeMainImage(clickedThumbnail) {
+    newImageUrl = clickedThumbnail.getAttribute("data-image-url");
+
     // Change the main image source
     var mainImage = document.getElementById('main-image');
     mainImage.src = newImageUrl;

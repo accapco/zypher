@@ -4,12 +4,17 @@
 
 .checkout-container {
     grid-row: 3 / 13;
-    grid-column: 4 / 11;
+    grid-column: 2 / 13;
     display: flex;
-    padding: 20px;
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow-y: hidden;
+}
+
+.checkout-form {
+    flex: 2;
+    transition: max-height 0.3s ease;
     overflow-y: scroll;
 
     &::-webkit-scrollbar {
@@ -24,13 +29,8 @@
     }
 }
 
-.checkout-form {
-    flex: 2;
-    transition: max-height 0.3s ease;
-}
-
 h2 {
-    font-size: 16px;
+    font-size: 19px;
     text-transform: uppercase;
     color: rgba(0, 0, 0, 0.8);
     letter-spacing: 0.1em;
@@ -44,7 +44,7 @@ input[type="checkbox"] {
 label {
     display: block;
     margin-bottom: 10px;
-    font-size: 14px;
+    font-size: 17px;
 }
 
 .payment-method {
@@ -75,12 +75,69 @@ button.pay-now:hover {
 
 .order-summary {
     flex: 1;
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
     border-left: 1px solid #ddd;
-    position: sticky; /* Make it sticky */
-    top: 20px; /* Offset from the top */
-    height: 80vh; /* Set a fixed height */
-    overflow: auto; /* Allow scrolling if needed */
+    gap: 12px;
+
+    h2 {
+        height: 10%;
+        margin: 0px;
+        padding: 0px;
+        padding-left: 20px;
+        padding-top: 40px;
+    }
+
+    .order-items {
+        height: 60%;
+        overflow-y: scroll;
+        padding: 0px 20px;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+        &::-webkit-scrollbar {
+            width: 6px;
+            background-color: #ffffff00;
+        }
+    
+        &::-webkit-scrollbar-thumb{
+            height: 120px;
+            border-radius: 6px;
+            background-color: #00000020;
+        }
+    }
+
+    .order-total {
+        height: 30%;
+        display: flex;
+        flex-direction: column;
+        padding-left: 20px;
+        padding-top: 20px;
+        gap: 6px;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+        p {
+            height: 12px;
+            font-size: 16px;
+            margin: 0px;
+            color: black;
+        }
+
+        .value {
+            margin-bottom: 30px;
+        }
+        
+        .label {
+            font-size: 14px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(0, 0, 0, 0.9);
+        }
+
+        #total-price {
+            font-weight: bold;
+        }
+    }
 }
 
 .order-item {
@@ -92,53 +149,29 @@ button.pay-now:hover {
 .item-details {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 2px;
 
     p {
-        height: 14px;
-        font-size: 13px;
+        font-size: 14px;
         margin: 0px;
         color: rgba(0, 0, 0, 0.8);
+
+        &.name {
+            font-weight: bold;
+        }
     }
 }
 
-.order-item img {
-    width: 80px;
-    height: 80px;
-    margin-right: 10px;
-}
+.order-item .image-container {
+    width: 100px;
+    height: 100px;
+    overflow: none;
+    margin-right: 20px;
 
-.order-total {
-    font-size: 16px;
-    color: #333;
-}
-
-.order-total {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-
-    p {
-        height: 20px;
-        font-size: 18px;
-        margin: 0px;
-    }
-
-    .value {
-        margin-bottom: 30px;
-    }
-    
-    .label {
-        font-weight: bold;
-        font-size: 13px;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: rgba(0, 0, 0, 0.7);
-    }
-
-    #total-price {
-        font-size: 20px;
-        font-weight: bold;
+    img {
+        object-fit: cover;
+        min-width: 100%;
+        max-height: 100%;
     }
 }
 
@@ -284,7 +317,7 @@ button.pay-now {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 19px;
     margin-bottom: 50px;
 }
 

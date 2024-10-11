@@ -68,7 +68,9 @@
                                 <ul>
                                     {% for item in cart_items[:3] %}
                                         <li>
-                                            <img src="{{ url_for('static', filename='uploads/' + item['image_url']) }}" alt="{{ item['product_name'] }}">
+                                            <div class="image-container">
+                                                <img src="{{ url_for('static', filename='uploads/' + item['image_url']) }}" alt="{{ item['product_name'] }}">
+                                            </div>
                                             <span class="product-name">{{ item['product_name'] }}</span>
                                             <span class="product-price">₱{{ item['price'] }}</span>
                                         </li>

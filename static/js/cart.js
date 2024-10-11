@@ -5,6 +5,8 @@ function changeQuantity(button, change) {
     if (quantity < 1) return;  // Prevent quantity from going below 1
 
     quantityElement.textContent = quantity;
+    const checkbox = button.parentElement.parentElement.querySelector("input[type=checkbox]");
+    checkbox.setAttribute("data-quantity", quantity);
 
     // Update the item price based on new quantity
     var row = button.closest('.table-row');
@@ -16,10 +18,11 @@ function changeQuantity(button, change) {
 }
 
 // Update total price based on selected items
+var selectedItems = [];
 function updateTotal() {
+    selectedItems = [];
     var checkboxes = document.querySelectorAll('.item-checkbox:checked');
     var total = 0;
-    var selectedItems = [];
     
     checkboxes.forEach(function(checkbox) {
         var row = checkbox.closest('.table-row');
@@ -28,6 +31,7 @@ function updateTotal() {
 
         selectedItems.push({
             product_id: checkbox.getAttribute('data-product-id'),
+            name: checkbox.getAttribute('data-name'),
             image_url: checkbox.getAttribute('data-image-url'),
             price: checkbox.getAttribute('data-price'),
             quantity: checkbox.getAttribute('data-quantity'),
@@ -35,9 +39,7 @@ function updateTotal() {
             color: checkbox.getAttribute('data-color')
         });
     });
-    
-    document.getElementById('total').textContent = '₱ ' + total.toFixed(2);
-    document.getElementById('selected-items').value = JSON.stringify(selectedItems);
+    document.getElementById('order-total').textContent = '₱ ' + total.toFixed(2);
 }
 
 // Select or deselect all items
@@ -63,3 +65,21 @@ remove_btns.forEach((button) => {
         window.location.replace(data.redirect);
     });
 })
+
+// checkout button
+const checkout_btn = document.querySelector("#checkout-btn");
+
+checkout_btn.addEventListener("click", async (event) => {
+    event.preventDefault();
+    checkout_url = "/prepare_checkout";
+    const form = new FormData();
+    form.append("selected_items", JSON.stringify(selectedItems));
+    fetch(checkout_url, {method: 'POST', body: form})
+        .then(response => response.json())
+        .then(data => {
+            window.location.replace(data.redirect);
+        })
+        .catch(error => {
+            alert(error);
+        })
+});

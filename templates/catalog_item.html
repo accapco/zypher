@@ -18,8 +18,9 @@
         <div class="thumbnail-container">
             {% for image in product.images %}
                 <div class="thumbnail-image">
-                    <img src="{{ url_for('static', filename='uploads/' + image['image_url']) }}" alt="Thumbnail" 
-                        onclick="changeMainImage('{{ url_for('static', filename='uploads/' + image['image_url']) }}', this)">
+                    <img src="{{ url_for('static', filename='uploads/' + image['image_url']) }}" alt="Thumbnail"
+                        data-image-url="{{ url_for('static', filename='uploads/' + image['image_url']) }}"
+                        onclick="changeMainImage(this)">
                 </div>
             {% endfor %}
         </div>

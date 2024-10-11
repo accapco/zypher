@@ -19,7 +19,7 @@ def add():
     if 'loggedin' in session:
         try:
             product_id = request.form.get('product_id')
-            price = request.form.get('price')  
+            price = request.form.get('price')
             
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute('SELECT cart_id FROM Cart WHERE user_id = %s', (session['user_id'],))
@@ -69,7 +69,8 @@ def get_cart_items(user_id):
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('''
         SELECT cart_items.cart_item_id, cart_items.cart_id, cart_items.price, 
-               cart_items.quantity, products.product_name, products.image_url
+               cart_items.quantity, products.product_name, products.image_url,
+               products.color, products.size
         FROM cart_items
         INNER JOIN cart ON cart_items.cart_id = cart.cart_id
         INNER JOIN products ON cart_items.product_id = products.product_id

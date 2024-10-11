@@ -188,8 +188,11 @@
         <div class="order-items">
             {% for item in selected_items %}
             <div class="order-item">
-                <img src="{{ url_for('static', filename='uploads/' + item['image_url']) }}" alt="Product Image">
+                <div class="image-container">
+                    <img src="{{ url_for('static', filename='uploads/' + item['image_url']) }}" alt="Product Image">
+                </div>
                 <div class="item-details">
+                    <p class="name">{{ item['name'] }}</p>
                     <p>Size: {{ item['size'] }}</p>
                     <p>Color: {{ item['color'] }}</p>
                     <p>Price: ₱{{ item['price'] }}</p>
@@ -200,12 +203,12 @@
         </div>
 
         <div class="order-total">
-            <p class="label">Subtotal:</p>
-            <p class="value">₱{{ total }}</p>
-            <p class="label">Shipping:</p>
+            <p class="label">Subtotal</p>
+            <p class="value">₱ {{ total }}</p>
+            <p class="label">Shipping</p>
             <p class="value">Enter shipping address</p>
-            <p class="label">Total:</p>
-            <p id="total-price" class="value">₱{{ total }}</p>
+            <p class="label">Total</p>
+            <p id="total-price" class="value">₱ {{ total }}</p>
         </div>
     </div>
 </div>

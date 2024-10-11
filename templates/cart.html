@@ -14,8 +14,10 @@
 
 {% block content %}
 <div class="cart-main">
+    <div id="title">
+        <span>Your Shopping Cart</span>
+    </div>
     <div class="table">
-        <div class="title">Shopping Cart</div>
         <div class="table-header">
             <input type="checkbox" onclick="selectAll(this)">
             <div class="item-col">Item</div>
@@ -27,7 +29,15 @@
             {% if cart_items %}
                 {% for item in cart_items %}
                 <div class="table-row" data-item-id="{{ item['cart_item_id'] }}">
-                    <input type="checkbox" class="item-checkbox" onclick="updateTotal()" data-product-id="{{item['product_id']}}" data-image-url="{{item['image_url']}}" data-price="{{item['price']}}" data-quantity="{{item['quantity']}}" data-size="{{item['size']}}" data-color="{{item['color']}}">
+                    <input type="checkbox" class="item-checkbox" onclick="updateTotal()" 
+                            data-product-id="{{item['product_id']}}"
+                            data-name="{{item['product_name'] }}"
+                            data-image-url="{{item['image_url']}}" 
+                            data-price="{{item['price']}}" 
+                            data-quantity="{{item['quantity']}}" 
+                            data-size="{{item['size']}}" 
+                            data-color="{{item['color']}}"
+                            >
                     <div class="item-col">
                         <div class="image-container">
                             <img src="{{ url_for('static', filename='uploads/' + item['image_url']) }}" alt="{{ item['product_name'] }}">
@@ -38,7 +48,7 @@
                             <div class="item-color">Color: {{ item['color'] }}</div>
                         </div>
                     </div>
-                    <div class="item-price" data-unit-price="{{ item['price'] }}">₱{{ item['price'] }}</div>
+                    <div class="item-price" data-unit-price="{{ item['price'] }}">₱ {{ item['price']*item['quantity'] }}</div>
                     <div class="item-quantity">
                         <button onclick="changeQuantity(this, -1)">
                             <span class="icon"><img src="{{ url_for('static', filename='icons/minus.svg') }}"></span>
@@ -59,16 +69,11 @@
             </div>
             {% endif %}
         </div>
-    </div>
-    <div class="checkout">
-        <div class="title">Checkout Summary</div>
-        <div class="summary">
-            <div id="label">Order Total:</div>
-            <div id="total">₱ 0</div>
-            <form id="checkout-form" action="{{ url_for('checkout.checkout') }}" method="POST">
-                <input type="hidden" name="selected_items" id="selected-items" value="">
-                <button type="submit">Checkout</button>
-            </form>
+        <div class="checkout-summary">
+            <div id="checkout-label"><span>Checkout Summary</span></div>
+            <div id="order-total-label"><span>Order Total:</span></div>
+            <div id="order-total"><span>₱ 0</span></div>
+            <div id="checkout-btn"><span>Checkout Items</span></div>
         </div>
     </div>
 </div>
