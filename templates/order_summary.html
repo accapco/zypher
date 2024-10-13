@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}
+<title>Order Summary</title>
+{% endblock %}
+
+<h1>Order Summary</h1>
+    <table>
+        <tr>
+            <th>Order Number</th>
+            <th>Contact Information</th>
+            <th>Shipping Address</th>
+            <th>Payment Method</th>
+            <th>Billing Address</th>
+            <th>Product ID</th>
+            <th>Quantity</th>
+            <th>Price</th>
+        </tr>
+        {% for item in order_summary %}
+        <tr>
+            <td>{{ item.order_number }}</td>
+            <td>{{ item.contact_info }}</td>
+            <td>{{ item.shipping_address }}</td>
+            <td>{{ item.payment_method }}</td>
+            <td>{{ item.billing_address }}</td>
+            <td>{{ item.product_id }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.price }}</td>
+        </tr>
+        {% endfor %}
+    </table>

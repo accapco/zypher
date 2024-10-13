@@ -68,12 +68,15 @@ CREATE TABLE Orders (
 );
 
 --Purpose: This table details the individual items in an order.
-CREATE TABLE Order_Items (
-    order_item_id INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE Order_Summary (
+    summary_id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT,
+    order_number VARCHAR(50),  -- Added order number
     product_id INT,
     quantity INT NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
+    paymentmethod VARCHAR(50),
+    total_price DECIMAL(10, 2) AS (quantity * price) STORED,  -- Total price for the item
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (order_id) REFERENCES Orders(order_id),
     FOREIGN KEY (product_id) REFERENCES Products(product_id)

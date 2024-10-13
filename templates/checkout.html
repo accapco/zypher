@@ -14,7 +14,7 @@
 
 {% block content %}
 <div class="checkout-container">
-    <form class="checkout-form">
+    <form class="checkout-form" method="POST" action="{{ url_for('checkout') }}">
         <h2>Contact</h2>
         <div class="form-row">
             <div class="form-group">
@@ -85,7 +85,7 @@
         <div class="payment-methods">
             <div class="payment-option" id="bank-option">
                 <label>
-                    <input type="radio" name="payment" value="bank" onclick="togglePaymentDetails('bank-details')">
+                    <input type="radio" name="payment" value="Bank" onclick="togglePaymentDetails('bank-details')">
                     Bank Deposit
                 </label>
                 <div id="bank-details" class="payment-details">
@@ -100,7 +100,7 @@
 
             <div class="payment-option" id="cod-option">
                 <label>
-                    <input type="radio" name="payment" value="cod" onclick="togglePaymentDetails('cod-details')">
+                    <input type="radio" name="payment" value="Cod" onclick="togglePaymentDetails('cod-details')">
                     Cash on Delivery
                 </label>
                 <div id="cod-details" class="payment-details">
@@ -188,11 +188,12 @@
         <div class="order-items">
             {% for item in selected_items %}
             <div class="order-item">
+                <input type="hidden" name="product_id" value="{{ item['product_id'] }}">
                 <div class="image-container">
                     <img src="{{ url_for('static', filename='uploads/' + item['image_url']) }}" alt="Product Image">
                 </div>
                 <div class="item-details">
-                    <p class="name">{{ item['name'] }}</p>
+                    <p class="name">{{ item['product_name'] }}</p>
                     <p>Size: {{ item['size'] }}</p>
                     <p>Color: {{ item['color'] }}</p>
                     <p>Price: ₱{{ item['price'] }}</p>

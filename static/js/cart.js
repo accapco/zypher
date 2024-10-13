@@ -71,6 +71,7 @@ const checkout_btn = document.querySelector("#checkout-btn");
 
 checkout_btn.addEventListener("click", async (event) => {
     event.preventDefault();
+    updateTotal();
     checkout_url = "/prepare_checkout";
     const form = new FormData();
     form.append("selected_items", JSON.stringify(selectedItems));
