@@ -53,11 +53,11 @@ def details():
 def orders():
     # dito pull ng data paedit nalang
     orders = [
-        {'product_name': "Supreme T-Shirt", 'image_url': "supreme-tshirt.png", 'size': "M", 'color': "White", 'quantity': 1, 'status': "shipped", 'price': 2500},
-        {'product_name': "Supreme T-Shirt", 'image_url': "supreme-tshirt.png", 'size': "M", 'color': "White", 'quantity': 1, 'status': "received", 'price': 2500},
-        {'product_name': "Supreme T-Shirt", 'image_url': "supreme-tshirt.png", 'size': "M", 'color': "White", 'quantity': 1, 'status': "to ship", 'price': 2500},
-        {'product_name': "Supreme T-Shirt", 'image_url': "supreme-tshirt.png", 'size': "M", 'color': "White", 'quantity': 1, 'status': "reviewed", 'price': 2500},
-        {'product_name': "Supreme T-Shirt", 'image_url': "supreme-tshirt.png", 'size': "M", 'color': "White", 'quantity': 1, 'status': "reviewed", 'price': 2500}
+        {'product_name': "Supreme T-Shirt", 'image_url': "supreme-tshirt.png", 'size': "M", 'color': "White", 'quantity': 1, 'status': "shipped", 'price': 2500, 'paymentmethod': "COD"},
+        {'product_name': "Supreme T-Shirt", 'image_url': "supreme-tshirt.png", 'size': "M", 'color': "White", 'quantity': 1, 'status': "received", 'price': 2500, 'paymentmethod': "Bank Transfer"},
+        {'product_name': "Supreme T-Shirt", 'image_url': "supreme-tshirt.png", 'size': "M", 'color': "White", 'quantity': 1, 'status': "to ship", 'price': 2500, 'paymentmethod': "GCash"},
+        {'product_name': "Supreme T-Shirt", 'image_url': "supreme-tshirt.png", 'size': "M", 'color': "White", 'quantity': 1, 'status': "reviewed", 'price': 2500, 'paymentmethod': "GCash"},
+        {'product_name': "Supreme T-Shirt", 'image_url': "supreme-tshirt.png", 'size': "M", 'color': "White", 'quantity': 1, 'status': "reviewed", 'price': 2500, 'paymentmethod': "Bank Transfer"}
     ]
     html = render_template('account/orders.html', orders=orders)
     return jsonify({'html': html})
