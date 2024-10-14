@@ -90,8 +90,11 @@
                     <div class="dropdown">
                         <button class="dropdown-btn">Settings</button>
                         <div class="dropdown-content">
-                            <button onclick="document.location='/account'">
+                            <button onclick="document.location='/account?page=details'">
                                 <img class="icon" src="{{ url_for('static',filename='icons/person.svg') }}">Account
+                            </button>
+                            <button onclick="document.location='/account?page=orders'">
+                                <img class="icon" src="{{ url_for('static',filename='icons/shopping-bag.svg') }}">Orders
                             </button>
                             <button onclick="document.location='/admin'">
                                 <img class="icon" src="{{ url_for('static',filename='icons/cog.svg') }}">Admin

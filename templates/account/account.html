@@ -14,73 +14,16 @@
 
 {% block content %}
 <div class="account-side">
-    <div class="label">
-        Account Information
+    <div id="details" class="page-link">
+        Account Details
     </div>
-    <div class="sublabel">
-        {{ session['username'] }}
+    <div id="orders" class="page-link">
+        Orders
+    </div>
+    <div id="password-change" class="page-link">
+        Change Password
     </div>
 </div>
 <div class="account-main">
-    <form action="{{ url_for('account.account') }}" method="post">
-        {% if msg %}
-            <div class="alert alert-warning">{{ msg }}</div>
-        {% endif %}
-        <hr>
-        <div class="form-row">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" disabled>
-            </div>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" disabled>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label for="first_name">First Name</label>
-                <input type="text" class="form-control" id="first_name" name="first_name" value="{{ user.first_name }}" disabled>
-            </div>
-            <div class="form-group">
-                <label for="last_name">Last Name</label>
-                <input type="text" class="form-control" id="last_name" name="last_name" value="{{ user.last_name }}" disabled>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label for="phone">Phone</label>
-                <input type="text" class="form-control" id="phone" name="phone" value="{{ user.phone }}" disabled>
-            </div>
-            <div class="form-group">
-                <label for="address">Address</label>
-                <input type="text" class="form-control" id="address" name="address" value="{{ user.address }}" disabled>
-            </div>
-            <div class="form-group">
-                <label for="City">City</label>
-                <input type="text" class="form-control" id="city" name="city" value="{{ user.city }}" disabled>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label for="State">State</label>
-                <input type="text" class="form-control" id="state" name="state" value="{{ user.state }}" disabled>
-            </div>
-            <div class="form-group">
-                <label for="Zip Code">Zip Code</label>
-                <input type="text" class="form-control" id="zipcode" name="zipcode" value="{{ user.zipcode }}" disabled>
-            </div>
-            <div class="form-group">
-                <label for="Country">Country</label>
-                <input type="text" class="form-control" id="country" name="country" value="{{ user.country }}" disabled>
-            </div>
-        </div>
-        <input type="hidden" id="userid" name="userid" value="{{ user.user_id }}">
-        <hr>
-        <div class="form-row">
-            <button type="submit" id="save-btn" class="form-btn width-50">Save</button>
-            <button type="button" id="edit-btn" class="form-btn width-50">Enable Editing</button>
-        </div>
-    </form>
 </div>
 {% endblock %}

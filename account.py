@@ -11,12 +11,14 @@ def verify_loggedin():
     if request.path not in ('/account/login', '/account/register') and 'loggedin' not in session:
         return redirect(url_for('home'))
     
-@account_bp.route('/', methods=['GET', 'POST'])
+@account_bp.route('/', methods=['GET'])
 def account():
-    message = ''    
-    user_id = request.args.get('user_id')
-    if not user_id:
-        user_id = session['user_id']
+    return render_template("account/account.html")
+
+@account_bp.route('/details', methods=['GET', 'POST'])
+def details():
+    msg = ''    
+    user_id = session['user_id']
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM tbl_users WHERE user_id = %s', (user_id,))
     user = cursor.fetchone()
@@ -34,18 +36,31 @@ def account():
         country = request.form['country']
         userId = request.form['userid'] 
         if not re.match(r'[A-Za-z0-9]+', userName):
-            message = 'Username must contain only characters and numbers!'
+            msg = 'Username must contain only characters and numbers.'
         else:
             cursor.execute(
                 'UPDATE tbl_users SET username=%s, email=%s, first_name=%s, last_name=%s, phone=%s, address=%s, city=%s, state=%s, zipcode=%s, country=%s WHERE user_id=%s', 
                 (userName, email, first_name, last_name, phone, address, city, state, zipcode, country, userId)
             )
             mysql.connection.commit()
-            message = 'User updated!'
-            return redirect(url_for('.account'))
+            msg = 'Account details have been saved.'
     elif request.method == 'POST':
-        message = 'Required fields are empty'
-    return render_template("account/account.html", user=user, message=message)  
+        msg = 'Required fields are empty'
+    account_details_html = render_template("account/details.html", user=user)  
+    return jsonify({'html': account_details_html, 'message': msg})
+
+@account_bp.route('/orders', methods=['GET', 'POST'])
+def orders():
+    # dito pull ng data paedit nalang
+    orders = [
+        {'product_name': "Supreme T-Shirt", 'image_url': "supreme-tshirt.png", 'size': "M", 'color': "White", 'quantity': 1, 'status': "shipped", 'price': 2500},
+        {'product_name': "Supreme T-Shirt", 'image_url': "supreme-tshirt.png", 'size': "M", 'color': "White", 'quantity': 1, 'status': "received", 'price': 2500},
+        {'product_name': "Supreme T-Shirt", 'image_url': "supreme-tshirt.png", 'size': "M", 'color': "White", 'quantity': 1, 'status': "to ship", 'price': 2500},
+        {'product_name': "Supreme T-Shirt", 'image_url': "supreme-tshirt.png", 'size': "M", 'color': "White", 'quantity': 1, 'status': "reviewed", 'price': 2500},
+        {'product_name': "Supreme T-Shirt", 'image_url': "supreme-tshirt.png", 'size': "M", 'color': "White", 'quantity': 1, 'status': "reviewed", 'price': 2500}
+    ]
+    html = render_template('account/orders.html', orders=orders)
+    return jsonify({'html': html})
 
 @account_bp.route('/login', methods=['GET', 'POST'])
 def login():
