@@ -41,8 +41,9 @@ body {
         grid-auto-columns: subgrid;
         margin: 0;
         padding: 0;
-        border-bottom: 3px solid darkgoldenrod;
-
+        z-index: 3;
+        box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+        
         .banner {
             grid-row: 1 / 1;
             grid-column: 1 / 14;
@@ -146,16 +147,13 @@ body {
             border-bottom: 6px solid rgba(255, 255, 255, 0);
 
             &.active {
-                font-size: 15px;
-                color: darkgoldenrod;
-                border-bottom: 6px solid darkgoldenrod;
+                border-bottom: 2px solid darkgoldenrod;
             }
 
             &:hover {
-                font-size: 15px;
                 color: darkgoldenrod;
-                border-bottom: 6px solid darkgoldenrod;
                 cursor: pointer;
+                transition: 0.3s;
             }
         }
 
@@ -163,7 +161,6 @@ body {
             position: relative;
             display: flex;
             height: 100%;
-            padding: 0px;
             margin: 0px;
 
             .dropdown-btn {
@@ -174,19 +171,18 @@ body {
                 display: none;
                 position: absolute;
                 background-color: white;
-                min-width: 110px;
+                min-width: 200px;
                 box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-                z-index: 1;
+                z-index: 2;
                 top: 100%;
-                border-top: 3px solid darkgoldenrod;
-
                 button {
                     background-color: white;
                     color: black;
                     border: none;
-                    padding: 12px 16px;
+                    padding: 24px 18px;
+                    padding-right: 34px;
                     text-align: left;
-                    width: 110px;
+                    width: 100%;
                     cursor: pointer;
                     font-size: 12px;
                     display: flex;
@@ -197,7 +193,7 @@ body {
                         width: 16px;
                         margin: 0px;
                         padding: 0px;
-                        margin-right: 8px;
+                        margin-right: 18px;
                     }
 
                     &:hover {
@@ -238,9 +234,8 @@ body {
             background-color: white;
             min-width: 250px;
             box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-            z-index: 1;
+            z-index: 2;
             top: 100%;
-            border-top: 3px solid darkgoldenrod;
             padding: 16px;
             left: 0;
         }
@@ -253,6 +248,7 @@ body {
 
         hr {
             opacity: 30%;
+            margin: 20px 0px;
         }
         
         #cart-preview .centered-msg {
@@ -261,6 +257,7 @@ body {
             letter-spacing: 0.04em;
             font-size: 14px;
             color: rgba(0, 0, 0, 0.7);
+            font-style: italic;
         }
 
         #cart-preview li {
@@ -285,7 +282,7 @@ body {
         #cart-preview .product-name {
             flex-grow: 1;
             padding-right: 20px;
-            font-size: 12px;
+            font-size: 14px;
             max-width: 120px;
             overflow: hidden;
             text-wrap: nowrap;
@@ -306,13 +303,14 @@ body {
             margin-top: 10px;
             padding: 8px;
             background-color: darkgoldenrod;
+            border: 1px solid darkgoldenrod;
             color: white;
             text-decoration: none;
-            border-radius: 5px;
         }
         
         #cart-preview a:hover {
-            background-color: goldenrod;
+            color: darkgoldenrod;
+            background-color: white;
         }
 
         .cart-count {

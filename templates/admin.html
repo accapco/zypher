@@ -5,9 +5,6 @@
 {% endblock %}
 
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('static',filename='styles/index.css') }}">
-<link rel="stylesheet" href="{{ url_for('static',filename='styles/modals.css') }}">
-<link rel="stylesheet" href="{{ url_for('static',filename='styles/forms.css') }}"> 
 <link rel="stylesheet" href="{{ url_for('static',filename='styles/admin.css') }}"> 
 {% endblock %}
 
@@ -16,11 +13,13 @@
 {% endblock %}
 
 {% block content %}
-
 <div class="admin-side">
     <div class="btn-group">
+        <button class="parent-btn" data-route="/orders/">Orders</button>
+    </div>
+    <div class="btn-group">
         <button class="parent-btn">Categories</button>
-        <button class="child-btn collapsed" data-route="/categories">Active Categories</button>
+        <button class="child-btn collapsed" data-route="/categories/">Active Categories</button>
         <button class="child-btn collapsed" data-route="/categories/archived">Archived Categories</button>
     </div>
     <div class="btn-group">
@@ -28,8 +27,8 @@
         <button class="child-btn collapsed" data-route="/products">Active Products</button>
         <button class="child-btn collapsed" data-route="/products/archived">Archived Products</button>
     </div>
-    <div class="btn-group" data-route="/users">
-        <button class="parent-btn" data-route="/users">Users</button>
+    <div class="btn-group">
+        <button class="parent-btn" data-route="/users/">Users</button>
     </div>
 </div>
 <div class="admin-main">

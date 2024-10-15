@@ -219,7 +219,7 @@ def restore(product_id):
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM products WHERE product_id = %s', (product_id,))
     product = cursor.fetchone()
-    if product:
+    if request.method == 'POST':
         try:
             cursor.execute('''
                 UPDATE products

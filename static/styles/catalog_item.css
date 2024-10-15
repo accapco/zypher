@@ -115,13 +115,13 @@
         #add-to-cart {
             background-color: white;
             color: darkgoldenrod;
-            border: 2px solid darkgoldenrod;
+            border: 1px solid darkgoldenrod;
         }
 
         #buy-now {
             background-color: darkgoldenrod;
             color: white;
-            border: 2px solid darkgoldenrod;
+            border: 1px solid darkgoldenrod;
             margin-bottom: 12px;
         }
     }

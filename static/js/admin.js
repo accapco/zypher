@@ -82,10 +82,10 @@ function attachExpandIcons(html) {
                 if (children_div) {
                     if (children_div.style.display === 'none') {
                         children_div.style.display = 'block';
-                        icon.querySelector('img').src = "{{ url_for('static', filename='icons/minus.svg') }}";
+                        icon.querySelector('img').src = "static/icons/minus.svg";
                     } else {
                         children_div.style.display = 'none';
-                        icon.querySelector('img').src = "{{ url_for('static', filename='icons/plus.svg') }}";
+                        icon.querySelector('img').src = "static/icons/plus.svg";
                     }
                 }
             });
@@ -93,13 +93,19 @@ function attachExpandIcons(html) {
     };
 }
 
+const main_div = document.querySelector(".admin-main");
+
 async function setMainDivContent(route) {
-    const main_div = document.querySelector(".admin-main");
     html = await fetchInnerHTML(route);
     if (html) {
         main_div.innerHTML = html;
         getActionButtons(main_div);
-        attachExpandIcons(main_div);
+        if (route === "/categories/") {
+            attachExpandIcons(main_div);
+        }
+        if (route === "/orders/") {
+            attachFilters(main_div);
+        }
     } else {
         window.location.reload()
     }
@@ -130,5 +136,57 @@ page_buttons.forEach((btn) => {
     });
 });
 
+// order filters
+var active_order_status = "all";
+var active_payment_method = "all";
+
+function attachFilters(html) {
+    const status_filters = html.querySelectorAll("#status-buttons button");
+    const payment_method_filters = html.querySelectorAll("#payment-method-buttons button");
+
+    status_filters.forEach((filter) => {
+        filter.addEventListener("click", (event) => {
+            event.preventDefault();
+            active_order_status = filter.getAttribute("data-status");
+            filterOrdersTable();
+            setActiveOrderButton(filter, status_filters)
+        });
+    });
+
+    payment_method_filters.forEach((filter) => {
+        filter.addEventListener("click", (event) => {
+            event.preventDefault();
+            active_payment_method = filter.getAttribute("data-method");
+            filterOrdersTable();
+            setActiveOrderButton(filter, payment_method_filters)
+        });
+    });
+}
+
+function filterOrdersTable() {
+    const orders_table = main_div.querySelectorAll(".orders-list .order");
+
+    orders_table.forEach((row) => {
+        const order_status = row.querySelector(".status h3");
+        const payment_method = row.querySelector(".payment-method p");
+        if ((active_order_status === "all" || order_status.innerText.toLowerCase().includes(active_order_status.toLowerCase())) &&
+            (active_payment_method === "all" || payment_method.innerText.toLowerCase().includes(active_payment_method.toLowerCase())
+        )) {
+            row.style.display = "grid";
+        } else  {
+            row.style.display = "none";
+        }
+    });
+}
+
+function setActiveOrderButton(set_active_filter, filters) {
+    filters.forEach((filter) => {
+        if (filter === set_active_filter) {
+            filter.classList.add("active");
+        } else {
+            filter.classList.remove("active");
+        }
+    });
+}
+
 page_buttons[0].click();
-page_buttons[1].click();

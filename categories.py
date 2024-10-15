@@ -111,7 +111,7 @@ def restore(category_id):
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM categories WHERE category_id = %s', (category_id,))
     category = cursor.fetchone()
-    if category:
+    if request.method == 'POST':
         try:
             cursor.execute('''
                 UPDATE categories

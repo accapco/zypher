@@ -7,9 +7,25 @@ const password_change_link = document.getElementById("password-change");
 const account_menu_btns = document.querySelectorAll(".page-link");
 var active_btn = null;
 
+
+document.addEventListener("DOMContentLoaded", (event) => {
+    if (window.location.pathname.includes("/details")) {
+        attachEditButton(main_div);
+        handleAccountSubmit(main_div);
+        account_details_link.classList.add("active");
+        active_btn = account_details_link;
+    } else if (window.location.pathname.includes("/orders")) {
+        attachOrderTabs(main_div);
+        orders_link.classList.add("active");
+        active_btn = orders_link;
+    }
+});
+
+// events for pressing menu buttons
+
 function processAjaxData(data, page, url_path){
     main_div.innerHTML = data.html;
-    window.history.pushState({"html": data.html}, page, url_path);
+    window.history.pushState({"html": data.html}, page, "/account"+url_path);
 }
 
 window.addEventListener("popstate", (event) => {
@@ -29,22 +45,10 @@ account_menu_btns.forEach((btn) => {
     });
 })
 
-document.addEventListener("DOMContentLoaded", () => {
-    if (window.location.search.includes('?page=details')) {
-        account_details_link.click();
-    } else if (window.location.search.includes('?page=orders')) {
-        orders_link.click();
-    } else if (window.location.search.includes('?page=password-change')) {
-        password_change_link = document.getElementById("password-change");
-    } else {
-        account_details_link.click();
-    }
-});
-
 // account details
 account_details_link.addEventListener("click", async (event) => {
     event.preventDefault();
-    const url = "/account/details";
+    const url = "/account/api/details";
     const response = await fetch (url, {method: 'GET'});
     const data = await response.json();
     processAjaxData(data, "Account Details", "/details");
@@ -90,7 +94,7 @@ function handleAccountSubmit(html) {
 // orders
 orders_link.addEventListener("click", async (event) => {
     event.preventDefault();
-    const url = "/account/orders";
+    const url = "/account/api/orders";
     const response = await fetch (url, {method: 'GET'});
     const data = await response.json();
     processAjaxData(data, "Orders", "/orders")
@@ -116,8 +120,6 @@ function filterOrdersTable(status, html) {
 
     rows.forEach((row) => {
         const order_status = row.querySelector(".status h3");
-        console.log(status);
-        console.log(order_status.innerText);
         if (status === "all" || status === order_status.innerText.toLowerCase()) {
             row.style.display = "grid";
         } else  {

@@ -1,10 +1,8 @@
 <div class="users-main">
-	<div class="users-header">
-		<div class="title">
-			Users List
-		</div>
+	<div class="title">
+		<h1>Users</h1>
 	</div>
-	<div class="user-list">
+	<div class="container user-list">
 		{% for user in users %}
 		<div class="user-card">
 			<div class="username">@{{ user.username }}</div>
@@ -14,6 +12,8 @@
 				<button data-route="/users/{{user.user_id}}/edit" class="action edit">Edit</button>
 				{% if user.user_id != session.user_id %}
 				<button data-route="/users/{{user.user_id}}/delete" class="action delete">Delete</button>
+				{% else %}
+				<span class="whitespace"></span>
 				{% endif %}
 			</div>
 		</div>

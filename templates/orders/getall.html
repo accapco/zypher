@@ -1,15 +1,8 @@
-{% extends "account/account.html" %}
-
-{% block account_main %}
-<div class="orders">
-    <div class="nav">
-        <button class="tab active" data-status="all">All</button>
-        <button class="tab" data-status="to ship">To Ship</button>
-        <button class="tab" data-status="shipped">Shipped</button>
-        <button class="tab" data-status="received">Received</button>
-        <button class="tab" data-status="reviewed">Reviewed</button>
+<div class="orders-main">
+    <div class="title">
+        <h1>Orders</h1>
     </div>
-    <div class="orders-table">
+    <div class="container orders-list">
         {% for order in orders %}
         <div class="order">
             <div class="image-container">
@@ -30,6 +23,9 @@
             <div class="payment-method">
                 <p>Payment: {{ order.paymentmethod }}</p>
             </div>
+            <div class="order-id">
+                <h4>Order ID: {{ order.order_id }}</h4>
+            </div>
             <div class="status">
                 <h3>{{ order.status }}</h3>
             </div>
@@ -39,5 +35,21 @@
         </div>
         {% endfor %}
     </div>
+    <div class="function-buttons">
+        <div id="status-buttons" class="btn-group">
+            <button data-status="all" class="active">All</button>
+            <button data-status="to ship">To Ship</button>
+            <button data-status="shipped">Shipped</button>
+            <button data-status="received">Received</button>
+            <button data-status="reviewed">Reviewed</button>
+        </div>
+        <div id="payment-method-buttons" class="btn-group">
+            <button data-method="all" class="active">All</button>
+            <button data-method="cod">COD</button>
+            <button data-method="bank">Bank</button>
+            <button data-method="gcash">GCash</button>
+        </div>
+    </div>
+	<div id="modal" class="modal">
+    </div>
 </div>
-{% endblock %}

@@ -1,31 +1,29 @@
 <div class="products-main">
-	<div class="tables">
-		<div class="table-section">
-			<div class="title">
-				Products List 
-				<span data-route="/products/add" class="action add">Add a product</span>
+	<div class="title">
+		<h1>Products</h1>
+		<h2>></h2>
+		<h2>Active Products</h2>
+		<span data-route="/products/add" class="action add">Add a product</span>
+	</div>
+	<div class="container products-list">
+		{% for product in products %}
+		<div class="product-card">
+			<div class="thumbnail">
+				<img src="{{ url_for('static', filename='uploads/' + product.image_url) }}" alt="{{ product.product_name }}">		
 			</div>
-			<div class="products-list">
-				{% for product in products %}
-				<div class="product-card">
-					<div class="thumbnail">
-						<img src="{{ url_for('static', filename='uploads/' + product.image_url) }}" alt="{{ product.product_name }}">		
-					</div>
-					<div class="name">
-						{{ product.product_name }}
-						<span data-route="/products/{{product.product_id}}/edit" class="action edit">Edit</span>
-						<span data-route="/products/{{product.product_id}}/archive" class="action delete">Archive</span>
-					</div>
-					<div class="category">{{ product.category_name }}</div>
-					<div class="description"><span class="label">Description:</span> {{ product.description }}</div>
-					<div class="stock"><span class="label">Stock:</span> {{ product.stock_quantity }}</div>
-					<div class="price"><span class="label">Price:</span> ₱{{ product.price }}</div>
-					<div class="size"><span class="label">Size:</span> {{ product.size }}</div>
-					<div class="color"><span class="label">Color:</span> {{ product.color }}</div>
-				</div>
-				{% endfor %}
+			<div class="name">
+				{{ product.product_name }}
+				<span data-route="/products/{{product.product_id}}/edit" class="action edit">Edit</span>
+				<span data-route="/products/{{product.product_id}}/archive" class="action delete">Archive</span>
 			</div>
+			<div class="category">{{ product.category_name }}</div>
+			<div class="description"><span class="label">Description:</span> {{ product.description }}</div>
+			<div class="stock"><span class="label">Stock:</span> {{ product.stock_quantity }}</div>
+			<div class="price"><span class="label">Price:</span> ₱{{ product.price }}</div>
+			<div class="size"><span class="label">Size:</span> {{ product.size }}</div>
+			<div class="color"><span class="label">Color:</span> {{ product.color }}</div>
 		</div>
+		{% endfor %}
 	</div>
 	<div id="modal" class="modal">
     </div>

@@ -76,7 +76,12 @@
                                         </li>
                                     {% endfor %}
                                 </ul>
-                                <hr />
+                                {% if cart_count > 3 %}
+                                    <p class="centered-msg">
+                                        and {{ cart_count-3 }} more items
+                                    </p>
+                                {% endif %}
+                                <hr/>
                                 <a href="{{ url_for('cart.get') }}">View Cart</a>
                                 {% else %}
                                 <p class="centered-msg">Your cart is empty.</p>
@@ -90,10 +95,10 @@
                     <div class="dropdown">
                         <button class="dropdown-btn">Settings</button>
                         <div class="dropdown-content">
-                            <button onclick="document.location='/account?page=details'">
+                            <button onclick="document.location='/account/details'">
                                 <img class="icon" src="{{ url_for('static',filename='icons/person.svg') }}">Account
                             </button>
-                            <button onclick="document.location='/account?page=orders'">
+                            <button onclick="document.location='/account/orders'">
                                 <img class="icon" src="{{ url_for('static',filename='icons/shopping-bag.svg') }}">Orders
                             </button>
                             <button onclick="document.location='/admin'">

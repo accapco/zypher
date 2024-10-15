@@ -15,15 +15,40 @@ def verify_loggedin():
 def account():
     return render_template("account/account.html")
 
-@account_bp.route('/details', methods=['GET', 'POST'])
+@account_bp.route('/details', methods=['GET'])
 def details():
-    msg = ''    
+    user = _get_user()
+    return render_template("account/details.html", user=user)
+
+@account_bp.route('/orders', methods=['GET'])
+def orders():
+    orders = _get_orders()
+    return render_template("account/orders.html", orders=orders)
+
+def _get_user():
     user_id = session['user_id']
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM tbl_users WHERE user_id = %s', (user_id,))
     user = cursor.fetchone()
+    return user
+
+def _update_user(userName, email, first_name, last_name, phone, address, city, state, zipcode, country, userId):
+    try:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute(
+            'UPDATE tbl_users SET username=%s, email=%s, first_name=%s, last_name=%s, phone=%s, address=%s, city=%s, state=%s, zipcode=%s, country=%s WHERE user_id=%s', 
+            (userName, email, first_name, last_name, phone, address, city, state, zipcode, country, userId)
+        )
+        mysql.connection.commit()
+        return "Account details have been saved."
+    except Exception as e:
+        return "Error updating user: {}".format(e)
+
+@account_bp.route('/api/details', methods=['GET', 'POST'])
+def api_details():
+    msg = ''    
+    user = _get_user()    
     if request.method == 'POST' and 'username' in request.form and 'email' in request.form:
-        # Get form data
         userName = request.form['username']   
         email = request.form['email']
         first_name = request.form['first_name']
@@ -38,20 +63,14 @@ def details():
         if not re.match(r'[A-Za-z0-9]+', userName):
             msg = 'Username must contain only characters and numbers.'
         else:
-            cursor.execute(
-                'UPDATE tbl_users SET username=%s, email=%s, first_name=%s, last_name=%s, phone=%s, address=%s, city=%s, state=%s, zipcode=%s, country=%s WHERE user_id=%s', 
-                (userName, email, first_name, last_name, phone, address, city, state, zipcode, country, userId)
-            )
-            mysql.connection.commit()
-            msg = 'Account details have been saved.'
+            msg = _update_user(userName, email, first_name, last_name, phone, address, city, state, zipcode, country, userId)
     elif request.method == 'POST':
         msg = 'Required fields are empty'
-    account_details_html = render_template("account/details.html", user=user)  
+    account_details_html = render_template("account/inner_details.html", user=user)  
     return jsonify({'html': account_details_html, 'message': msg})
 
-@account_bp.route('/orders', methods=['GET', 'POST'])
-def orders():
-    # dito pull ng data paedit nalang
+# dito pull ng data paedit nalang
+def _get_orders():
     orders = [
         {'product_name': "Supreme T-Shirt", 'image_url': "supreme-tshirt.png", 'size': "M", 'color': "White", 'quantity': 1, 'status': "shipped", 'price': 2500, 'paymentmethod': "COD"},
         {'product_name': "Supreme T-Shirt", 'image_url': "supreme-tshirt.png", 'size': "M", 'color': "White", 'quantity': 1, 'status': "received", 'price': 2500, 'paymentmethod': "Bank Transfer"},
@@ -59,7 +78,12 @@ def orders():
         {'product_name': "Supreme T-Shirt", 'image_url': "supreme-tshirt.png", 'size': "M", 'color': "White", 'quantity': 1, 'status': "reviewed", 'price': 2500, 'paymentmethod': "GCash"},
         {'product_name': "Supreme T-Shirt", 'image_url': "supreme-tshirt.png", 'size': "M", 'color': "White", 'quantity': 1, 'status': "reviewed", 'price': 2500, 'paymentmethod': "Bank Transfer"}
     ]
-    html = render_template('account/orders.html', orders=orders)
+    return orders
+
+@account_bp.route('/api/orders', methods=['GET', 'POST'])
+def api_orders():
+    orders = _get_orders()
+    html = render_template('account/inner_orders.html', orders=orders)
     return jsonify({'html': html})
 
 @account_bp.route('/login', methods=['GET', 'POST'])
