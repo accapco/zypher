@@ -48,39 +48,43 @@ def getall_archived():
 
 @categories_bp.route('/<int:category_id>/add', methods=['GET', 'POST'])
 def add(category_id):
-    msg = ""
     if request.method == 'POST':
-        category_name = request.form['category_name']
-        parentid = category_id
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        if parentid == 0:
-            parentid = None
-        else:
-            cursor.execute('SELECT category_id FROM categories WHERE category_id = %s', (parentid,))
-        cursor.execute('INSERT INTO categories (category_name, parent_id) VALUES (%s, %s)', (category_name, parentid))
-        mysql.connection.commit()
-        msg = 'You have successfully created a category!'
+        try:
+            category_name = request.form['category_name']
+            parentid = category_id
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            if parentid == 0:
+                parentid = None
+            else:
+                cursor.execute('SELECT category_id FROM categories WHERE category_id = %s', (parentid,))
+            cursor.execute('INSERT INTO categories (category_name, parent_id) VALUES (%s, %s)', (category_name, parentid))
+            mysql.connection.commit()
+            return jsonify({'message': "Created category.", 'status': "success", 'redirect': url_for('.getall')}), 201
+        except Exception as e:
+            return jsonify({'message': "Error creating category. {}".format(e), 'status': "error", 'redirect': url_for('.getall')}), 500
     add_category_html = render_template('categories/add.html', category_id=category_id)
-    return jsonify({'html': add_category_html, 'message': msg, 'redirect': url_for('.getall')})
+    return jsonify({'html': add_category_html}), 200
 
 @categories_bp.route('/<int:category_id>/edit', methods=['GET', 'POST'])
 def edit(category_id):
-    msg = ''
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM categories where category_id = %s', (category_id,))
     category = cursor.fetchone()
     if request.method == 'POST':
-        category_name = request.form['category_name']
-        parentid = request.form['parent_id']
-        if parentid == 0:
-            parentid = "Null"
-        cursor.execute('UPDATE categories SET category_name = %s, parent_id = %s WHERE category_id = %s', (category_name, parentid, category_id))
-        mysql.connection.commit()
-        msg = 'You have successfully updated a category!'
+        try:
+            category_name = request.form['category_name']
+            parentid = request.form['parent_id']
+            if parentid == 0:
+                parentid = "Null"
+            cursor.execute('UPDATE categories SET category_name = %s, parent_id = %s WHERE category_id = %s', (category_name, parentid, category_id))
+            mysql.connection.commit()
+            return jsonify({'message': "Successfully update this category", 'status': "success", 'redirect': url_for('.getall')}), 200
+        except Exception as e:
+            return jsonify({'message': "Error updating this category. {}".format(e), 'status': "error", 'redirect': url_for('.getall')}), 500
     categories = list(_get_categories())
     categories.insert(0, {'category_name': "None", 'category_id': 0})
     edit_category_html = render_template("categories/edit.html", category=category, parent_options=categories)
-    return jsonify({'html': edit_category_html, 'message': msg, 'redirect': url_for('.getall')})
+    return jsonify({'html': edit_category_html}), 200
 
 def _get_archived_categories():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -90,24 +94,25 @@ def _get_archived_categories():
 
 @categories_bp.route('/<int:category_id>/archive', methods=['GET', 'POST'])
 def archive(category_id):
-    msg = ''
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM Categories WHERE category_id = %s', (category_id,))
     category = cursor.fetchone()
     if request.method == 'POST':
-        cursor.execute('''
-            UPDATE categories
-            SET is_archived = TRUE
-            WHERE category_id = %s
-        ''', (category_id,))
-        mysql.connection.commit()
-        msg = 'Successfully archived this category.'
+        try:
+            cursor.execute('''
+                UPDATE categories
+                SET is_archived = TRUE
+                WHERE category_id = %s
+            ''', (category_id,))
+            mysql.connection.commit()
+            return jsonify({'message': "Category has been archived.", 'status': "info", 'redirect': url_for('.getall')}), 200
+        except Exception as e:
+            return jsonify({'message': "Could not archive this category", 'status': "error", 'redirect': url_for('.getall')}), 500
     archive_category_html = render_template("categories/archive.html", category=category)
-    return jsonify({'html': archive_category_html, 'message': msg, 'redirect': url_for('.getall')})
+    return jsonify({'html': archive_category_html})
 
 @categories_bp.route('/<int:category_id>/restore', methods=['GET', 'POST'])
 def restore(category_id):
-    msg = ''
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM categories WHERE category_id = %s', (category_id,))
     category = cursor.fetchone()
@@ -119,11 +124,9 @@ def restore(category_id):
                 WHERE category_id = %s
             ''', (category_id,))
             mysql.connection.commit()
-            msg = 'Successfully restored this category.'
+            return jsonify({'message': "Category restored.", 'status': "info", 'redirect': url_for('.getall_archived')}), 200
         except Exception as e:
-            msg = 'Error: [{}]'.format(e)
-    else:
-        msg = 'Category not found or already unarchived.'
+            return jsonify({'message': "Could not restore this category. {}".format(e), 'status': "error", 'redirect': url_for('.getall_archived')}), 500
     restore_category_html = render_template("categories/restore.html", category=category)
-    return jsonify({'html': restore_category_html, 'message': msg, 'redirect': url_for('.getall_archived')})
+    return jsonify({'html': restore_category_html}), 200
 

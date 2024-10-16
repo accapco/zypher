@@ -167,7 +167,6 @@ def prepare_checkout():
         selected_items = request.form.get('selected_items')
         selected_items = json.loads(selected_items)
         session['checkout_items'] = selected_items
-        print("Selected items: ", selected_items)
         return jsonify({'redirect': url_for('checkout')}), 200
     except Exception as e:
         return jsonify({'redirect': url_for('checkout')}), 500

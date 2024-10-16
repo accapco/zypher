@@ -334,6 +334,102 @@ body {
         }
     }
 
+    #notifications {
+        grid-column: 13 / 14;
+        grid-row: 14 / 15;
+        display: flex;
+        flex-direction: column;
+        width: 0px;
+        height: 0px;
+        align-items: center;
+        justify-content: flex-end;
+
+        .notif {
+            display: grid;
+            grid-template-columns: 40px 1fr;
+            gap: 20px;
+            padding: 0px 30px;
+            width: 300px;
+            min-height: 90px;
+            background-color: white;
+            align-items: center;
+            margin-bottom: 16px;
+            margin-right: 96px;
+            border-radius: 4px;
+            z-index: 99;
+
+            .icon {
+                display: block;
+                grid-column: 1 / 2;
+                width: 30px;
+                height: 30px;
+                background-size: 30px 30px;
+                opacity: 80%;
+
+                &.error {
+                    background-image: url('../icons/error.png');
+                }
+
+                &.warning {
+                    background-image: url('../icons/warning.png');
+                }
+
+                &.info {
+                    background-image: url('../icons/info.png');
+                }
+
+                &.success {
+                    background-image: url('../icons/success.png');
+                }
+            }
+
+            p {
+                grid-column: 2 / 3;
+            }
+
+            &.error {
+                background-color: rgb(255, 222, 222);
+                border: 1px solid rgba(139, 0, 0, 0.2);
+
+                p {
+                    color: darkred;
+                }
+            }
+
+            &.warning {
+                background-color: rgb(253, 255, 220);
+                border: 1px solid rgba(184, 135, 11, 0.2);
+
+                p {
+                    color: darkgoldenrod;
+                }
+            }
+
+            &.info {
+                background-color: rgb(233, 255, 255);
+                border: 1px solid rgba(47, 79, 79, 0.2);
+
+                p {
+                    color: darkslategrey;
+                }
+            }
+
+            &.success {
+                background-color: rgb(219, 255, 219);
+                border: 1px solid rgba(0, 100, 0, 0.2);
+
+                p {
+                    color: darkgreen;
+                }
+            }
+
+            &.fade {
+                opacity: 0%;
+                transition: 0.3s ease-in-out;
+            }
+        }
+    }
+
     @media only screen and (max-width: 1024px) {
         .header {
             grid-template-rows: 0px 90px;

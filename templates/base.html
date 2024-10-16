@@ -23,100 +23,102 @@
         </div>
         {% endif %}
         <div class="header">
-                <div class="banner">
-                    <div id="facebook-link">
-                        <img class="icon" src="{{ url_for('static',filename='icons/facebook.svg') }}">
-                        <a href="https://www.facebook.com/zypherphofficial" target=”_blank”>
-                            Visit our facebook page
-                        </a>
-                    </div>
-                </div>
-                <div class="header-logo">
-                    <a href="/home">
-                        <img src="{{ url_for('static',filename='assets/logo.png') }}">
+            <div class="banner">
+                <div id="facebook-link">
+                    <img class="icon" src="{{ url_for('static',filename='icons/facebook.svg') }}">
+                    <a href="https://www.facebook.com/zypherphofficial" target=”_blank”>
+                        Visit our facebook page
                     </a>
                 </div>
-                <div class="header-navigation">
-                    <div class="nav">
-                        <button data-route="/home" onclick="document.location='/home'"
-                            {% if 'home' in request.path %}
-                            class="active"   
+            </div>
+            <div class="header-logo">
+                <a href="/home">
+                    <img src="{{ url_for('static',filename='assets/logo.png') }}">
+                </a>
+            </div>
+            <div class="header-navigation">
+                <div class="nav">
+                    <button data-route="/home" onclick="document.location='/home'"
+                        {% if 'home' in request.path %}
+                        class="active"   
+                        {% endif %}
+                        >
+                        Home
+                    </button>
+                    <button data-route="/catalog" onclick="document.location='/catalog'"
+                        {% if 'catalog' in request.path %}
+                        class="active"   
+                        {% endif %}
+                        >
+                        Catalog
+                    </button>
+                    <div class="cart-button">
+                        <button data-route="/cart" onclick="document.location='/cart'"
+                        {% if 'cart' in request.path %}
+                        class="active"   
+                        {% endif %}
+                        >
+                            Cart
+                            {% if cart_count > 0 %}
+                            <span class="cart-count">{{ cart_count }}</span>
                             {% endif %}
-                            >
-                            Home
                         </button>
-                        <button data-route="/catalog" onclick="document.location='/catalog'"
-                            {% if 'catalog' in request.path %}
-                            class="active"   
+                        <div id="cart-preview" class="dropdown-content">
+                            {% if cart_items %}
+                            <ul>
+                                {% for item in cart_items[:3] %}
+                                    <li>
+                                        <div class="image-container">
+                                            <img src="{{ url_for('static', filename='uploads/' + item['image_url']) }}" alt="{{ item['product_name'] }}">
+                                        </div>
+                                        <span class="product-name">{{ item['product_name'] }}</span>
+                                        <span class="product-price">₱{{ item['price'] }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            {% if cart_count > 3 %}
+                                <p class="centered-msg">
+                                    and {{ cart_count-3 }} more items
+                                </p>
                             {% endif %}
-                            >
-                            Catalog
-                        </button>
-                        <div class="cart-button">
-                            <button data-route="/cart" onclick="document.location='/cart'"
-                            {% if 'cart' in request.path %}
-                            class="active"   
+                            <hr/>
+                            <a href="{{ url_for('cart.get') }}">View Cart</a>
+                            {% else %}
+                            <p class="centered-msg">Your cart is empty.</p>
                             {% endif %}
-                            >
-                                Cart
-                                {% if cart_count > 0 %}
-                                <span class="cart-count">{{ cart_count }}</span>
-                                {% endif %}
-                            </button>
-                            <div id="cart-preview" class="dropdown-content">
-                                {% if cart_items %}
-                                <ul>
-                                    {% for item in cart_items[:3] %}
-                                        <li>
-                                            <div class="image-container">
-                                                <img src="{{ url_for('static', filename='uploads/' + item['image_url']) }}" alt="{{ item['product_name'] }}">
-                                            </div>
-                                            <span class="product-name">{{ item['product_name'] }}</span>
-                                            <span class="product-price">₱{{ item['price'] }}</span>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                                {% if cart_count > 3 %}
-                                    <p class="centered-msg">
-                                        and {{ cart_count-3 }} more items
-                                    </p>
-                                {% endif %}
-                                <hr/>
-                                <a href="{{ url_for('cart.get') }}">View Cart</a>
-                                {% else %}
-                                <p class="centered-msg">Your cart is empty.</p>
-                                {% endif %}
-                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="header-menu">
-                    {% if session['loggedin'] %}
-                    <div class="dropdown">
-                        <button class="dropdown-btn">Settings</button>
-                        <div class="dropdown-content">
-                            <button onclick="document.location='/account/details'">
-                                <img class="icon" src="{{ url_for('static',filename='icons/person.svg') }}">Account
-                            </button>
-                            <button onclick="document.location='/account/orders'">
-                                <img class="icon" src="{{ url_for('static',filename='icons/shopping-bag.svg') }}">Orders
-                            </button>
-                            <button onclick="document.location='/admin'">
-                                <img class="icon" src="{{ url_for('static',filename='icons/cog.svg') }}">Admin
-                            </button>
-                            <hr>
-                            <button onclick="document.location='/account/logout'">
-                                <img class="icon" src="{{ url_for('static',filename='icons/logout.svg') }}">Logout
-                            </button>
-                        </div>
+            </div>
+            <div class="header-menu">
+                {% if session['loggedin'] %}
+                <div class="dropdown">
+                    <button class="dropdown-btn">Settings</button>
+                    <div class="dropdown-content">
+                        <button onclick="document.location='/account/details'">
+                            <img class="icon" src="{{ url_for('static',filename='icons/person.svg') }}">Account
+                        </button>
+                        <button onclick="document.location='/account/orders'">
+                            <img class="icon" src="{{ url_for('static',filename='icons/shopping-bag.svg') }}">Orders
+                        </button>
+                        <button onclick="document.location='/admin'">
+                            <img class="icon" src="{{ url_for('static',filename='icons/cog.svg') }}">Admin
+                        </button>
+                        <hr>
+                        <button onclick="document.location='/account/logout'">
+                            <img class="icon" src="{{ url_for('static',filename='icons/logout.svg') }}">Logout
+                        </button>
                     </div>
-                    {% else %}
-                    <button id="login-btn">Login</button>
-                    {% endif %}
                 </div>
+                {% else %}
+                <button id="login-btn">Login</button>
+                {% endif %}
+            </div>
         </div>
         {% block content %}
         {% endblock %}
+        <div id="notifications">
+        </div>
     </div>
 </body>
 </html>

@@ -26,7 +26,7 @@ function setActiveButton(route) {
     });
 }
 
-function getActionButtons(html) {
+function attachActionButtons(html) {
     const action_btns = html.querySelectorAll(".action");
     action_btns.forEach(btn => {
         btn.addEventListener("click", async () => {
@@ -55,21 +55,14 @@ function handleSubmitAction(modal) {
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
         const action = form.getAttribute("action");
-        try {
-            const response = await fetch(action, {
-                method: 'POST',
-                body: new FormData(form)
-            });
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-            alert(data.message);
-            setMainDivContent(data.redirect)
-            modal.style.display = "none";
-        } catch (error) {
-            alert('There was an error submitting the form: ' + error.message);
-        }
+        const response = await fetch(action, {
+            method: 'POST',
+            body: new FormData(form)
+        });
+        const data = await response.json();
+        pushNotif(data.status, data.message);
+        setMainDivContent(data.redirect)
+        modal.style.display = "none";
     });
 }
 
@@ -99,7 +92,7 @@ async function setMainDivContent(route) {
     html = await fetchInnerHTML(route);
     if (html) {
         main_div.innerHTML = html;
-        getActionButtons(main_div);
+        attachActionButtons(main_div);
         if (route === "/categories/") {
             attachExpandIcons(main_div);
         }

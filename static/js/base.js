@@ -1,15 +1,14 @@
 // fetch the modal content (login/register)
 async function fetchModalContent(route) {
     try {
-        const response = await fetch(route, { method: 'GET' });
+        const response = await fetch(route, {method: 'GET'});
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            pushNotif("error", "Network error");
         }
         const data = await response.json();
         return data.html;
     } catch (error) {
-        alert(error);
-        window.location.reload();
+        pushNotif("error", error);
     }
 }
 
@@ -32,6 +31,7 @@ async function showLoginModal(modal) {
         modal.style.display = "block";
         attachCloseButton(modal);
         attachRegisterLink(modal);
+        handleFormSubmit(modal);
     }
 }
 
@@ -42,7 +42,26 @@ async function showRegisterModal(modal) {
         modal.innerHTML = register_html;
         attachCloseButton(modal);
         attachLoginLink(modal);
+        handleFormSubmit(modal);
     }
+}
+
+// submit handler
+function handleFormSubmit(modal) {
+    const form = modal.querySelector("form");
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const route = form.getAttribute("action");
+        const form_data = new FormData(form);
+        let response = await fetch(route, {"method": 'POST', "body": form_data});
+        const data = await response.json();
+        let message = data.message
+        if (!response.ok) {
+            pushNotif("warning", message);
+        } else {
+            window.location = data.redirect;
+        }
+    });
 }
 
 // handle register link inside the login modal
@@ -71,4 +90,22 @@ if (login_btn) {
         const modal = document.getElementById("login-modal");
         await showLoginModal(modal);
     });
+}
+
+// notifs
+const notifs = document.querySelector("#notifications");
+
+function pushNotif(type, message) {
+    const notif = document.createElement("div");
+    notif.classList.add("notif",  type);
+    notif.innerHTML = `
+            <div class="icon ${type}"></div>
+            <p>${message}</p>`;
+    notifs.appendChild(notif);
+    setTimeout(popNotif, 10000, notif);
+}
+
+function popNotif(notif) {
+    setTimeout(() => {notif.classList.add("fade")}, 400);
+    notifs.removeChild(notif);
 }

@@ -69,7 +69,7 @@ def getall():
     cursor.execute(base_query, tuple(params))
     products = cursor.fetchall()
     products_html = render_template("products/getall.html", products=products)
-    return jsonify({"html": products_html, "products": products})
+    return jsonify({"html": products_html, "products": products}), 200
 
 @products_bp.route('/<int:product_id>', methods=['GET'])
 def get(product_id):
@@ -119,53 +119,51 @@ def getall_archived():
     ''')
     products = cursor.fetchall()
     products_html = render_template("products/getall_archived.html", products=products)
-    return jsonify({"html": products_html, "products": products})
+    return jsonify({"html": products_html, "products": products}), 200
 
 @products_bp.route('/add', methods=['GET', 'POST'])
 def add():
-    msg = ''
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     if request.method == 'POST':
-            categoryid = request.form['category_id']
-            productname = request.form['product_name']
-            description = request.form['description']
-            price = request.form['price']
-            stockqty = request.form['stock_quantity']
-            size = request.form['size']
-            color = request.form['color']
-            images = request.files.getlist('images')
-            if images and _allowed_file(images[0].filename):
-                try:
-                    first_image = images[0]
-                    filename = secure_filename(first_image.filename)
-                    image_path = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], filename)
-                    first_image.seek(0)
-                    first_image.save(image_path)
-                    cursor.execute('''INSERT INTO products (category_id, product_name, description, price, stock_quantity, size, color, image_url) 
-                                      VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''',
-                                   (categoryid, productname, description, price, stockqty, size, color, filename))
-                    product_id = cursor.lastrowid
-                    for image in images:
-                        if _allowed_file(image.filename):
-                            filename = secure_filename(image.filename)
-                            image_path = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], filename)
-                            image.seek(0)
-                            image.save(image_path)
-                            cursor.execute('INSERT INTO product_images (product_id, image_url) VALUES (%s, %s)', (product_id, filename))
-                    mysql.connection.commit()
-                    msg = "Successfully added product."
-                except Exception as e:
-                    msg = e
-            else:
-                flash('Please upload at least one valid image file.', 'danger')
+        categoryid = request.form['category_id']
+        productname = request.form['product_name']
+        description = request.form['description']
+        price = request.form['price']
+        stockqty = request.form['stock_quantity']
+        size = request.form['size']
+        color = request.form['color']
+        images = request.files.getlist('images')
+        if images and _allowed_file(images[0].filename):
+            try:
+                first_image = images[0]
+                filename = secure_filename(first_image.filename)
+                image_path = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], filename)
+                first_image.seek(0)
+                first_image.save(image_path)
+                cursor.execute('''INSERT INTO products (category_id, product_name, description, price, stock_quantity, size, color, image_url) 
+                                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''',
+                                (categoryid, productname, description, price, stockqty, size, color, filename))
+                product_id = cursor.lastrowid
+                for image in images:
+                    if _allowed_file(image.filename):
+                        filename = secure_filename(image.filename)
+                        image_path = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], filename)
+                        image.seek(0)
+                        image.save(image_path)
+                        cursor.execute('INSERT INTO product_images (product_id, image_url) VALUES (%s, %s)', (product_id, filename))
+                mysql.connection.commit()
+                return jsonify({'message': "Successfully added product.", 'status': "success", 'redirect': url_for('.getall')}), 201
+            except Exception as e:
+                return jsonify({'message': "Error occured when adding product. {}".format(e), 'status': "error", 'redirect': url_for('.getall')}), 500
+        else:
+            return jsonify({'message': "Atleast one image is required", 'status': "warning", 'redirect': url_for('.getall')}), 400
     cursor.execute('SELECT category_id, category_name FROM categories WHERE is_archived = FALSE')
     categories = cursor.fetchall()
     add_product_html = render_template('products/add.html', categories=categories)
-    return jsonify({'html': add_product_html, 'message': msg, 'redirect': url_for('.getall')})
+    return jsonify({'html': add_product_html}), 200
 
 @products_bp.route('/<int:product_id>/edit', methods=['GET', 'POST'])
 def edit(product_id):
-    msg = ''
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM products WHERE product_id = %s', (product_id,))
     product = cursor.fetchone()
@@ -190,32 +188,33 @@ def edit(product_id):
                 cursor.execute('UPDATE products SET category_id = %s, product_name = %s, description = %s, price = %s, stock_quantity = %s, size = %s, color = %s WHERE product_id = %s', 
                                 (categoryid, productname, description, price, stockqty, size, color, product_id))
             mysql.connection.commit()
-            msg = 'Successfully updated product details.'
-        except:
-            msg = 'Problem occured while making changes to product details.'
+            return jsonify({'message': "Product details updated.", 'status': "info", 'redirect': url_for('.getall')}), 200
+        except Exception as e:
+            return jsonify({'message': "Error updating product. {}".format(e), 'status': "error", 'redirect': url_for('.getall')}), 500
     edit_product_html = render_template("products/edit.html", product=product, categories=categories) 
-    return jsonify({'html': edit_product_html, 'message': msg, 'redirect': url_for('.getall')})
+    return jsonify({'html': edit_product_html}), 200
 
 @products_bp.route('/<int:product_id>/archive', methods=['GET', 'POST'])
 def archive(product_id):     
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM products WHERE product_id = %s', (product_id,))
     product = cursor.fetchone()
-    msg = ''
     if request.method == 'POST':
-        cursor.execute('''
-            UPDATE products
-            SET is_active = FALSE
-            WHERE product_id = %s
-        ''', (product_id,))
-        mysql.connection.commit()
-        msg = 'Successfully archived this product.'
+        try:
+            cursor.execute('''
+                UPDATE products
+                SET is_active = FALSE
+                WHERE product_id = %s
+            ''', (product_id,))
+            mysql.connection.commit()
+            return jsonify({'message': "Product has been archived.", 'status': "info", 'redirect': url_for('.getall')}), 200
+        except Exception as e:
+            return jsonify({'message': "Error occured when archiving product. {}".format(e), 'status': "info", 'redirect': url_for('.getall')}), 500
     archive_product_html = render_template("products/archive.html", product=product)
-    return jsonify({'html': archive_product_html, 'message': msg, 'redirect': url_for('.getall')})
+    return jsonify({'html': archive_product_html}), 200
 
 @products_bp.route('/<int:product_id>/restore', methods=['GET', 'POST'])
 def restore(product_id):
-    msg = ''
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM products WHERE product_id = %s', (product_id,))
     product = cursor.fetchone()
@@ -227,10 +226,8 @@ def restore(product_id):
                 WHERE product_id = %s
             ''', (product_id,))
             mysql.connection.commit()
-            msg = 'Successfully restored this product.'
+            return jsonify({'message': "Product restored.", 'status': "info", 'redirect': url_for('.getall_archived')}), 200
         except Exception as e:
-            msg = 'Error: [{}]'.format(e)
-    else:
-        msg = 'Product not found or already unarchived.'
+            return jsonify({'message': "Product could not be restored. {}".format(e), 'status': "error", 'redirect': url_for('.getall_archived')}), 500
     restore_product_html = render_template("products/restore.html", product=product)
-    return jsonify({'html': restore_product_html, 'message': msg, 'redirect': url_for('.getall_archived')})
+    return jsonify({'html': restore_product_html}), 200

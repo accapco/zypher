@@ -42,7 +42,7 @@ def getall():
     users = cursor.fetchall()
     cart_count = session.get('cart_count', 0)  
     users_html = render_template("users/getall.html", users=users, cart_count=cart_count)    
-    return jsonify({'html': users_html})
+    return jsonify({'html': users_html}), 200
 
 @users_bp.route('/<int:user_id>', methods=['GET', 'POST'])
 def get(user_id):
@@ -51,16 +51,15 @@ def get(user_id):
     user = cursor.fetchone()
     cart_count = session.get('cart_count', 0)  
     user_html = render_template("users/get.html", user=user, cart_count=cart_count)    
-    return jsonify({'html': user_html})
+    return jsonify({'html': user_html}), 200
 
 @users_bp.route('/<int:user_id>/edit', methods=['GET', 'POST'])
 def edit(user_id):
-    msg = ''    
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM tbl_users WHERE user_id = %s', (user_id,))
     user = cursor.fetchone()
     cart_count = session.get('cart_count', 0)  
-    if request.method == 'POST' and 'username' in request.form and 'email' in request.form:
+    if request.method == 'POST':
         # Get form data
         userName = request.form['username']   
         email = request.form['email']
@@ -73,37 +72,35 @@ def edit(user_id):
         zipcode = request.form['zipcode']
         country = request.form['country']
 
-        if not re.match(r'[A-Za-z0-9]+', userName):
-            msg = 'Username must contain only characters and numbers!'
+        if userName == "" or email == "":
+            return jsonify({'message': "Required fields are empty.", 'status': "warning", 'redirect': url_for('.getall')}), 400
+        elif not re.match(r'[A-Za-z0-9]+', userName):
+            return jsonify({'message': "Username must contain only characters and numbers.", 'status': "warning", 'redirect': url_for('.getall')}), 400
         else:
-            cursor.execute(
-                'UPDATE tbl_users SET username=%s, email=%s, first_name=%s, last_name=%s, phone=%s, address=%s, city=%s, state=%s, zipcode=%s, country=%s WHERE user_id=%s', 
-                (userName, email, first_name, last_name, phone, address, city, state, zipcode, country, user_id)
-            )
-            mysql.connection.commit()
-            msg = 'User details have been updated'
-    elif request.method == 'POST':
-        msg = 'Some required fields are empty'
-    
+            try:
+                cursor.execute(
+                    'UPDATE tbl_users SET username=%s, email=%s, first_name=%s, last_name=%s, phone=%s, address=%s, city=%s, state=%s, zipcode=%s, country=%s WHERE user_id=%s', 
+                    (userName, email, first_name, last_name, phone, address, city, state, zipcode, country, user_id)
+                )
+                mysql.connection.commit()
+                return jsonify({'message': "User details updated.", 'status': "info", 'redirect': url_for('.getall')}), 200
+            except Exception as e:
+                return jsonify({'message': "Error updating user. {}".format(e), 'status': "error", 'redirect': url_for('.getall')}), 500
     edit_html = render_template("users/edit.html", user=user, cart_count=cart_count)
-    return jsonify({'html': edit_html, 'message': msg, 'redirect': url_for('.getall')})
+    return jsonify({'html': edit_html})
 
 @users_bp.route('/<int:user_id>/delete', methods=['GET', 'POST'])
 def delete(user_id):
-    msg = ''
-    delete_html = None
     if request.method == 'POST':
         try:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute('DELETE FROM tbl_users WHERE user_id = %s', (user_id,))
             mysql.connection.commit()
-            msg = 'User deleted successfully'
+            return jsonify({'message': "User has been deleted.", 'status': "success", 'redirect': url_for('.getall')}), 200
         except Exception as e:
-            msg = 'Error deleting user'
-        return jsonify({'message': msg, 'redirect': url_for('.getall')})
-    else:
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM tbl_users WHERE user_id = %s', (user_id,))
-        user = cursor.fetchone()
-        delete_html = render_template("users/delete.html", user=user)   
-        return jsonify({'html': delete_html, 'redirect': url_for('.getall')})
+            return jsonify({'message': "Error deleting user. {}".format(e), 'status': "info", 'redirect': url_for('.getall')}), 500
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM tbl_users WHERE user_id = %s', (user_id,))
+    user = cursor.fetchone()
+    delete_html = render_template("users/delete.html", user=user)   
+    return jsonify({'html': delete_html})

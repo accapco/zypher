@@ -59,10 +59,14 @@ remove_btns.forEach((button) => {
         event.preventDefault();
         const cart_item_id = button.getAttribute("data-cart-item-id");
         const remove_cart_item_url = `${cart_item_id}/remove`
-        response = await fetch(remove_cart_item_url, {method: 'POST'});
-        data = await response.json();
-        alert(data.message);
-        window.location.replace(data.redirect);
+        const response = await fetch(remove_cart_item_url, {method: 'POST'});
+        const data = await response.json();
+        pushNotif(data.status, data.message);
+        if (data.status === "info") {
+            const table = button.parentElement.parentElement.parentElement;
+            const row = button.parentElement.parentElement;
+            table.removeChild(row);
+        }
     });
 })
 

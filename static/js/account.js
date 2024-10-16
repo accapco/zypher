@@ -22,7 +22,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
 });
 
 // events for pressing menu buttons
-
 function processAjaxData(data, page, url_path){
     main_div.innerHTML = data.html;
     window.history.pushState({"html": data.html}, page, "/account"+url_path);
@@ -86,7 +85,7 @@ function handleAccountSubmit(html) {
             body: formData
         });
         const data = await response.json();
-        alert(data.message);
+        pushNotif(data.status, data.message);
         account_details_link.click();
     })
 } 

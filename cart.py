@@ -10,12 +10,12 @@ cart_bp = Blueprint('cart', __name__)
 def get():
     if 'loggedin' in session:
         cart_items, cart_count = get_cart_items(session['user_id'])
-        return render_template('cart.html', cart_items=cart_items, cart_count=cart_count)
-    return jsonify({'msg': "You must login first."})
+    else:
+        cart_items, cart_count = [], 0
+    return render_template('cart.html', cart_items=cart_items, cart_count=cart_count)
 
 @cart_bp.route('/add', methods=['POST'])
 def add():
-    msg = ''
     if 'loggedin' in session:
         try:
             product_id = request.form.get('product_id')
@@ -41,29 +41,26 @@ def add():
             else:
                 cursor.execute('INSERT INTO Cart_Items (cart_id, product_id, quantity, price) VALUES (%s, %s, %s, %s)', 
                                 (cart_id, product_id, 1, price))
-
             mysql.connection.commit()
-            msg = 'Product added to cart successfully!'
+            return jsonify({'message': 'Item added to cart.', 'status': "success"}), 201
         except Exception as e:
-            msg = 'Error adding product. [{e}]'.format(e)
+            return jsonify({'message': 'Error adding product. [{e}]'.format(e), 'status': "error"}), 500
     else:
-        msg = "You must login first."
-    return jsonify({'message': msg, 'redirect': url_for('catalog')})
+        return jsonify({'message': 'You must login first', 'status': "warning"}), 401
 
 @cart_bp.route('/<int:cart_id>/remove', methods=['POST'])
 def remove(cart_id):
-    msg = ''
     if 'loggedin' in session:
         try:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute('DELETE FROM cart_items WHERE cart_item_id = %s', (cart_id,)) 
             mysql.connection.commit()
-            msg = "Item has been removed from the cart."
+            return jsonify({'message': "Item has been removed from the cart.", 'status': "info"})
         except Exception as e:
-            msg = "Error removing item from the cart. [{}]".format(e)
+            return jsonify({'message': "Error removing item from the cart. [{}]".format(e), 'status': "error"})
     else:
-        msg = "You must login first."
-    return jsonify({'message': msg, 'redirect': url_for('.get')})
+        return jsonify({'message': "You must be logged in first.", 'status': "warning"})
+    
 
 def get_cart_items(user_id):
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
