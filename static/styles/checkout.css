@@ -2,13 +2,21 @@
     width: 150px;
 }
 
+.checkout-main {
+    grid-row: 2 / 14;
+    grid-column: 1 / 14;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f9f9f9;
+}
+
 .checkout-container {
-    grid-row: 3 / 13;
-    grid-column: 2 / 13;
+    width: 70%;
+    height: 90%;
     display: flex;
     background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.2);
     overflow-y: hidden;
 }
 

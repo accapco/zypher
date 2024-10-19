@@ -1,11 +1,8 @@
-{% extends "account/account.html" %}
+{% extends base_html %}
 
-{% block account_main %}
+{% block ajax_content %}
 <div class="details">
-    <form action="{{ url_for('account.api_details') }}" method="post">
-        {% if msg %}
-            <div class="alert alert-warning">{{ msg }}</div>
-        {% endif %}
+    <form>
         <hr>
         <div class="form-row">
             <div class="form-group">

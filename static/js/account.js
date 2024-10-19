@@ -47,7 +47,7 @@ account_menu_btns.forEach((btn) => {
 // account details
 account_details_link.addEventListener("click", async (event) => {
     event.preventDefault();
-    const url = "/account/api/details";
+    const url = "/account/details?partial=true";
     const response = await fetch (url, {method: 'GET'});
     const data = await response.json();
     processAjaxData(data, "Account Details", "/details");
@@ -80,8 +80,8 @@ function handleAccountSubmit(html) {
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
         const formData = new FormData(form);
-        const response = await fetch(form.action, {
-            method: form.method,
+        const response = await fetch('/account/details', {
+            method: 'POST',
             body: formData
         });
         const data = await response.json();
@@ -93,7 +93,7 @@ function handleAccountSubmit(html) {
 // orders
 orders_link.addEventListener("click", async (event) => {
     event.preventDefault();
-    const url = "/account/api/orders";
+    const url = "/account/orders?partial=true";
     const response = await fetch (url, {method: 'GET'});
     const data = await response.json();
     processAjaxData(data, "Orders", "/orders")

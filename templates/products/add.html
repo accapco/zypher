@@ -4,9 +4,6 @@
 	</div>
 	<div>
 	    <form method="post" enctype="multipart/form-data" action="{{ url_for('products.add') }}">
-	        {% if msg %}
-	            <div class="alert alert-warning">{{ msg }}</div>
-	        {% endif %}
 	        <div class="heading-2">
 				<div class="heading-2">Add a new product</div>
 	        </div>

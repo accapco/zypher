@@ -4,9 +4,6 @@
 	</div>
 	<div>
 	    <form method="post" action="{{ url_for('users.edit', user_id=user.user_id) }}">
-	        {% if msg %}
-	            <div class="alert alert-warning">{{ msg }}</div>
-	        {% endif %}
 	        <div class="heading-2">
 	            Edit Account Information
 	        </div>

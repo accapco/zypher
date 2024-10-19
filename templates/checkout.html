@@ -13,203 +13,207 @@
 {% endblock %}
 
 {% block content %}
-<div class="checkout-container">
-    <form class="checkout-form" method="POST" action="{{ url_for('checkout') }}">
-        <h2>Contact</h2>
-        <div class="form-row">
-            <div class="form-group">
-                <input type="text" name="contact" placeholder="Email or mobile phone number" value="{{ user_info['email'] if user_info else '' }}" readonly>
-                <label for="contact">Email or mobile phone number</label>
-            </div>
-        </div>
-        <label><input type="checkbox" id="newsletter" name="newsletter">Email me with news and offers</label>
-
-        <h2>Delivery</h2>
-        <!-- country -->
-        <div class="form-row">
-            <div class="form-group">
-                <select name="country">
-                    <option value="philippines">Philippines</option>
-                </select>
-                <label for="country">Country</label>
-            </div>
-        </div>
-        <!-- name -->
-        <div class="form-row">
-            <div class="form-group">
-                <input type="text" placeholder="First name" name="f_name" value="{{ user_info['first_name'] if user_info else '' }}">
-                <label for="f_name">First Name</label>
-            </div>
-            <div class="form-group">
-                <input type="text" placeholder="Last name" name="l_name" value="{{ user_info['last_name'] if user_info else '' }}">
-                <label for="l_name">Last Name</label>
-            </div>
-        </div>
-        <!-- address -->
-        <div class="form-row">
-            <div class="form-group">
-                <input type="text" name="address" placeholder="Address" value="{{ user_info['address'] if user_info else '' }}">
-                <label for="address">Address</label>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <input type="text" name="postal" placeholder="Postal code">
-                <label for="postal">Postal Code</label>
-            </div>
-            <div class="form-group">
-                <input type="text" name="city" placeholder="City" value="{{ user_info['city'] if user_info else '' }}">
-                <label for="city">City</label>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <input type="text" name="region" placeholder="Region">
-                <label for="region">Region</label>
-            </div>
-            <div class="form-group">
-                <input type="text" name="phone" placeholder="Phone">
-                <label for="phone">Phone</label>
-            </div>
-        </div>
-        <label><input type="checkbox"> Save this information for next time</label>
-        <label><input type="checkbox"> Text me with news and offers</label>
-
-        <h2>Shipping method</h2>
-        <div class="shipping-info">
-            <p>Enter your shipping address to view available shipping methods.</p>
-        </div>
-
-        <h2>Payment</h2>
-        <p>All transactions are secure and encrypted.</p>
-        <div class="payment-methods">
-            <div class="payment-option" id="bank-option">
-                <label>
-                    <input type="radio" name="payment" value="Bank" onclick="togglePaymentDetails('bank-details')">
-                    Bank Deposit
-                </label>
-                <div id="bank-details" class="payment-details">
-                    <p>Details for Bank Deposit:</p>
-                    <ul>
-                        <li>Account Name: Your Name</li>
-                        <li>Account Number: 123456789</li>
-                        <li>Bank: Your Bank</li>
-                    </ul>
+<div class="checkout-main">
+    <div class="checkout-container">
+        <form class="checkout-form" method="POST" action="{{ url_for('checkout') }}">
+            <h2>Contact</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="text" name="contact" placeholder="Email or mobile phone number" value="{{ user['email'] if user else '' }}" readonly disabled>
+                    <label for="contact">Email or mobile phone number</label>
                 </div>
             </div>
-
-            <div class="payment-option" id="cod-option">
-                <label>
-                    <input type="radio" name="payment" value="Cod" onclick="togglePaymentDetails('cod-details')">
-                    Cash on Delivery
-                </label>
-                <div id="cod-details" class="payment-details">
-                    <p>Pay exact amount to the delivery agent.</p>
+            <label><input type="checkbox" id="newsletter" name="newsletter">Email me with news and offers</label>
+    
+            <h2>Delivery</h2>
+            <!-- country -->
+            <div class="form-row">
+                <div class="form-group">
+                    <select name="country">
+                        <option value="philippines">Philippines</option>
+                    </select>
+                    <label for="country">Country</label>
                 </div>
             </div>
-        </div>
-
-        <h2>Billing address</h2>
-        <div class="billing-address">
-            <div class="billing-option">
-                <label>
-                    <input type="radio" name="billing" value="same" checked onclick="toggleBillingDetails('same')">
-                    Same as shipping address
-                </label>
-                <div id="same-details" class="billing-details visible">
-                    <p>Your billing address will be the same as your shipping address.</p>
+            <!-- name -->
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="text" placeholder="First name" name="f_name" value="{{ user['first_name'] if user else '' }}">
+                    <label for="f_name">First Name</label>
+                </div>
+                <div class="form-group">
+                    <input type="text" placeholder="Last name" name="l_name" value="{{ user['last_name'] if user else '' }}">
+                    <label for="l_name">Last Name</label>
                 </div>
             </div>
-
-            <div class="billing-option">
-                <label>
-                    <input type="radio" name="billing" value="different" onclick="toggleBillingDetails('different')">
-                    Use a different billing address
-                </label>
-                <div id="different-details" class="billing-details">
-                    <h3>Enter your billing details:</h3>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="country">Country</label>
-                            <input type="text" name="country" placeholder="Country">
-                        </div>
+            <!-- address -->
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="text" name="address" placeholder="Address" value="{{ user['address'] if user else '' }}">
+                    <label for="address">Address</label>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="text" name="postal" placeholder="Postal code" value="{{ user['zipcode'] }}">
+                    <label for="postal">Postal Code</label>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="city" placeholder="City" value="{{ user['city'] if user else '' }}">
+                    <label for="city">City</label>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="text" name="region" placeholder="Region">
+                    <label for="region">Region</label>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="phone" placeholder="Phone" value="{{ user['phone'] }}">
+                    <label for="phone">Phone</label>
+                </div>
+            </div>
+            <label><input type="checkbox"> Save this information for next time</label>
+            <label><input type="checkbox"> Text me with news and offers</label>
+    
+            <h2>Shipping method</h2>
+            <div class="shipping-info">
+                <p>Enter your shipping address to view available shipping methods.</p>
+            </div>
+    
+            <h2>Payment</h2>
+            <p>All transactions are secure and encrypted.</p>
+            <div class="payment-methods">
+                <div class="payment-option" id="bank-option">
+                    <label>
+                        <input type="radio" name="payment" value="Bank" onclick="togglePaymentDetails('bank-details')">
+                        Bank Deposit
+                    </label>
+                    <div id="bank-details" class="payment-details">
+                        <p>Details for Bank Deposit:</p>
+                        <ul>
+                            <li>Account Name: Your Name</li>
+                            <li>Account Number: 123456789</li>
+                            <li>Bank: Your Bank</li>
+                        </ul>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="f_name">First Name</label>
-                            <input type="text" name="f_name" placeholder="First name">
-                        </div>
-                        <div class="form-group">
-                            <label name="l_name">Last Name</label>
-                            <input type="text" name="l_name" placeholder="Last name">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label name="address">Address</label>
-                            <input type="text" name="address" placeholder="Address">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label name="apartment">Apartment/Suite</label>
-                            <input type="text" name="apartment" placeholder="Apartment/Suite (optional)">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label name="postal">Postal Code</label>
-                            <input type="text" name="postal" placeholder="Postal code">
-                        </div>
-                        <div class="form-group">
-                            <label name="city">City</label>
-                            <input type="text" name="city" placeholder="City">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label name="region">Region</label>
-                            <input type="text" placeholder="Region">
-                        </div>
-                        <div class="form-group">
-                            <label name="phone">Phone</label>
-                            <input type="text" placeholder="Phone (optional)">
-                        </div>
+                </div>
+    
+                <div class="payment-option" id="cod-option">
+                    <label>
+                        <input type="radio" name="payment" value="Cod" onclick="togglePaymentDetails('cod-details')">
+                        Cash on Delivery
+                    </label>
+                    <div id="cod-details" class="payment-details">
+                        <p>Pay exact amount to the delivery agent.</p>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <button class="pay-now">Pay now</button>
-    </form>
-
-    <div class="order-summary">
-        <h2>Order Summary</h2>
-        <div class="order-items">
-            {% for item in selected_items %}
-            <div class="order-item">
-                <input type="hidden" name="product_id" value="{{ item['product_id'] }}">
-                <div class="image-container">
-                    <img src="{{ url_for('static', filename='uploads/' + item['image_url']) }}" alt="Product Image">
+    
+            <h2>Billing address</h2>
+            <div class="billing-address">
+                <div class="billing-option">
+                    <label>
+                        <input type="radio" name="billing" value="same" checked onclick="toggleBillingDetails('same')">
+                        Same as shipping address
+                    </label>
+                    <div id="same-details" class="billing-details visible">
+                        <p>Your billing address will be the same as your shipping address.</p>
+                    </div>
                 </div>
-                <div class="item-details">
-                    <p class="name">{{ item['product_name'] }}</p>
-                    <p>Size: {{ item['size'] }}</p>
-                    <p>Color: {{ item['color'] }}</p>
-                    <p>Price: ₱{{ item['price'] }}</p>
-                    <p>Quantity: {{ item['quantity'] }}</p>
+    
+                <div class="billing-option">
+                    <label>
+                        <input type="radio" name="billing" value="different" onclick="toggleBillingDetails('different')">
+                        Use a different billing address
+                    </label>
+                    <div id="different-details" class="billing-details">
+                        <h3>Enter your billing details:</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="country">Country</label>
+                                <select name="country" placeholder="Country">
+                                    <option value="{{ user['country'] }}" selected>{{ user['country'] }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="billing-f_name">First Name</label>
+                                <input type="text" name="billing-f_name" placeholder="First name">
+                            </div>
+                            <div class="form-group">
+                                <label name="billing-l_name">Last Name</label>
+                                <input type="text" name="billing-l_name" placeholder="Last name">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label name="billing-address">Address</label>
+                                <input type="text" name="billing-address" placeholder="Address">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label name="billing-apartment">Apartment/Suite</label>
+                                <input type="text" name="billing-apartment" placeholder="Apartment/Suite (optional)">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label name="billing-postal">Postal Code</label>
+                                <input type="text" name="billing-postal" placeholder="Postal code">
+                            </div>
+                            <div class="form-group">
+                                <label name="billing-city">City</label>
+                                <input type="text" name="billing-city" placeholder="City">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label name="billing-region">Region</label>
+                                <input type="text" name="billing-region" placeholder="Region">
+                            </div>
+                            <div class="form-group">
+                                <label name="billing-phone">Phone</label>
+                                <input name="billing-phone" type="text" placeholder="Phone (optional)">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            {% endfor %}
-        </div>
-
-        <div class="order-total">
-            <p class="label">Subtotal</p>
-            <p class="value">₱ {{ total }}</p>
-            <p class="label">Shipping</p>
-            <p class="value">Enter shipping address</p>
-            <p class="label">Total</p>
-            <p id="total-price" class="value">₱ {{ total }}</p>
+    
+            <button class="pay-now">Pay now</button>
+        </form>
+    
+        <div class="order-summary">
+            <h2>Order Summary</h2>
+            <div class="order-items">
+                {% for item in selected_items %}
+                <div class="order-item">
+                    <input type="hidden" name="product_id" value="{{ item['product_id'] }}">
+                    <div class="image-container">
+                        <img src="{{ url_for('static', filename='uploads/' + item['image_url']) }}" alt="Product Image">
+                    </div>
+                    <div class="item-details">
+                        <p class="name">{{ item['name'] }}</p>
+                        <p>Size: {{ item['size'] }}</p>
+                        <p>Color: {{ item['color'] }}</p>
+                        <p>Price: ₱{{ item['price'] }}</p>
+                        <p>Quantity: {{ item['quantity'] }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+    
+            <div class="order-total">
+                <p class="label">Subtotal</p>
+                <p class="value">₱ {{ total }}</p>
+                <p class="label">Shipping</p>
+                <p class="value">Enter shipping address</p>
+                <p class="label">Total</p>
+                <p id="total-price" class="value">₱ {{ total }}</p>
+            </div>
         </div>
     </div>
 </div>

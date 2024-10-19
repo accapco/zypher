@@ -4,9 +4,6 @@
 	</div>
 	<div>
 	    <form method="post" action="{{ url_for('categories.edit', category_id=category.category_id) }}">
-	        {% if msg %}
-	            <div class="alert alert-warning">{{ msg }}</div>
-	        {% endif %}
 	        <div class="heading-2">
 				<div class="heading-2">Edit category</div>
 	        </div>

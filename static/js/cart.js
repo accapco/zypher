@@ -38,6 +38,8 @@ function updateTotal() {
             size: checkbox.getAttribute('data-size'),
             color: checkbox.getAttribute('data-color')
         });
+
+        console.log(selectedItems);
     });
     document.getElementById('order-total').textContent = '₱ ' + total.toFixed(2);
 }
