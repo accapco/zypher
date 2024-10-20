@@ -155,3 +155,32 @@ class Account:
                 'status': "warning",
                 'status_code': 401
                 }
+
+    @staticmethod
+    def get_orders(user_id):
+        try:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('''
+            SELECT os.order_number, o.created_at AS date_of_purchase, 
+                   o.status, o.total_amount
+            FROM Order_Summary os
+            JOIN Orders o ON os.order_id = o.order_id
+            WHERE o.user_id = %s
+        ''', (user_id,))
+            orders = cursor.fetchall() if cursor.rowcount > 0 else []
+
+            # Debugging: Print the result to check if it's correct
+            print("Orders fetched: ", orders)
+            cursor.close()
+
+            return {
+                'order': order,
+                'status': "success",
+                'status_code': 200
+            }
+        except Exception as e:
+            return {
+                'message': f"Error retrieving order: {e}",
+                'status': "error",
+                'status_code': 500
+            }

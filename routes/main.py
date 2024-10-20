@@ -48,7 +48,7 @@ def checkout():
     items = session.get('checkout_items')
     if request.method == 'POST':
         response = Orders.add(session['user_id'], request.form, items)
-        if response['status'] == "sucess":
+        if response['status'] == "success":
             response['redirect'] = url_for('.order_summary', order_id=response['order_id'])
         else:
             response['redirect'] = url_for('.home')
