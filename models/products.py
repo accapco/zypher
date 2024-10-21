@@ -58,13 +58,13 @@ class Products:
                 'products': products,
                 'status': "success",
                 'status_code': 200
-            }
+                }
         except:
             return {
                 'products': [],
                 'status': "error",
                 'status_code': 500
-            }
+                }
         
     @staticmethod
     def get(product_id):
@@ -79,7 +79,7 @@ class Products:
             if product:
                 # Fetch product images
                 cursor.execute('''
-                    SELECT image_url FROM product_images 
+                    SELECT image_url, image_id FROM product_images 
                     WHERE product_id = %s''', 
                     (product_id,)
                     )
@@ -99,10 +99,10 @@ class Products:
                     }
         except:
             return {
-            'message': "Internal server error.",
-            'status': "error",
-            'status_code': 500
-            }
+                'message': "Internal server error.",
+                'status': "error",
+                'status_code': 500
+                }
 
     @staticmethod
     def colors():
@@ -211,7 +211,7 @@ class Products:
                 }
         
     @staticmethod
-    def update(product_id, form, files):
+    def update(product_id, form):
         categoryid = form['category_id']
         productname = form['product_name']
         description = form['description']
@@ -219,30 +219,16 @@ class Products:
         stockqty = form['stock_quantity']
         size = form['size']
         color = form['color']
-        image_file = files.get('image') 
 
         try:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            if image_file:
-                image_filename = secure_filename(image_file.filename)
-                image_file.save(os.path.join('uploads', image_filename))  # Save the file
-                cursor.execute('''
-                    UPDATE products SET category_id = %s, product_name = %s, 
-                    description = %s, price = %s, stock_quantity = %s, 
-                    size = %s, color = %s, image = %s 
-                    WHERE product_id = %s''', 
-                    (categoryid, productname, description, 
-                     price, stockqty, size, 
-                     color, image_filename, product_id)
-                    )
-            else:
-                cursor.execute('''
-                    UPDATE products SET category_id = %s, product_name = %s, 
-                    description = %s, price = %s, stock_quantity = %s, 
-                    size = %s, color = %s WHERE product_id = %s''', 
-                    (categoryid, productname, description, 
-                     price, stockqty, size, color, product_id)
-                    )
+            cursor.execute('''
+                UPDATE products SET category_id = %s, product_name = %s, 
+                description = %s, price = %s, stock_quantity = %s, 
+                size = %s, color = %s WHERE product_id = %s''', 
+                (categoryid, productname, description, 
+                    price, stockqty, size, color, product_id)
+                )
             mysql.connection.commit()
             return {
                 'message': "Product details updated.", 
@@ -256,6 +242,104 @@ class Products:
                 'status_code': 500
                 }
         
+    @staticmethod
+    def upload_image(product_id, files):
+        try:
+            if 'image' not in files:
+                return {
+                'message': f"Image not found",
+                'status': "warning",
+                'status_code': 400
+                }
+            
+            images = files.getlist('image')
+            files = []
+            for image in images:
+                filename = secure_filename(image.filename)
+                image_path = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], filename)
+                image.seek(0)
+                image.save(image_path)
+                cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+                cursor.execute('''
+                    INSERT INTO product_images 
+                    (product_id, image_url) VALUES (%s, %s)''', 
+                    (product_id, filename)
+                    )
+                mysql.connection.commit()
+                files.append({ 
+                    'filename': filename,
+                    'image_id': cursor.lastrowid
+                    })
+                
+            return {
+                'files': files,
+                'message': "Image{} uploaded successfully".format('s' if len(files) > 1 else ''),
+                'status': "success",
+                'status_code': 200
+                }
+        except Exception as e:
+            return {
+                'message': "Unable to upload file: {}".format(e),
+                'status': "error",
+                'status_code': 500
+                }
+
+    @staticmethod
+    def remove_image(image_id):
+        try:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+            cursor.execute('''SELECT * FROM product_images WHERE image_id = %s''',
+                (image_id,)
+                )
+            image_row = cursor.fetchone()
+
+            cursor.execute('''SELECT * FROM products WHERE product_id = %s''',
+                (image_row['product_id'],)
+                )
+            product_row = cursor.fetchone()
+
+            # replace original image
+            if image_row['image_url'] == product_row['image_url']:
+                cursor.execute('''
+                    SELECT * FROM product_images WHERE product_id = %s
+                    AND image_url != %s''', 
+                    (product_row['product_id'], product_row['image_url'])
+                    )
+                images = cursor.fetchall()
+
+                if len(images) == 0:
+                    return {
+                    'message': "You need to have at least one image.", 
+                    'status': "error", 
+                    'status_code': 403,
+                    }
+                
+                cursor.execute('''
+                    UPDATE products SET image_url = %s
+                    WHERE product_id = %s''', 
+                    (images[0]['image_url'], product_row['product_id'])
+                    )
+                mysql.connection.commit()
+
+            cursor.execute('''
+                DELETE FROM product_images WHERE image_id = %s''',
+                (image_id,)
+                )
+            mysql.connection.commit()
+
+            return {
+                'message': "Image has been deleted.", 
+                'status': "success", 
+                'status_code': 200,
+                }
+        except Exception as e:
+            return {
+                'message': "Image could not be deleted: {}".format(e), 
+                'status': "error", 
+                'status_code': 500,
+                }
+            
     @staticmethod
     def archive(product_id):
         try:

@@ -161,29 +161,28 @@ class Account:
         try:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute('''
-            SELECT 
-            os.order_number, 
-            o.order_date AS date_of_purchase, 
-            o.status, 
-            os.total_price, 
-            p.image_url, 
-            p.product_name, 
-            p.size, 
-            p.color, 
-            os.quantity, 
-            os.payment_method
-            FROM 
-                Order_Summary os
-            JOIN 
-                Orders o ON os.order_id = o.order_id
-            JOIN 
-                Products p ON os.product_id = p.product_id
-            WHERE 
-                o.user_id = %s;
-            ''', (user_id,))
+                SELECT order_id, order_date as date_of_purchase, 
+                status, total_amount, shipping_address
+                FROM Orders
+                WHERE user_id = %s
+                ORDER BY order_date DESC''', 
+                (user_id,)
+                )
             orders = cursor.fetchall() if cursor.rowcount > 0 else []
-            # Debugging: Print the result to check if it's correct
-            print("Orders fetched: ", orders)
+
+            for order in orders:
+                cursor.execute('''
+                    SELECT os.order_number, os.order_id, 
+                    os.total_price, os.quantity, os.payment_method, 
+                    p.image_url, p.product_name, p.size, p.color
+                    FROM Order_Summary os
+                    JOIN Products p ON os.product_id = p.product_id
+                    WHERE order_id = %s
+                    ORDER BY os.order_id ASC''', 
+                    (order['order_id'],)
+                    )
+                items = cursor.fetchall()
+                order['order_items'] = items
             cursor.close()
 
             return {

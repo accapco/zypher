@@ -79,10 +79,10 @@ function handleAccountSubmit(html) {
 
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
-        const formData = new FormData(form);
+        const form_data = new FormData(form);
         const response = await fetch('/account/details', {
             method: 'POST',
-            body: formData
+            body: form_data 
         });
         const data = await response.json();
         pushNotif(data.status, data.message);
@@ -118,7 +118,7 @@ function filterOrdersTable(status, html) {
     const rows = orders_table.querySelectorAll(".order");
 
     rows.forEach((row) => {
-        const order_status = row.querySelector(".status h3");
+        const order_status = row.querySelector(".order-status");
         if (status === "all" || status === order_status.innerText.toLowerCase()) {
             row.style.display = "grid";
         } else  {

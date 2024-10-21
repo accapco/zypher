@@ -4,7 +4,7 @@
 	</div>
 	<div>
 	    <form method="post" action="{{ url_for('categories.add', parent_id=parent_id) }}">
-			{% if category_id == 0 %}
+			{% if parent_id == 0 %}
 			<div class="heading-2">Add root category</div>
 			{% else %}
 			<div class="heading-2">Add subcategory</div>

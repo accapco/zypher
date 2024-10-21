@@ -76,3 +76,13 @@ def inject_cart_info():
         cart_items = response['cart']
         cart_count = response['count']
     return dict(cart_count=cart_count, cart_items=cart_items)
+
+from babel.dates import format_datetime
+
+@app.template_filter()
+def format_time(value, format='medium'):
+    if format == 'full':
+        format="EEEE, d. MMMM y 'at' h:mm a"
+    elif format == 'medium':
+        format="d/M/y h:mm a"
+    return format_datetime(value, format)

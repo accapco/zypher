@@ -9,22 +9,31 @@
     background-color: #f9f9f9;
 
     .page-link {
+        height: 48px;
+        line-height: 48px;
         font-size: 18px;
         color: darkgoldenrod;
         letter-spacing: 0.1em;
         word-spacing: 0.2em;
-        margin-right: 56px;
+        padding-right: 56px;
         padding: 6px 2px;
-        margin-bottom: 28px;
-        border-bottom: 2px solid rgba(0,0,0,0);
+        border-right: 2px solid #ccc;
 
         &:hover {
             cursor: pointer;
-            opacity: 80%;
+            opacity: 60%;
+            padding-right: 68px;
+            transition: 0.2s;
+        }
+
+        &:not(:hover) {
+            padding-right: 56px;
+            transition: 0.1s;
         }
 
         &.active {
-            border-bottom: 2px solid darkgoldenrod;
+            padding-right: 54px;
+            border-right: 4px solid darkgoldenrod;
         }
     }
 }
@@ -55,7 +64,6 @@
 .orders {
     display: flex;
     flex-direction: column;
-    gap: 26px;
     padding-left: 164px;
     padding-right: 164px;
     width: auto;
@@ -66,6 +74,8 @@
         width: 100%;
         position: sticky;
         margin-top: 64px;
+        margin-bottom: 26px;
+        background-color: white;
         top: 0;
         z-index: 1;
 
@@ -99,55 +109,177 @@
     .orders-table {
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 20px;
+        padding-bottom: 60px;
+
+        h1 {
+            font-weight: bold;
+            font-size: 15px;
+            letter-spacing: 0.08em;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        h2 {
+            font-weight: normal;
+            color: darkgoldenrod;
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 0.01em;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        h3 {
+            font-size: 16px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: darkred;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        h4 {
+            font-size: 14px;
+            font-weight: normal;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: rgba(0, 0, 0, 0.6);
+            margin: 0px;
+            padding: 0px;
+        }
+
+        p {
+            color: rgba(0, 0, 0, 0.7);
+            font-size: 13px;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        a {
+            color: darkblue;
+            text-decoration: underline;
+            font-size: 13px;
+
+            &:hover {
+                opacity: 60%;
+                cursor: pointer;
+            }
+        }
 
         .order {
             width: auto;
+            border-top: 1px solid rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+            background-color: white;
+            overflow: hidden;
+
+            .top-order-info {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: flex-start;
+                padding: 26px;
+                padding-bottom: 0px;
+            }
+
+            .bottom-order-info {
+                display: grid;
+                grid-template-columns: 2fr 1fr;
+                grid-template-rows: 60px 40px;
+                align-items: flex-start;
+                background-color: rgba(184, 135, 11, 0.05);
+                border-top: 1px solid rgba(0, 0, 0, 0.1);
+                padding: 0px 26px;
+
+                .order-total {
+                    grid-column: 1 / 2;
+                    grid-row: 1 / 2;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    height: 100%;
+                    gap: 20px;
+                }
+
+                .delivery-date {
+                    grid-column: 1 / 2;
+                    grid-row: 2 / 3;
+                    display: flex;
+                    align-items: flex-start;
+                    justify-content: flex-start;
+                    font-style: italic;
+                    
+                    p {
+                        font-size: 12px;
+                        opacity: 80%;
+                    }
+                }
+
+                .buttons {
+                    grid-column: 2 / 3;
+                    grid-row: 1 / 3;
+                    display: flex;
+                    justify-content: flex-end;
+                    align-items: center;
+                    height: 100%;
+                    gap: 12px;
+
+                    button {
+                        margin: 0px;
+                        padding: 12px 16px;
+                        border-radius: 0px;
+
+                        &.view {
+                            border: 1px solid darkgoldenrod;
+                            background-color: darkgoldenrod;
+                            color: white;
+
+                            &:hover {
+                                cursor: pointer;
+                                background-color: white;
+                                color: darkgoldenrod;
+                                transition: 0.3s;
+                            }
+                        }
+
+                        &.cancel {
+                            border: 1px solid grey;
+                            background-color: white;
+                            color: black;
+                            opacity: 90%;
+
+                            &:hover {
+                                cursor: pointer;
+                                background-color: grey;
+                                color: white;
+                                transition: 0.3s;
+                            }
+                        }
+                        
+                    }
+                }
+            }
+        }
+
+        .order-item {
+            width: auto;
             display: grid;
-            grid-template-rows: repeat(3, 50px);
-            grid-template-columns: 150px minmax(auto, 150px) minmax(auto, 150px) auto;
-            margin: 20px;
-            border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
-            border-top: 1px dashed rgba(0, 0, 0, 0.1);
-
-            h1 {
-                font-weight: bold;
-                font-size: 15px;
-                letter-spacing: 0.08em;
-            }
-
-            h2 {
-                font-weight: normal;
-                color: darkgoldenrod;
-                font-size: 22px;
-                letter-spacing: 0.01em;
-            }
-
-            h3 {
-                font-size: 13px;
-                letter-spacing: 0.08em;
-                text-transform: uppercase;
-                color: darkred;
-                opacity: 90%;
-            }
-
-            p {
-                color: rgba(0, 0, 0, 0.7);
-                font-size: 13px;
-                margin: 0px;
-                padding: 0px;
-            }
+            grid-template-rows: repeat(4, 50px);
+            grid-template-columns: 200px minmax(auto, 150px) minmax(auto, 150px) auto;
+            margin: 0px 26px;
+            padding-right: 26px;
 
             .image-container {
-                grid-row: 1 / 4;
+                grid-row: 1 / 5;
                 grid-column: 1 / 2;
                 display: flex;
                 align-items: center;
                 justify-content: center;
 
                 img {
-                    min-width: 100px;
-                    max-height: 100px;
+                    min-width: 120px;
+                    max-height: 120px;
                     object-fit: cover;
                     background-color: #ccc;
                 }
@@ -155,61 +287,56 @@
 
             .product-name {
                 grid-row: 1 / 2;
-                grid-column: 2 / 4;
+                grid-column: 2 / 5;
                 display: flex;
                 align-items: center;
+            }
+
+            .order-number {
+                grid-row: 2 / 3;
+                grid-column: 2 / 4;
+                display: flex;
+                align-items: flex-start;
             }
 
             .size {
-                grid-row: 2 / 3;
+                grid-row: 3 / 4;
                 grid-column: 2 / 3;
-                display: flex;
-                align-items: center;
-            }
-
-            .color {
-                grid-row: 2 / 3;
-                grid-column: 3 / 4;
                 display: flex;
                 align-items: center;
             }
 
             .quantity {
-                grid-row: 3 / 4;
+                grid-row: 4 / 5;
                 grid-column: 2 / 3;
                 display: flex;
                 align-items: flex-start;
             }
 
-            .payment-method {
+            .color {
                 grid-row: 3 / 4;
+                grid-column: 3 / 4;
+                display: flex;
+                align-items: center;
+            }
+
+            .payment-method {
+                grid-row: 4 / 5;
                 grid-column: 3 / 4;
                 display: flex;
                 align-items: flex-start;
             }
 
-            .status {
-                grid-row: 1 / 2;
-                grid-column: 4 / 5;
-                display: flex;
-                justify-content: flex-end;
-                align-items: flex-end;
-            }
-
             .price {
-                grid-row: 2 / 4;
+                grid-row: 4 / 5;
                 grid-column: 4 / 5;
                 display: flex;
                 justify-content: flex-end;
+                align-items: flex-start;
             }
 
-            &:hover {
-                cursor: pointer;
-
-                h1 {
-                    color: darkgoldenrod;
-                    transition: 0.3s;
-                }
+            &:not(:nth-child(2)) {
+                border-top: 1px dashed rgba(0, 0, 0, 0.1);
             }
         }
     }

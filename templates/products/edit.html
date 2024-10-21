@@ -3,7 +3,7 @@
 	    <span id="close" class="close">&#x2715</span>
 	</div>
 	<div>
-	    <form method="post" enctype="multipart/form-data" action="{{ url_for('products.edit', product_id=product.product_id) }}">
+	    <form data-product-id="{{ product.product_id }}" method="post" enctype="multipart/form-data" action="{{ url_for('products.edit', product_id=product.product_id) }}">
 	        <div class="heading-2">
 				<div class="heading-2">Edit product details</div>
 	        </div>
@@ -52,12 +52,28 @@
                     <input type="text" class="form-control" id="color" name="color" value="{{product.color}}">
                 </div>
             </div>
-            <div class="form-row">
-            	<div class="form-group">
-	                <label for="images">Product Images</label>
-	                <input type="file" class="form-control" id="images" name="images" multiple>
-	            </div>
-            </div>
+			<div class="form-row">
+				<div class="form-group image-drag">
+					<label for="images">
+						Product Images 
+						<span class="input-action">Upload image</span>
+					</label>
+					<input type="file" id="images" name="images" accept="image/*" multiple>
+					<div id="drop-zone" class="images-preview">
+						{% for image in product.images %}
+						<div id="image-{{image.image_id}}" class="column">
+							<div class="image-container">
+								<img src="static/uploads/{{image.image_url}}">
+							</div>
+							<div class="controls">
+								<div data-image-id="{{image.image_id}}" class="delete"></div>
+							</div>
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+			<div class="heading-3">Drag an image to upload.</div>
 	        <hr>
 	        <div class="form-row">
 	            <button type="button" id="close-btn" class="form-btn width-50">Cancel</button>

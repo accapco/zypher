@@ -16,6 +16,13 @@ form {
         color: rgba(0, 0, 0, 0.8);
     }
 
+    .heading-3 {
+        width: 100%;
+        font-size: 16px;
+        text-align: center;
+        color: rgba(0, 0, 0, 0.5);
+    }
+
     .form-row {
         display: flex;
         flex-direction: row;
@@ -23,6 +30,7 @@ form {
         justify-items: center;
         align-items: center;
         gap: 18px;
+        margin-bottom: 6px;
 
         .form-group {
             position: relative;
@@ -38,6 +46,26 @@ form {
                 margin-bottom: 8px;
                 color: rgba(0, 0, 0, 0.7);
                 letter-spacing: 0.08em;
+
+                .input-action {
+                    font-size: 10px;
+                    font-weight: bold;
+                    height: 14px;
+                    color: white;
+                    background-color: rgba(47, 79, 79, 0.8);
+                    border: 1px solid rgba(0, 0, 0, 0);
+                    border-radius: 14px;
+                    padding: 3px 6px;
+                    margin-left: 20px;
+
+                    &:hover {
+                        border: 1px solid rgba(47, 79, 79, 0.8);
+                        color: rgba(47, 79, 79, 0.8);
+                        background-color: white;
+                        cursor: pointer;
+                        opacity: 60%;
+                    }
+                }
             }
         
             input[type=text], input[type=email], input[type=password], input[type=number], select {
@@ -53,6 +81,90 @@ form {
 
                     &::selection {
                         background-color: transparent;
+                    }
+                }
+            }
+
+            &.image-drag {
+                padding-top: 10px;
+
+                input[type=file] {
+                    display: none;
+                }
+
+                .images-preview {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                    grid-template-rows: 100px;
+                    width: 100%;
+                    align-items: center;
+                    row-gap: 12px;
+                    column-gap: 16px;
+                    padding: 14px;
+                    border-radius: 6px;
+                    background-color: #e6e6e6;
+                    border: 2px dashed rgba(0, 0, 0, 0);
+                    
+                    .column {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        width: 100%;
+                        height: 100%;
+                        position: relative;
+                    }
+
+                    .image-container {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 90px;
+                        height: 90px;
+                        overflow: hidden;
+                        border-radius: 6px;
+                        border: 2px dashed rgba(0, 0, 0, 0.1);
+    
+                        img {
+                            max-width: 90px;
+                            min-height: 90px;
+                            border-radius: 6px;
+                            object-fit: cover;
+                        }
+                    }
+
+                    .controls {
+                        height: 30px;
+                        width: 80px;
+                        padding: 10px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-end;
+                        position: absolute;
+                        top: 0px;
+                    }
+
+                    .delete {
+                        position: absolute;
+                        top: -6px;
+                        right: -6px;
+                        width: 20px;
+                        height: 20px;
+                        background-size: 20px 20px;
+                        background-image: url('../icons/remove.png');
+
+                        &:hover {
+                            opacity: 50%;
+                            cursor: pointer;
+                            transition: opacity 0.3s;
+                        }
+                    }
+                }
+
+                #drop-zone {
+                    &.dragover {
+                        border: 2px dashed rgba(0, 0, 0, 0);
+                        background-color: rgba(184, 135, 11, 0.3);
                     }
                 }
             }

@@ -39,7 +39,7 @@ def add():
 @products_bp.route('/<int:product_id>/edit', methods=['GET', 'POST'])
 def edit(product_id):
     if request.method == 'POST':
-        response = Products.update(product_id, request.form, request.files)
+        response = Products.update(product_id, request.form)
         response['redirect'] = url_for('.getall')
         return jsonify(response), response['status_code']
     
@@ -47,6 +47,16 @@ def edit(product_id):
     categories = Categories.getall().get('categories')
     html = render_template("products/edit.html", product=product, categories=categories) 
     return jsonify({'html': html}), 200
+
+@products_bp.route('/<int:product_id>/images/upload', methods=['POST'])
+def upload_image(product_id):
+    response = Products.upload_image(product_id, request.files)
+    return jsonify(response), response['status_code']
+
+@products_bp.route('/<int:product_id>/images/<int:image_id>/delete', methods=['POST'])
+def remove_image(product_id, image_id):
+    response = Products.remove_image(image_id)
+    return jsonify(response), response['status_code']
 
 @products_bp.route('/<int:product_id>/archive', methods=['GET', 'POST'])
 def archive(product_id):     

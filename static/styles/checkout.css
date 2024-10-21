@@ -101,6 +101,7 @@ button.pay-now:hover {
         height: 60%;
         overflow-y: scroll;
         padding: 0px 20px;
+        padding-top: 20px;
         border-top: 1px solid rgba(0, 0, 0, 0.1);
 
         &::-webkit-scrollbar {

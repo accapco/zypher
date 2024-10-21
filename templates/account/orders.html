@@ -4,6 +4,7 @@
 <div class="orders">
     <div class="nav">
         <button class="tab active" data-status="all">All</button>
+        <button class="tab" data-status="pending">Pending</button>
         <button class="tab" data-status="to ship">To Ship</button>
         <button class="tab" data-status="shipped">Shipped</button>
         <button class="tab" data-status="received">Received</button>
@@ -11,38 +12,57 @@
     </div>
     <div class="orders-table">
         {% for order in orders %}
-        <div class="order">
-            <div class="image-container">
-                <img src="{{ url_for('static', filename='uploads/'+order.image_url) }}" alt="">
+            <div class="order">
+                <div class="top-order-info">
+                    <p class="order-date">Order was placed on {{ order.date_of_purchase|format_time }}</p>
+                    <h3 class="order-status">{{ order.status }}</h3>
+                </div>
+                {% for item in order.order_items %}
+                <div class="order-item">
+                    <div class="image-container">
+                        <img src="{{ url_for('static', filename='uploads/'+item.image_url) }}" alt="">
+                    </div>
+                    
+                    <div class="product-name">
+                        <h1>{{ item.product_name }}</h1>
+                    </div>
+                    <div class="order-number">
+                        <h4>ORDER ID: {{ item.order_number }}</h4>
+                    </div>
+    
+                    <div class="size">
+                        <p>Size: {{ item.size }}</p>
+                    </div>
+                    <div class="color">
+                        <p>Color: {{ item.color }}</p>
+                    </div>
+    
+                    <div class="quantity">
+                        <p>Quantity: {{ item.quantity }}</p>
+                    </div>
+                    <div class="payment-method">
+                        <p>Payment Method: {{ item.payment_method }}</p>
+                    </div>
+    
+                    <div class="price">
+                        <h1>₱ {{ item.total_price }}</h1>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="bottom-order-info">
+                    <div class="order-total">
+                        <h4>Order Total:</h4>
+                        <h2>₱ {{ order.total_amount }}</h2>
+                    </div>
+                    <div class="delivery-date">
+                        <p>Delivery attempt should be made between 23/10/2024 and 27/10/2024.</p>
+                    </div>
+                    <h3 class="buttons">
+                        <button type="button" class="view" data-order-id="">View Order</button>
+                        <button type="button" class="cancel">Cancel Order</button>
+                    </h3>
+                </div>
             </div>
-            <div class="order-number">
-                <h1>{{ order.order_number }}</h1>
-            </div>
-            <div class="product-name">
-                <h1>{{ order.product_name }}</h1>
-            </div>
-            <div class="size">
-                <p>Size: {{ order.size }}</p>
-            </div>
-            <div class="color">
-                <p>Color: {{ order.color }}</p>
-            </div>
-            <div class="quantity">
-                <p>Quantity: {{ order.quantity }}</p>
-            </div>
-            <div class="payment-method">
-                <p>Payment: {{ order.paymentmethod }}</p>
-            </div>
-            <div class="order-date">
-                <p>Payment: {{ order.date_of_purchase }}</p>
-            </div>
-            <div class="status">
-                <h3>{{ order.status }}</h3>
-            </div>
-            <div class="price">
-                <h2>₱{{ order.total_price }}</h2>
-            </div>
-        </div>
         {% endfor %}
     </div>
 </div>

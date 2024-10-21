@@ -2,31 +2,31 @@ from app import mysql
 from flask_mysqldb import MySQLdb
 
 class Orders:
-    """""
-    def get(order_id, user_id):
+    def getall():
         try:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute('''
-                SELECT os.order_number, o.created_at AS date_of_purchase, 
-                   o.status, o.total_amount
-            FROM Order_Summary os
-            JOIN Orders o ON os.order_id = o.order_id
-            WHERE os.order_id = %s AND o.user_id = %s
-        ''', (order_id, user_id))
-            order = cursor.fetchall()
+                SELECT os.order_number, os.quantity, os.payment_method, os.order_id,
+                o.created_at AS date_of_purchase, o.status, o.total_amount,
+                p.product_name, p.image_url, p.size, p.color
+                FROM Order_Summary os
+                JOIN Orders o ON os.order_id = o.order_id
+                JOIN Products p ON os.product_id = p.product_id''')
+            orders = cursor.fetchall()
             cursor.close()
 
             return {
-                'order': order,
+                'orders': orders,
                 'status': "success",
                 'status_code': 200
-            }
+                }
         except Exception as e:
             return {
+                'orders': [],
                 'message': f"Error retrieving order: {e}",
                 'status': "error",
                 'status_code': 500
-            }"""
+                }
 
     def add(user_id, form, items):
         # process shipping and billing information
@@ -61,7 +61,7 @@ class Orders:
             cursor.execute('''
                 INSERT INTO Orders 
                 (user_id, order_date, status, total_amount, shipping_address) 
-                VALUES (%s, NOW(), 'Pending', %s, %s)
+                VALUES (%s, NOW(), 'pending', %s, %s)
             ''', (user_id, total, shipping_address))
             mysql.connection.commit()
             order_id = cursor.lastrowid
