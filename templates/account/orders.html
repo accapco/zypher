@@ -1,5 +1,9 @@
 {% extends base_html %}
 
+{% block title %}
+<title>Orders</title>
+{% endblock %}
+
 {% block ajax_content %}
 <div class="orders">
     <div class="nav">
@@ -58,7 +62,7 @@
                         <p>Delivery attempt should be made between 23/10/2024 and 27/10/2024.</p>
                     </div>
                     <h3 class="buttons">
-                        <button type="button" class="view" data-order-id="">View Order</button>
+                        <button type="button" class="view" data-order-id="{{order.order_id}}">View Order</button>
                         <button type="button" class="cancel">Cancel Order</button>
                     </h3>
                 </div>

@@ -186,7 +186,46 @@ class Account:
             cursor.close()
 
             return {
-                'order': orders,
+                'orders': orders,
+                'status': "success",
+                'status_code': 200
+            }
+        except Exception as e:
+            return {
+                'message': f"Error retrieving order: {e}",
+                'status': "error",
+                'status_code': 500
+            }
+        
+    @staticmethod
+    def get_order(user_id, order_id):
+        try:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('''
+                SELECT order_id, order_date as date_of_purchase, 
+                status, total_amount, shipping_address
+                FROM Orders
+                WHERE user_id = %s AND order_id = %s''', 
+                (user_id, order_id)
+                )
+            order = cursor.fetchone()
+
+            cursor.execute('''
+                SELECT os.order_number, os.order_id, 
+                os.total_price, os.quantity, os.payment_method, 
+                p.image_url, p.product_name, p.size, p.color, p.price
+                FROM Order_Summary os
+                JOIN Products p ON os.product_id = p.product_id
+                WHERE order_id = %s
+                ORDER BY os.order_id ASC''', 
+                (order['order_id'],)
+                )
+            items = cursor.fetchall()
+            order['order_items'] = items
+            cursor.close()
+
+            return {
+                'order': order,
                 'status': "success",
                 'status_code': 200
             }

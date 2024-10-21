@@ -34,25 +34,19 @@ def details():
 
 @account_bp.route('/orders', methods=['GET'])
 def orders():
-    print("Received request for orders")
     user_id = session.get('user_id')
-
-    print(f"User ID: {user_id}")
 
     # Validate user_id parameter
     if not user_id:
-        return jsonify({'message': 'Missing user_id parameter'}), 400
+        return jsonify({'message': 'You are not logged in.'}), 400
 
     # Fetch orders from the model
     order_data = Account.get_orders(user_id)
-    print(order_data)
     if order_data['status'] == 'error':
         return jsonify({'message': order_data['message']}), order_data['status_code']
 
     # Extract orders from the result, ensuring it's a list
-    orders = list(order_data['order'])  # Convert tuple to list if necessary
-
-    print(f"Orders for user {user_id}: {orders}")
+    orders = list(order_data['orders'])  # Convert tuple to list if necessary
 
     # Render template based on request type
     if request.args.get('partial') != "true":
@@ -61,7 +55,25 @@ def orders():
     html = render_template('account/orders.html', base_html="ajax.html", orders=orders)
     return jsonify({'html': html}), 200
 
+@account_bp.route('/orders/<int:order_id>', methods=['GET'])
+def get_order(order_id):
+    user_id = session.get('user_id')
 
+    if not user_id:
+        return jsonify({'message': 'You are not logged in.'}), 400
+
+    order_data = Account.get_order(user_id, order_id)
+
+    if order_data['status'] == 'error':
+        return jsonify({'message': order_data['message']}), order_data['status_code']
+
+    order = order_data['order']
+
+    if request.args.get('partial') != "true":
+        return render_template("account/order_item.html", base_html="account/base.html", order=order)
+
+    html = render_template('account/order_item.html', base_html="ajax.html", order=order)
+    return jsonify({'html': html}), 200
 
 @account_bp.route('/register', methods=['GET', 'POST'])
 def register():

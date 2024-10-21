@@ -10,39 +10,80 @@ var active_btn = null;
 
 document.addEventListener("DOMContentLoaded", (event) => {
     if (window.location.pathname.includes("/details")) {
-        attachEditButton(main_div);
-        handleAccountSubmit(main_div);
-        account_details_link.classList.add("active");
-        active_btn = account_details_link;
+        attachHandlers('/details');
+        window.history.pushState(
+            {
+                "html": main_div.innerHTML,
+                "route": '/details'
+            }, 
+            page, "/account/details"
+        );
     } else if (window.location.pathname.includes("/orders")) {
-        attachOrderTabs(main_div);
-        orders_link.classList.add("active");
-        active_btn = orders_link;
+        attachHandlers('/orders');
+        window.history.pushState(
+            {
+                "html": main_div.innerHTML,
+                "route": '/orders'
+            }, 
+            page, "/account/orders"
+        );
     }
 });
+
+// run functions based on route
+function attachHandlers(url_path) {
+    if (url_path === '/details') {
+        attachEditButton(main_div);
+        handleAccountSubmit(main_div);
+        setActiveButton('/details');
+    }
+
+    if (url_path === '/orders') {
+        attachOrderTabs(main_div);
+        attachOrderItemLinks(main_div);
+        setActiveButton('/orders');
+    }
+}
+
+function setActiveButton(url_path) {
+    if (url_path === '/details') {
+        account_details_link.classList.add("active");
+        if (active_btn !== null && active_btn !== account_details_link) {
+            active_btn.classList.remove("active");
+        }
+        active_btn = account_details_link;
+    }
+
+    if (url_path === '/orders') {
+        orders_link.classList.add("active");
+        if (active_btn !== null  && active_btn !== orders_link) {
+            active_btn.classList.remove("active");
+        }
+        active_btn = orders_link;
+    }
+}
 
 // events for pressing menu buttons
 function processAjaxData(data, page, url_path){
     main_div.innerHTML = data.html;
-    window.history.pushState({"html": data.html}, page, "/account"+url_path);
+    attachHandlers(url_path);
+    document.title = page;
+    window.history.pushState(
+        {
+            "html": data.html,
+            "route": url_path
+        }, 
+        page, "/account"+url_path
+    );
 }
 
 window.addEventListener("popstate", (event) => {
     if(event.state){
         main_div.innerHTML = event.state.html;
+        attachHandlers(event.state.route);
+        document.title = event.page;
     }
 });
-
-// set active menu button
-account_menu_btns.forEach((btn) => {
-    btn.addEventListener("click", (event) => {
-        if (active_btn) {
-            active_btn.classList.remove("active")
-        }
-        event.target.classList.add("active");
-        active_btn = event.target;
-    });
-})
 
 // account details
 account_details_link.addEventListener("click", async (event) => {
@@ -50,9 +91,7 @@ account_details_link.addEventListener("click", async (event) => {
     const url = "/account/details?partial=true";
     const response = await fetch (url, {method: 'GET'});
     const data = await response.json();
-    processAjaxData(data, "Account Details", "/details");
-    attachEditButton(main_div);
-    handleAccountSubmit(main_div);
+    processAjaxData(data, "Account", "/details");
 });
 
 function attachEditButton(html) {
@@ -97,8 +136,22 @@ orders_link.addEventListener("click", async (event) => {
     const response = await fetch (url, {method: 'GET'});
     const data = await response.json();
     processAjaxData(data, "Orders", "/orders")
-    attachOrderTabs(main_div);
 });
+
+function attachOrderItemLinks(html) {
+    const view_btns =  html.querySelectorAll("button.view");
+
+    view_btns.forEach((btn) => {
+        btn.addEventListener("click", async (event) => {
+            event.preventDefault();
+            const order_id = btn.getAttribute("data-order-id");
+            const url = `/account/orders/${order_id}?partial=true`;
+            const response = await fetch (url, {method: 'GET'});
+            const data = await response.json();
+            processAjaxData(data, "Orders", `/orders/${order_id}`);
+        });
+    });
+}
 
 function attachOrderTabs(html) {
     const tabs = html.querySelectorAll(".nav .tab");

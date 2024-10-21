@@ -1,0 +1,90 @@
+{% extends base_html %}
+
+{% block title %}
+<title>Order</title>
+{% endblock %}
+
+{% block ajax_content %}
+<div class="single-order-view">
+
+    <div class="order">
+        <div class="top-order-info">
+            <div>
+                <h1 class="order-count">Order({{order.order_items|length}})</h1>
+                <p class="date-of-purchase">Order was placed on {{ order.date_of_purchase }}</p>
+            </div>
+            <div class="order-status">
+                <h3>{{ order.status }}</h3>
+            </div>
+        </div>
+    
+        <div class="order-items">
+            {% for item in order.order_items %}
+        
+            <div class="order-item">
+                <div class="image-container">
+                    <img src="{{ url_for('static', filename='uploads/'+item.image_url) }}" alt="">
+                </div>
+                
+                <div class="product-name">
+                    <h1>{{ item.product_name }}</h1>
+                </div>
+                <div class="order-number">
+                    <h4>ORDER ID: {{ item.order_number }}</h4>
+                </div>
+
+                <div class="size">
+                    <p>Size: {{ item.size }}</p>
+                </div>
+                <div class="color">
+                    <p>Color: {{ item.color }}</p>
+                </div>
+
+                <div class="quantity">
+                    <p>{{ item.quantity }} × ₱ {{ item.price }}</p>
+                </div>
+
+                <div class="price">
+                    <h1>₱ {{ item.total_price }}</h1>
+                </div>
+            </div>
+        
+            {% endfor %}
+        </div>
+
+        <div class="bottom-order-info">
+            <div class="shipping-info">
+                <div class="shipping-address">
+                    <p>Shipping to:</p>
+                    <p>{{ order.shipping_address }}</p>
+                </div>
+                <div class="delivery-date">
+                    <p>Delivery attempt should be made between 23/10/2024 and 27/10/2024.</p>
+                </div>
+            </div>
+            <div class="payment-details">
+                <div class="order-total">
+                    <h4>Order Total: </h4>
+                    <h2>₱ {{ order.total_amount }}</h2>
+                </div>
+                <p class="payment-method">Payment method: COD</p>
+            </div>
+        </div>
+
+        {% if order.status in ('pending', 'to ship', 'shipped') %}
+        <div class="buttons">
+            <button class="cancel">Cancel Order</button>
+        </div>
+        {% elif order.status == 'received' %}
+        <div class="buttons">
+            <button class="rate">Rate Item</button>
+            <button class="return">Return/Refund</button>
+        </div>
+        {% elif order.status == 'received' %}
+        <div class="buttons">
+            <button class="rate">Change Rating</button>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -384,6 +384,7 @@ body {
             }
 
             p {
+                font-size: 14px;
                 grid-column: 2 / 3;
             }
 
