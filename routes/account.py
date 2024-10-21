@@ -45,7 +45,7 @@ def orders():
 
     # Fetch orders from the model
     order_data = Account.get_orders(user_id)
-
+    print(order_data)
     if order_data['status'] == 'error':
         return jsonify({'message': order_data['message']}), order_data['status_code']
 
