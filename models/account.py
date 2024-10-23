@@ -27,12 +27,12 @@ class Account:
         username = form['username']   
         email = form['email']
         first_name = form['first_name']
-        last_name = form['last_name']         
+        last_name = form['last_name']           
         phone = form['phone']
         address = form['address']
-        city = form['city']
-        state = form['state']
-        zipcode = form['zipcode']
+        region_id = form['region']  # New: region_id from the form
+        area_id = form['area']      # New: area_id from the form
+        zipcode_id = form['zipcode']  # New: zipcode_id from the form
         country = form['country']
         user_id = form['userid']
 
@@ -52,15 +52,13 @@ class Account:
         try:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute('''
-                UPDATE tbl_users SET username=%s, email=%s, 
-                first_name=%s, last_name=%s, phone=%s, 
-                address=%s, city=%s, state=%s, 
-                zipcode=%s, country=%s 
-                WHERE user_id=%s''', 
-                (username, email, 
-                first_name, last_name, phone, 
-                address, city, state, 
-                zipcode, country, user_id)
+                UPDATE tbl_users 
+                SET username=%s, email=%s, first_name=%s, last_name=%s, phone=%s, 
+                address=%s, region_id=%s, area_id=%s, zipcode_id=%s, country=%s 
+                WHERE user_id=%s
+                 ''', (
+                username, email, first_name, last_name, phone, 
+                address, region_id, area_id, zipcode_id, country, user_id)
                 )
             mysql.connection.commit()
             return {
@@ -74,7 +72,30 @@ class Account:
                 'status': "error", 
                 'status_code': 500
                 }
-        
+    
+    @staticmethod
+    def get_regions_areas_zipcodes(user):
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+        # Get all regions
+        cursor.execute("SELECT RegionID, RegionName FROM Region")
+        regions = cursor.fetchall()
+        # Get areas and zipcodes based on the user's region_id and area_id
+        areas = []
+        zipcodes = []
+
+        if user['region_id']:
+            cursor.execute("SELECT AreaID, Area FROM Area WHERE RegionID = %s", (user['region_id'],))
+            areas = cursor.fetchall()
+        print("TEST AREAS", areas)
+        if user['area_id']:
+            cursor.execute("SELECT ZipCodeID, ZipCode FROM Zipcode WHERE AreaID = %s", (user['area_id'],))
+            zipcodes = cursor.fetchall()
+        print("TEST ZIPCODES", zipcodes)
+        # Always close the cursor when done
+        cursor.close()
+        return regions, areas, zipcodes
+
     @staticmethod
     def register(form):
         userName = form['username']

@@ -38,24 +38,45 @@
                 <input type="text" class="form-control" id="address" name="address" value="{{ user.address }}" disabled>
             </div>
             <div class="form-group">
-                <label for="City">City</label>
-                <input type="text" class="form-control" id="city" name="city" value="{{ user.city }}" disabled>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label for="State">State</label>
-                <input type="text" class="form-control" id="state" name="state" value="{{ user.state }}" disabled>
-            </div>
-            <div class="form-group">
-                <label for="Zip Code">Zip Code</label>
-                <input type="text" class="form-control" id="zipcode" name="zipcode" value="{{ user.zipcode }}" disabled>
-            </div>
-            <div class="form-group">
                 <label for="Country">Country</label>
                 <input type="text" class="form-control" id="country" name="country" value="{{ user.country }}" disabled>
             </div>
         </div>
+        <div class="form-row">
+            <!-- Region Dropdown -->
+            <div class="form-group">
+                <label for="region">Region</label>
+                <select class="form-control" id="region" name="region" onchange="updateAreas()">
+                    <option value="">Select Region</option>
+                    {% for region in regions %}
+                        <option value="{{ region.RegionID }}" {% if user.region_id == region.RegionID %}selected{% endif %}>{{ region.RegionName }}</option>
+                    {% endfor %}
+                </select>                
+            </div>
+        
+            <!-- Area Dropdown -->
+            <div class="form-group">
+                <label for="area">Area</label>
+                <select class="form-control" id="area" name="area" onchange="updateZipcodes()">
+                    <option value="">Select Area</option>
+                    {% for area in areas %}
+                        <option value="{{ area.AreaID }}" {% if user.area_id == area.AreaID %}selected{% endif %}>{{ area.Area }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Zipcode Dropdown -->
+            <div class="form-group">
+                <label for="zipcode">Zipcode</label>
+                <select class="form-control" id="zipcode" name="zipcode">
+                    <option value="">Select Zipcode</option>
+                    {% for zipcode in zipcodes %}
+                        <option value="{{ zipcode.ZipCodeID }}" {% if user.zipcode_id == zipcode.ZipCodeID %}selected{% endif %}>{{ zipcode.ZipCode }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        
         <input type="hidden" id="userid" name="userid" value="{{ user.user_id }}">
         <hr>
         <div class="form-row">
@@ -64,4 +85,71 @@
         </div>
     </form>
 </div>
+<script>
+    function updateAreas() {
+    var regionId = document.getElementById("region").value;
+    
+    console.log("Selected Region ID:", regionId);
+    // Prevent fetch if regionId is invalid
+    if (!regionId) {
+        document.getElementById("area").innerHTML = "<option value=''>Select Area</option>";
+        document.getElementById("zipcode").innerHTML = "<option value=''>Select Zipcode</option>";
+        return;
+    }
+
+    fetch(`/account/areas/${regionId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            var areaSelect = document.getElementById("area");
+            areaSelect.innerHTML = "<option value=''>Select Area</option>";
+            data.forEach(function(area) {
+                var option = document.createElement("option");
+                option.value = area[0];  // AreaID
+                option.text = area[1];   // Area Name
+                areaSelect.add(option);
+            });
+
+            // After loading areas, update zipcodes
+            updateZipcodes();
+        })
+        .catch(error => console.error('There was a problem with the fetch operation:', error));
+}
+
+
+function updateZipcodes() {
+    var areaId = document.getElementById("area").value;
+
+    if (!areaId) {
+        document.getElementById("zipcode").innerHTML = "<option value=''>Select Zipcode</option>";
+        return;
+    }
+
+    fetch(`/account/zipcodes/${areaId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            var zipcodeSelect = document.getElementById("zipcode");
+            zipcodeSelect.innerHTML = "<option value=''>Select Zipcode</option>";
+            data.forEach(function(zipcode) {
+                var option = document.createElement("option");
+                option.value = zipcode[0];  // ZipCodeID
+                option.text = zipcode[1];   // ZipCode
+                zipcodeSelect.add(option);
+            });
+        })
+        .catch(error => console.error('There was a problem with the fetch operation:', error));
+}
+
+
+</script>
+
 {% endblock %}

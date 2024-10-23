@@ -55,19 +55,19 @@
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <input type="text" name="postal" placeholder="Postal code" value="{{ user['zipcode'] }}">
-                    <label for="postal">Postal Code</label>
+                    <input type="text" name="region" placeholder="Region" value="{{ region_name if region_name else user['region_id'] }}">
+                    <label for="region">Region</label>
                 </div>
                 <div class="form-group">
-                    <input type="text" name="city" placeholder="City" value="{{ user['city'] if user else '' }}">
-                    <label for="city">City</label>
+                    <input type="text" name="city" placeholder="Area" value="{{ area_name if area else user['area_id'] }}">
+                    <label for="city">Area</label>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="postal" placeholder="Zip code" value="{{ user['zipcode_id'] }}">
+                    <label for="postal">Zip Code</label>
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group">
-                    <input type="text" name="region" placeholder="Region">
-                    <label for="region">Region</label>
-                </div>
                 <div class="form-group">
                     <input type="text" name="phone" placeholder="Phone" value="{{ user['phone'] }}">
                     <label for="phone">Phone</label>

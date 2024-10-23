@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 "html": main_div.innerHTML,
                 "route": '/details'
             }, 
-            page, "/account/details"
+            "Account", "/account/details"
         );
     } else if (window.location.pathname.includes("/orders")) {
         attachHandlers('/orders');
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 "html": main_div.innerHTML,
                 "route": '/orders'
             }, 
-            page, "/account/orders"
+            "Orders", "/account/orders"
         );
     }
 });

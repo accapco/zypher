@@ -1,0 +1,63 @@
+-- Create Region Table
+CREATE TABLE Region (
+    RegionID INT PRIMARY KEY,
+    RegionName NVARCHAR(50) NOT NULL
+);
+
+-- Create Area Table
+CREATE TABLE Area (
+    AreaID INT PRIMARY KEY,
+    Area NVARCHAR(50) NOT NULL,
+    RegionID INT,
+    FOREIGN KEY (RegionID) REFERENCES Region(RegionID)
+);
+
+-- Create Zipcode Table
+CREATE TABLE Zipcode (
+    ZipCodeID INT PRIMARY KEY,
+    ZipCode NVARCHAR(50),
+    ZipCodeName NVARCHAR(50),
+    AreaID INT,
+    FOREIGN KEY (AreaID) REFERENCES Area(AreaID)
+);
+
+-- Create Users Table
+CREATE TABLE tbl_users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    phone VARCHAR(15),
+    address VARCHAR(255),
+    region_id INT,    -- Foreign Key to Region
+    area_id INT,      -- Foreign Key to Area
+    zipcode_id INT,   -- Foreign Key to Zipcode
+    country VARCHAR(50),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_region FOREIGN KEY (region_id) REFERENCES Region(RegionID),
+    CONSTRAINT fk_area FOREIGN KEY (area_id) REFERENCES Area(AreaID),
+    CONSTRAINT fk_zipcode FOREIGN KEY (zipcode_id) REFERENCES Zipcode(ZipCodeID)
+);
+
+alter table tbl_users
+add column region_id int,
+add column area_id int,
+add column zipcode_id int
+
+alter table tbl_users
+drop column city,
+drop column state,
+drop column zipcode
+
+ALTER TABLE tbl_users
+ADD CONSTRAINT fk_region 
+FOREIGN KEY (region_id) REFERENCES Region(RegionID),
+   
+ADD CONSTRAINT fk_area 
+FOREIGN KEY (area_id) REFERENCES Area(AreaID),
+   
+ADD CONSTRAINT fk_zipcode 
+FOREIGN KEY (zipcode_id) REFERENCES Zipcode(ZipCodeID);
