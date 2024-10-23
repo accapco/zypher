@@ -99,5 +99,5 @@ def format_time(value, format='medium'):
     if format == 'full':
         format="EEEE, d. MMMM y 'at' h:mm a"
     elif format == 'medium':
-        format="d/M/y h:mm a"
+        format="MMM d, y h:mm a"
     return format_datetime(value, format)

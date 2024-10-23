@@ -75,10 +75,11 @@ CREATE TABLE Order_Summary (
     order_number VARCHAR(50),  -- Added order number
     contact_info VARCHAR(50),
     shipping_address VARCHAR(50),
+    billing_address VARCHAR(50),
     product_id INT,
     quantity INT NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
-    paymentmethod VARCHAR(50),
+    payment_method VARCHAR(50),
     total_price DECIMAL(10, 2) AS (quantity * price) STORED,  -- Total price for the item
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (order_id) REFERENCES Orders(order_id),

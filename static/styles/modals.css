@@ -72,6 +72,11 @@
         height: 400px;
         width: 600px;
     }
+
+    &.schedule-shipment {
+        height: 700px;
+        width: 600px;
+    }
 }
 
 .close {

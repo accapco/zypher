@@ -5,32 +5,87 @@
     <div class="container orders-list">
         {% for order in orders %}
         <div class="order">
-            <div class="image-container">
-                <img src="{{ url_for('static', filename='uploads/'+order.image_url) }}" alt="">
+            <div class="top-order-info">
+                <div class="user">
+                    <p>Order from: @{{ order.username }} | {{ order.first_name }} {{ order.last_name }}</p>
+                </div>
+                <div class="order-date">
+                    <p>Created: {{ order.order_date|format_time }}</p>
+                </div>
+                <div class="order-status">
+                    <h2 class="status">{{order.status}}</h2>
+                </div>
             </div>
-            <div class="product-name">
-                <h1>{{ order.product_name }}</h1>
+    
+            <div class="order-items">
+                <div class="order-product-images">
+                    {% for item in order.order_items[:3] %}
+                    <div class="image-container">
+                        <img src="{{ url_for('static', filename='uploads/'+item.image_url) }}" alt="">
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="order-summary">
+                    <div class="row summary-header">
+                        <h3 class="item-name">Item Name</h3>
+                        <h3 class="item-quantity">Qty.</h3>
+                        <h3 class="item-price">Item Price</h3>
+                    </div>
+                    {% for item in order.order_items %}
+                    <div class="row">
+                        <h3 class="item-name">{{ item.product_name }} </h3>
+                        <h3 class="item-quantity">{{ item.quantity }} </h3>
+                        <h3 class="item-price">₱ {{ item.total_price }}</h3>
+                    </div>
+                    {% endfor %}
+                    <div class="row order-total">
+                        <h3>Merchandise Subtotal:</h3>
+                        <h3>{{ order.order_items|length }}</h3>
+                        <h3>₱ {{ order.total_amount }}</h3>
+                    </div>
+                </div>
+
+                <div class="other-fees">
+                    <div class="row">
+                        <h3>Shipping Fee:</h3>
+                        <h3>₱ 0</h3>
+                    </div>
+                    <div class="row">
+                        <h3>Other Fees:</h3>
+                        <h3>₱ 0</h3>
+                    </div>
+                    <div class="row order-total">
+                        <h3>Order Total:</h3>
+                        <h1>₱ {{ order.total_amount }}</h1>
+                    </div>
+                </div>
             </div>
-            <div class="size">
-                <p>Size: {{ order.size }}</p>
-            </div>
-            <div class="color">
-                <p>Color: {{ order.color }}</p>
-            </div>
-            <div class="quantity">
-                <p>Quantity: {{ order.quantity }}</p>
-            </div>
-            <div class="payment-method">
-                <p>Payment: {{ order.payment_method }}</p>
-            </div>
-            <div class="order-id">
-                <h4>Order ID: {{ order.order_number }}</h4>
-            </div>
-            <div class="status">
-                <h3>{{ order.status }}</h3>
-            </div>
-            <div class="price">
-                <h2>₱{{ order.total_amount }}</h2>
+
+            <div class="bottom-order-info">
+                <div class="shipping-address">
+                    <p>Shipping to:</p>
+                    <p>{{order.shipping_address}}</p>
+                </div>
+                <div class="payment-method">
+                    <p>Mode of Payment: Bank</p>
+                </div>
+                <div class="buttons">
+                    {% if order.status == 'pending' %}
+                    <button class="cancel">Cancel Order</button>
+                    <button 
+                        data-route="/orders/{{order.order_id}}/schedule_shipment" 
+                        class="action confirm"
+                        >Confirm</button>
+                    {% elif order.status == 'to ship' %}
+                    <button class="action cancel">Cancel Order</button>
+                    <button class="action confirm">Mark as Shipped</button>
+                    {% elif order.status == 'shipped' %}
+                    <button class="action view">Status</button>
+                    {% else %}
+                    <button class="action view">Details</button>
+                    {% endif %}
+                </div>
             </div>
         </div>
         {% endfor %}

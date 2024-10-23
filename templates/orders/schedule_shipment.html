@@ -1,0 +1,36 @@
+<div id="modal-content" class="modal-content schedule-shipment">
+	<div class="row close-row">
+	    <span id="close" class="close">&#x2715</span>
+	</div>
+	<div>
+	    <form method="post" action="{{ url_for('orders.schedule_shipment', order_id=order.order_id) }}">
+	        <div class="heading-2">Schedule Shipment</div>
+            <hr>
+            <div class="info-box">
+                <div class="row">
+                    <p class="label">Customer:</p>
+                    <p>{{ order.first_name }} {{ order.last_name }}</p>
+                </div>
+                <div class="row">
+                    <p class="label">Shipping address:</p>
+                    <p>{{ order.shipping_address }}</p>
+                </div>
+                <div class="row">
+                    <p class="label">Order Total:</p>
+                    <p>₱ {{ order.total_amount }}</p>
+                </div>
+            </div>
+            <div class="form-row">
+	            <div class="form-group">
+	                <label for="name">Shipment Date</label>
+					<input type="date" id="schedule" name="schedule" placeholder="Date" name="schedule">
+	            </div>
+	        </div>
+	        <hr>
+	        <div class="form-row">
+	            <button type="button" id="close-btn" class="form-btn width-50">Cancel</button>
+				<button type="submit" id="save-btn" class="form-btn width-50">Schedule</button>
+	        </div>
+	    </form>
+	</div>
+</div>

@@ -96,7 +96,8 @@ account_details_link.addEventListener("click", async (event) => {
 
 function attachEditButton(html) {
     const edit_btn = html.querySelector("#edit-btn");
-    const form_fields = html.querySelectorAll("input[type=text], input[type=email]");
+    const save_btn = html.querySelector('#save-btn');
+    const form_fields = html.querySelectorAll("input[type=text], input[type=email], select");
 
     edit_btn.addEventListener("click", () => {
         if (edit_btn.innerText == "Enable Editing") {
@@ -104,11 +105,13 @@ function attachEditButton(html) {
                 field.removeAttribute('disabled');
             });
             edit_btn.innerText = "Disable Editing";
+            save_btn.classList.remove("disabled");
         } else {
             form_fields.forEach(field => {
                 field.setAttribute('disabled', true);
             });
             edit_btn.innerText = "Enable Editing";
+            save_btn.classList.add("disabled");
         }
     });
 }

@@ -167,8 +167,8 @@ function filterOrdersTable() {
     const orders_table = main_div.querySelectorAll(".orders-list .order");
 
     orders_table.forEach((row) => {
-        const order_status = row.querySelector(".status h3");
-        const payment_method = row.querySelector(".payment-method p");
+        const order_status = row.querySelector(".status");
+        const payment_method = row.querySelector(".payment-method");
         if ((active_order_status === "all" || order_status.innerText.toLowerCase().includes(active_order_status.toLowerCase())) &&
             (active_payment_method === "all" || payment_method.innerText.toLowerCase().includes(active_payment_method.toLowerCase())
         )) {
