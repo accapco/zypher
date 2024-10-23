@@ -6,6 +6,7 @@ from models.categories import Categories
 from models.cart import Cart
 from models.users import Users
 from models.orders import Orders
+from models.location import Area, Zipcode, LocationName
 
 from app import app
 
@@ -46,6 +47,19 @@ def prepare_checkout():
 def checkout():
     user = Users.get(session['user_id']).get('user')
     items = session.get('checkout_items')
+    
+    # Fetch region and area names
+    region_name = None
+    area_name = None
+    
+    if user['region_id']:
+        region_query = LocationName.get_region_name(user['region_id'])
+        region_name = region_query['RegionName'] if region_query else None
+    
+    if user['area_id']:
+        area_query = LocationName.get_area_name(user['area_id'])
+        area_name = area_query['Area'] if area_query else None
+
     if request.method == 'POST':
         response = Orders.add(session['user_id'], request.form, items)
         if response['status'] == "success":
@@ -55,7 +69,8 @@ def checkout():
         return jsonify(response), response['status_code']
     
     total = sum(float(i['price']) * int(i['quantity']) for i in items)
-    return render_template("checkout.html", user=user, selected_items=items, total=total)
+    return render_template("checkout.html", user=user, selected_items=items, total=total,
+                           region_name=region_name, area_name=area_name)
 
 @app.route('/order_summary/<int:order_id>', methods=['GET'])
 def order_summary(order_id):
