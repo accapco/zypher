@@ -183,7 +183,8 @@ class Account:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute('''
                 SELECT order_id, order_date as date_of_purchase, 
-                status, total_amount, shipping_address
+                status, total_amount, shipping_address, 
+                order_number, payment_method, contact_info
                 FROM Orders
                 WHERE user_id = %s
                 ORDER BY order_date DESC''', 
@@ -193,12 +194,11 @@ class Account:
 
             for order in orders:
                 cursor.execute('''
-                    SELECT os.order_number, os.order_id, 
-                    os.total_price, os.quantity, os.payment_method, 
+                    SELECT os.order_id, os.total_price, os.quantity, 
                     p.image_url, p.product_name, p.size, p.color
                     FROM Order_Summary os
                     JOIN Products p ON os.product_id = p.product_id
-                    WHERE order_id = %s
+                    WHERE os.order_id = %s
                     ORDER BY os.order_id ASC''', 
                     (order['order_id'],)
                     )
@@ -224,20 +224,20 @@ class Account:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute('''
                 SELECT order_id, order_date as date_of_purchase, 
-                status, total_amount, shipping_address
+                status, total_amount, shipping_address, order_number, 
+                payment_method, contact_info
                 FROM Orders
-                WHERE user_id = %s AND order_id = %s''', 
+                WHERE user_id = %s AND order_id = %s''',  
                 (user_id, order_id)
                 )
             order = cursor.fetchone()
 
             cursor.execute('''
-                SELECT os.order_number, os.order_id, 
-                os.total_price, os.quantity, os.payment_method, 
+                SELECT os.order_id, os.total_price, os.quantity, 
                 p.image_url, p.product_name, p.size, p.color, p.price
                 FROM Order_Summary os
                 JOIN Products p ON os.product_id = p.product_id
-                WHERE order_id = %s
+                WHERE os.order_id = %s
                 ORDER BY os.order_id ASC''', 
                 (order['order_id'],)
                 )
