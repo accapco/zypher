@@ -40,3 +40,17 @@ function toggleBillingDetails(selected) {
     billingOptions[1].querySelector('input').checked = true; // Check the radio button
     }
 }
+
+// handle submit
+const form = document.querySelector(".checkout-form");
+
+form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const form_data = new FormData(form);
+
+    const url = form.action;
+    const response = await fetch(url, {'method': "POST", 'body': form_data});
+    const data = await response.json();
+
+    window.location.href = data.redirect;
+});

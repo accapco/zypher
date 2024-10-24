@@ -63,7 +63,7 @@ def checkout():
     if request.method == 'POST':
         response = Orders.add(session['user_id'], request.form, items)
         if response['status'] == "success":
-            response['redirect'] = url_for('.order_summary', order_id=response['order_id'])
+            response['redirect'] = url_for('.checkout_summary', order_id=response['order_id'])
         else:
             response['redirect'] = url_for('.home')
         return jsonify(response), response['status_code']
@@ -72,10 +72,11 @@ def checkout():
     return render_template("checkout.html", user=user, selected_items=items, total=total,
                            region_name=region_name, area_name=area_name)
 
-@app.route('/order_summary/<int:order_id>', methods=['GET'])
-def order_summary(order_id):
-    order = Orders.get(order_id)
-    return render_template("order_summary.html", order_summary=order)
+@app.route('/checkout_summary/<int:order_id>', methods=['GET'])
+def checkout_summary(order_id):
+    order_data = Orders.get(order_id)
+    order = order_data['order']
+    return render_template("checkout_summary.html", order=order), order_data['status_code']
 
 @app.route('/admin')
 def admin():

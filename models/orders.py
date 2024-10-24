@@ -48,7 +48,7 @@ class Orders:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute('''
                 SELECT o.order_id, o.order_date, o.status,
-                o.total_amount, o.shipping_address, 
+                o.total_amount, o.shipping_address,
                 u.first_name, u.last_name, u.username
                 FROM Orders o 
                 JOIN tbl_users u on o.user_id = u.user_id
@@ -56,6 +56,16 @@ class Orders:
                 (order_id,)
                 )
             order = cursor.fetchone()
+
+            cursor.execute('''
+                SELECT os.quantity, os.price, os.total_price,
+                p.product_name, p.size, p.image_url
+                FROM Order_Summary os
+                JOIN Products p ON os.product_id = p.product_id
+                WHERE os.order_id = %s''',
+                (order_id,)
+                )
+            order['order_items'] = cursor.fetchall()
 
             cursor.close()
 
@@ -75,28 +85,24 @@ class Orders:
     @staticmethod
     def add(user_id, form, items):
         # process shipping and billing information
-        shipping_address = "{} {}, {}, {}, {}".format(
-            form['f_name'], form['l_name'], 
-            form['address'], form['city'], 
-            form['postal']
-        )
-        print(shipping_address)
-        if form.get('billing') != 'same':
-            shipping_address = "{} {}, {}, {}, {}".format(
-                form['f_name'], form['l_name'], 
-                form['address'], form['city'], 
-                form['postal'], form['region']
-            )
-        payment_method = form['payment']
-        print(payment_method)
-        billing_address = shipping_address if form['billing'] == 'same' else "{} {}, {}, {}, {}".format(
-            form['f_name'], form['l_name'], 
-            form['address'], form['city'], 
-            form['postal']
+        shipping_address = "{} {} {}, {}, {}".format(
+            form['address'], form['city'], form['postal'], 
+            form['region'], form['country']
         )
 
+        if form.get('billing') != 'same':
+            billing_address = "{} {} {}, {}, {}".format(
+                form['billing_address'], form['billing_city'], 
+                form['billing_postal'], form['billing_region'], 
+                form['billing_country']
+            )
+        else:
+            billing_address = shipping_address
+
+        payment_method = form['payment']
+
         contact_info = "{} (Phone: {})".format(form.get('contact'), form.get('phone'))
-        print("Contact Info:", contact_info)
+
         # calculate total price
         total = sum(float(i['price']) * int(i['quantity']) for i in items)
 
@@ -118,7 +124,6 @@ class Orders:
                 price = item['price']
 
                 # count the existing orders for this product to generate the order number
-                print(product_id, quantity, price)
                 cursor.execute('''
                     SELECT COUNT(*) AS order_count FROM Order_Summary 
                     WHERE product_id = %s
@@ -129,18 +134,16 @@ class Orders:
                 else:
                     order_count = 1  # If no rows found, start with 1
                 order_number = f"ZYPHER{product_id}00{order_count}"
-                print("Generated Order Number:", order_number)
 
                 # insert into Order_Summary
                 cursor.execute('''
                     INSERT INTO Order_Summary 
                     (order_id, order_number, contact_info, shipping_address, 
                      payment_method, billing_address, product_id, quantity, price) 
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                ''', (
-                    order_id, order_number, contact_info, shipping_address,
-                    payment_method, billing_address, product_id, quantity, price
-                ))
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)''', 
+                    (order_id, order_number, contact_info, shipping_address,
+                     payment_method, billing_address, product_id, quantity, price)
+                    )
                 mysql.connection.commit()
 
             cursor.close()
@@ -150,19 +153,19 @@ class Orders:
                 'message': "Order created successfully.",
                 'status': "success",
                 'status_code': 201
-            }
+                }
 
         except Exception as e:
             return {
                 'message': f"Order creation failed: {e}",
                 'status': "error",
                 'status_code': 500
-            }
+                }
         
     @staticmethod
     def schedule_shipment(order_id):
         return {
-                'message': "Shipment scheduled.",
-                'status': "success",
-                'status_code': 200
+            'message': "Shipment scheduled.",
+            'status': "success",
+            'status_code': 200
             }

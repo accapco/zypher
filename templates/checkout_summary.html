@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}
+<title>Checkout Summary</title>
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static',filename='styles/checkout_summary.css') }}"> 
+{% endblock %}
+
+{% block content %}
+<div id="checkout-summary-main">
+    <div id="checkout-container">
+        <div id="checkout-summary-header">
+            <h1>Your order has been placed</h1>
+            <p>Order placed on {{ order.order_date|format_time }}</p>
+        </div>
+        <div id="header-row" class="row">
+            <h4 class="flex-3 product-column">Product</h4>
+            <h4 class="flex-1">Quantity</h4>
+            <h4 class="flex-1">Price</h4>
+            <h4 class="flex-1">Total Price</h4>
+        </div>
+        <div id="order-items">
+            {% for item in order.order_items %}
+            <div class="row">
+                <div class="flex-1 image-container">
+                    <img src="{{url_for('static', filename='/uploads/'+item.image_url)}}" alt="">
+                </div>
+                <p class="flex-2">{{ item.product_name }}</p>
+                <p class="flex-1">{{ item.quantity }}</p>
+                <p class="flex-1">₱ {{ item.price }}</p>
+                <p class="flex-1">₱ {{ item.total_price }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        <div id="summary-row" class="row">
+            <div class="flex-1 order-total">
+                <p>Order Total: </p>
+                <h3>₱ {{ order.total_amount }}</h3>
+            </div>
+        </div>
+        <div id="right-side-panel">
+            <div id="order-number" class="panel-section">
+                <h2>Order Reference Number:</h2>
+                <p>ZYPHER10001</p>
+            </div>
+            <div id="payment-method" class="panel-section">
+                <h2>Payment Method:</h2>
+                <p>Bank</p>
+            </div>
+            <div id="shipping-info" class="panel-section">
+                <h2>Shipping Address:</h2>
+                <p>{{ order.shipping_address }}</p>
+            </div>
+            <div id="shop-more" class="panel-section">
+                <a href="/catalog">Continue Shopping  →</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
