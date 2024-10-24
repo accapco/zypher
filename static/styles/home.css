@@ -1,9 +1,20 @@
-.home-main {
-    grid-row: 2 / 14;
-    grid-column: 1 / 14;
+#home-main {
+    width: 100%;
+    height: calc(100vh - 116px);
+    box-sizing: border-box;
 
-    #splash {
+    #home-img-container {
         width: 100%;
-        object-fit: cover;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+
+        img {
+            object-fit: cover;
+            min-height: 100%;
+            max-width: 100%;
+        }
     }
 }

@@ -9,7 +9,7 @@ class Orders:
             
             cursor.execute('''
                 SELECT o.order_id, o.order_date, o.status,
-                o.total_amount, o.shipping_address, o.order_number,
+                o.total_amount, o.shipping_address, o.order_number, o.contact_info,
                 o.payment_method, o.billing_address, u.first_name, u.last_name, u.username
                 FROM Orders o 
                 JOIN tbl_users u on o.user_id = u.user_id
@@ -50,7 +50,7 @@ class Orders:
             cursor.execute('''
                 SELECT o.order_id, o.order_date, o.status,
                 o.total_amount, o.shipping_address, o.order_number,
-                o.payment_method, o.billing_address,
+                o.payment_method, o.billing_address, o.contact_info,
                 u.first_name, u.last_name, u.username
                 FROM Orders o 
                 JOIN tbl_users u on o.user_id = u.user_id
@@ -152,3 +152,11 @@ class Orders:
                 'status_code': 500
                 }
 
+    @staticmethod
+    def schedule_shipment(order_id):
+        return {
+                'order_id': order_id,
+                'message': "Shipment has been scheduled.",
+                'status': "success",
+                'status_code': 200
+                }

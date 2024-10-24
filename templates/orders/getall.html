@@ -2,95 +2,112 @@
     <div class="title">
         <h1>Orders</h1>
     </div>
-    <div class="container orders-list">
+    <div id="orders-list" class="container">
         {% for order in orders %}
         <div class="order">
-            <div class="top-order-info">
-                <div class="user">
-                    <p>Order from: @{{ order.username }} | {{ order.first_name }} {{ order.last_name }}</p>
+            <div class="top-info">
+                <div class="order-number">
+                    <p>{{ order.order_number }}</p>
                 </div>
-                <div class="order-date">
-                    <p>Created: {{ order.order_date|format_time }}</p>
-                </div>
-                <div class="order-status">
-                    <h2 class="status">{{order.status}}</h2>
-                </div>
-            </div>
     
-            <div class="order-items">
-                <div class="order-product-images">
-                    {% for item in order.order_items[:3] %}
-                    <div class="image-container">
-                        <img src="{{ url_for('static', filename='uploads/'+item.image_url) }}" alt="">
-                    </div>
-                    {% endfor %}
+                <div class="customer">
+                    <p>{{ order.first_name }} {{ order.last_name }}</p>
                 </div>
-
-                <div class="order-summary">
-                    <div class="row summary-header">
-                        <h3 class="item-name">Item Name</h3>
-                        <h3 class="item-quantity">Qty.</h3>
-                        <h3 class="item-price">Item Price</h3>
-                    </div>
-                    {% for item in order.order_items %}
-                    <div class="row">
-                        <h3 class="item-name">{{ item.product_name }} </h3>
-                        <h3 class="item-quantity">{{ item.quantity }} </h3>
-                        <h3 class="item-price">₱ {{ item.total_price }}</h3>
-                    </div>
-                    {% endfor %}
-                    <div class="row order-total">
-                        <h3>Merchandise Subtotal:</h3>
-                        <h3>{{ order.order_items|length }}</h3>
-                        <h3>₱ {{ order.total_amount }}</h3>
-                    </div>
+    
+                <div class="date">
+                    <p>{{ order.order_date|format_time }}</p>
                 </div>
-
-                <div class="other-fees">
-                    <div class="row">
-                        <h3>Shipping Fee:</h3>
-                        <h3>₱ 0</h3>
-                    </div>
-                    <div class="row">
-                        <h3>Other Fees:</h3>
-                        <h3>₱ 0</h3>
-                    </div>
-                    <div class="row order-total">
-                        <h3>Order Total:</h3>
-                        <h1>₱ {{ order.total_amount }}</h1>
-                    </div>
+    
+                <div class="total-amount">
+                    <p>₱ {{ order.total_amount }}</p>
+                </div>
+    
+                <div class="payment-method">
+                    <p>{{ order.payment_method|upper }}</p>
+                </div>
+    
+                <div class="status">
+                    <h2 class="{{order.status}}">{{ order.status }}</h2>
+                </div>
+    
+                <div class="expand">
+                    <div class="icon"></div>
                 </div>
             </div>
 
-            <div class="bottom-order-info">
-                <div class="shipping-address">
-                    <p>Shipping to:</p>
-                    <p>{{order.shipping_address}}</p>
+            <div class="expanded-content collapsed">
+                <div class="price-breakdown">
+                    <div class="table">
+                        <div class="row highlight">
+                            <p>Product Name</p>
+                            <p>Quantity</p>
+                            <p>Item Price</p>
+                        </div>
+                        {% for item in order.order_items %}
+                        <div class="row">
+                            <p>{{ item.product_name }}</p>
+                            <p>{{ item.quantity }}</p>
+                            <p class="price">{{ item.price }}</p>
+                        </div>
+                        {% endfor %}
+                        <div class="row highlight">
+                            <p>Merchandise Subtotal</p>
+                            <p>{{ order.order_items|length }}</p>
+                            <p class="price">{{ order.total_amount }}</p>
+                        </div>
+                        <div class="row">
+                            <p>Shipping fee</p>
+                            <p>—</p>
+                            <p class="price">0.00</p>
+                        </div>
+                        <div class="row highlight">
+                            <p>Order Total</p>
+                            <p>—</p>
+                            <p class="price">{{ order.total_amount }}</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="payment-method">
-                    <p>Mode of Payment: Bank</p>
-                </div>
-                <div class="buttons">
-                    {% if order.status == 'pending' %}
-                    <button class="cancel">Cancel Order</button>
-                    <button 
-                        data-route="/orders/{{order.order_id}}/schedule_shipment" 
-                        class="action confirm"
-                        >Confirm</button>
-                    {% elif order.status == 'to ship' %}
-                    <button class="action cancel">Cancel Order</button>
-                    <button class="action confirm">Mark as Shipped</button>
-                    {% elif order.status == 'shipped' %}
-                    <button class="action view">Status</button>
-                    {% else %}
-                    <button class="action view">Details</button>
-                    {% endif %}
+                <div class="delivery-details">
+                    <div class="info-box">
+                        <div class="row">
+                            <p class="label">Shipping Address:</p>
+                            <p>{{ order.shipping_address|title }}</p>
+                        </div>
+                        <div class="row">
+                            <p class="label">Billing Address:</p>
+                            {% if order.billing_address == order.shipping_address %}
+                            <p>Same as shipping address.</p>
+                            {% else %}
+                            <p>{{ order.billing_address|title }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="row">
+                            <p class="label">Contact Info:</p>
+                            <p>{{ order.contact_info }}</p>
+                        </div>
+                    </div>
+                    <div class="buttons">
+                        {% if order.status == 'pending' %}
+                        <button class="cancel">Cancel Order</button>
+                        <button
+                            data-route="/orders/{{order.order_id}}/schedule_shipment"
+                            class="action confirm"
+                            >Confirm</button>
+                        {% elif order.status == 'to ship' %}
+                        <button class="action cancel">Cancel Order</button>
+                        <button class="action confirm">Mark as Shipped</button>
+                        {% elif order.status == 'shipped' %}
+                        <button class="action view">Status</button>
+                        {% else %}
+                        <button class="action view">Details</button>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
-    <div class="function-buttons">
+    <div id="function-buttons">
         <div id="status-buttons" class="btn-group">
             <button data-status="all" class="active">All</button>
             <button data-status="pending">Pending</button>

@@ -13,19 +13,19 @@
 {% endblock %}
 
 {% block content %}
-<div class="cart-main">
+<div id="cart-content">
     <div id="title">
         <span>Your Shopping Cart</span>
     </div>
-    <div class="table">
-        <div class="table-header">
+    <div id="cart-table">
+        <div id="table-header">
             <input type="checkbox" onclick="selectAll(this)">
             <div class="item-col">Item</div>
             <div>Item Price</div>
             <div>Quantity</div>
             <div>Actions</div>
         </div>
-        <div class="table-rows">
+        <div id="table-rows">
             {% if cart_items %}
                 {% for item in cart_items %}
                 <div class="table-row" data-item-id="{{ item['cart_item_id'] }}">
@@ -64,12 +64,12 @@
                 </div>
                 {% endfor %}
             {% else %}
-            <div class="table-empty">
+            <div id="table-empty">
                 <div class="message">Your cart is empty</div>
             </div>
             {% endif %}
         </div>
-        <div class="checkout-summary">
+        <div id="checkout-summary">
             <div id="checkout-label"><span>Checkout Summary</span></div>
             <div id="order-total-label"><span>Order Total:</span></div>
             <div id="order-total"><span>₱ 0.00</span></div>

@@ -12,19 +12,21 @@
 {% endblock %}
 
 {% block content %}
-<div class="account-side">
-    <div id="details" class="page-link">
-        Account Details
+<div id="account-content">
+    <div class="account-side">
+        <div id="details" class="page-link">
+            Account Details
+        </div>
+        <div id="orders" class="page-link">
+            Orders
+        </div>
+        <div id="password-change" class="page-link">
+            Change Password
+        </div>
     </div>
-    <div id="orders" class="page-link">
-        Orders
+    <div class="account-main">
+        {% block ajax_content %}
+        {% endblock %}
     </div>
-    <div id="password-change" class="page-link">
-        Change Password
-    </div>
-</div>
-<div class="account-main">
-    {% block ajax_content %}
-    {% endblock %}
 </div>
 {% endblock %}

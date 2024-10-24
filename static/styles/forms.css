@@ -41,7 +41,10 @@ form {
             flex-direction: row;
             align-items: center;
             gap: 10px;
-            margin-bottom: 10px;
+
+            p {
+                margin: 10px;
+            }
 
             :first-child {
                 flex: 1;
@@ -54,6 +57,7 @@ form {
             .label {
                 font-size: 13px;
                 color: rgba(0, 0, 0, 0.6);
+                text-align: right;
             }
         }
     }

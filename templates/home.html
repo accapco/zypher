@@ -5,7 +5,9 @@
 {% endblock %}
 
 {% block content %}
-<div class="home-main">
-    <img id="splash" src="{{ url_for('static',filename='assets/background.jpg') }}">
+<div id="home-main">
+    <div id="home-img-container">
+        <img src="{{ url_for('static',filename='assets/background.jpg') }}">
+    </div>
 </div>
 {% endblock %}

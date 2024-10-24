@@ -17,12 +17,12 @@
     {% endblock %}
 </head>
 <body>
-    <div class="wrapper">
+    <div id="main-wrapper">
         {% if not session['loggedin'] %}
         <div id="login-modal" class="modal">
         </div>
         {% endif %}
-        <div class="header">
+        <div id="header">
             <div class="banner">
                 <div id="facebook-link">
                     <img class="icon" src="{{ url_for('static',filename='icons/facebook.svg') }}">
@@ -115,8 +115,13 @@
                 {% endif %}
             </div>
         </div>
-        {% block content %}
-        {% endblock %}
+        <div id="content">
+            {% block content %}
+            {% endblock %}
+        </div>
+        <div id="footer">
+
+        </div>
         <div id="notifications">
         </div>
     </div>

@@ -73,7 +73,7 @@ function handleSubmitAction(modal) {
     });
 }
 
-function attachExpandIcons(html) {
+function attachCategoryExpand(html) {
     const expand_icons = html.querySelectorAll('.expand-icon');
     if (expand_icons) {
         expand_icons.forEach(icon => {
@@ -93,6 +93,19 @@ function attachExpandIcons(html) {
     };
 }
 
+function attachOrderExpand(html) {
+    const expand_icons = html.querySelectorAll(".order .expand"); 
+
+    expand_icons.forEach((icon) => {
+        icon.addEventListener("click", (event) => {
+            const expanded_content = icon.parentElement.parentElement.querySelector(".expanded-content");
+            event.preventDefault();
+            expanded_content.classList.toggle("collapsed");
+            icon.classList.toggle("content-collapsed");
+        });
+    });
+}
+
 const main_div = document.querySelector(".admin-main");
 
 async function setMainDivContent(route) {
@@ -101,10 +114,11 @@ async function setMainDivContent(route) {
         main_div.innerHTML = html;
         attachActionButtons(main_div);
         if (route === "/categories/") {
-            attachExpandIcons(main_div);
+            attachCategoryExpand(main_div);
         }
         if (route === "/orders/") {
             attachFilters(main_div);
+            attachOrderExpand(main_div);
         }
     } else {
         window.location.reload()
@@ -164,13 +178,13 @@ function attachFilters(html) {
 }
 
 function filterOrdersTable() {
-    const orders_table = main_div.querySelectorAll(".orders-list .order");
+    const orders_table = main_div.querySelectorAll("#orders-list .order");
 
     orders_table.forEach((row) => {
         const order_status = row.querySelector(".status");
         const payment_method = row.querySelector(".payment-method");
-        if ((active_order_status === "all" || order_status.innerText.toLowerCase().includes(active_order_status.toLowerCase())) &&
-            (active_payment_method === "all" || payment_method.innerText.toLowerCase().includes(active_payment_method.toLowerCase())
+        if ((active_order_status === "all" || order_status.innerHTML.toLowerCase().includes(active_order_status.toLowerCase())) &&
+            (active_payment_method === "all" || payment_method.innerHTML.toLowerCase().includes(active_payment_method.toLowerCase())
         )) {
             row.style.display = "grid";
         } else  {

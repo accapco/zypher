@@ -60,7 +60,7 @@ p {
     flex-direction: row;
     align-items: center;
     background-color: white;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
     padding: 12px 26px;
     box-sizing: border-box;
     gap: 50px;
@@ -170,7 +170,7 @@ p {
         padding: 26px;
         flex: 1;
         max-height: 100px;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+        border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
     }
 
     #shop-more {

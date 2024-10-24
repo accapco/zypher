@@ -14,7 +14,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
         window.history.pushState(
             {
                 "html": main_div.innerHTML,
-                "route": '/details'
+                "route": '/details',
+                "page": "Account"
             }, 
             "Account", "/account/details"
         );
@@ -23,7 +24,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
         window.history.pushState(
             {
                 "html": main_div.innerHTML,
-                "route": '/orders'
+                "route": '/orders',
+                "page": "Orders"
             }, 
             "Orders", "/account/orders"
         );
@@ -71,7 +73,8 @@ function processAjaxData(data, page, url_path){
     window.history.pushState(
         {
             "html": data.html,
-            "route": url_path
+            "route": url_path,
+            "page": page
         }, 
         page, "/account"+url_path
     );
@@ -81,7 +84,7 @@ window.addEventListener("popstate", (event) => {
     if(event.state){
         main_div.innerHTML = event.state.html;
         attachHandlers(event.state.route);
-        document.title = event.page;
+        document.title = event.state.page;
     }
 });
 
