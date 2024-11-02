@@ -135,7 +135,15 @@ class Orders:
                     (order_id, shipping_address, product_id, quantity, price)
                 )
                 mysql.connection.commit()
+            product_ids = [item['product_id'] for item in items]
+            placeholders = ', '.join(['%s'] * len(product_ids))
 
+            cursor.execute(f'''
+                DELETE FROM Cart_Items 
+                WHERE cart_id = (SELECT cart_id FROM Cart WHERE user_id = %s) 
+                AND product_id IN ({placeholders})
+            ''', [user_id] + product_ids)
+            mysql.connection.commit()
             cursor.close()
 
             return {
