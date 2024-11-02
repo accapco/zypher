@@ -4,7 +4,7 @@
 	</div>
 	<div>
 	    <form method="post" action="{{ url_for('orders.schedule_shipment', order_id=order.order_id) }}">
-	        <div class="heading-2">Schedule Shipment Date</div>
+	        <div class="heading-2">Confirm Order Details</div>
             <hr>
             <div class="info-box">
 				<div class="row">
@@ -40,16 +40,16 @@
                     <p>{{ order.contact_info }}</p>
                 </div>
             </div>
-            <div class="form-row">
+            <!-- <div class="form-row">
 	            <div class="form-group">
 	                <label for="name">Shipment Date</label>
 					<input type="date" id="schedule" name="schedule" placeholder="Date" name="schedule" required>
 	            </div>
-	        </div>
+	        </div> -->
 	        <hr>
 	        <div class="form-row">
 	            <button type="button" id="close-btn" class="form-btn width-50">Cancel</button>
-				<button type="submit" id="save-btn" class="form-btn width-50">Set Schedule</button>
+				<button type="submit" id="save-btn" class="form-btn width-50">Confirm</button>
 	        </div>
 	    </form>
 	</div>

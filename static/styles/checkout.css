@@ -3,8 +3,7 @@
 }
 
 .checkout-main {
-    grid-row: 2 / 14;
-    grid-column: 1 / 14;
+    height: calc(100vh - 116px);
     display: flex;
     align-items: center;
     justify-content: center;

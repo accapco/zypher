@@ -156,7 +156,7 @@ class Orders:
     def schedule_shipment(order_id):
         return {
                 'order_id': order_id,
-                'message': "Shipment has been scheduled.",
+                'message': "Order has been confirmed.",
                 'status': "success",
                 'status_code': 200
                 }
