@@ -87,19 +87,16 @@
                         </div>
                     </div>
                     <div class="buttons">
-                        {% if order.status == 'pending' %}
+                        {% if order.status == 'Pending' %}
                         <button class="cancel">Cancel Order</button>
-                        <button
-                            data-route="/orders/{{order.order_id}}/schedule_shipment"
-                            class="action confirm"
-                            >Confirm</button>
-                        {% elif order.status == 'to ship' %}
-                        <button class="action cancel">Cancel Order</button>
-                        <button class="action confirm">Mark as Shipped</button>
-                        {% elif order.status == 'shipped' %}
-                        <button class="action view">Status</button>
+                        <button data-route="/orders/{{order.order_id}}/confirm_order" class="action confirm">Confirm</button>
+                        {% elif order.status == 'To Ship' %}
+                            <button class="action cancel">Cancel Order</button>
+                            <button class="action confirm">Mark as Shipped</button>
+                        {% elif order.status == 'Shipped' %}
+                            <button class="action view">Status</button>
                         {% else %}
-                        <button class="action view">Details</button>
+                            <button class="action view">Details</button>
                         {% endif %}
                     </div>
                 </div>
@@ -110,19 +107,53 @@
     <div id="function-buttons">
         <div id="status-buttons" class="btn-group">
             <button data-status="all" class="active">All</button>
-            <button data-status="pending">Pending</button>
-            <button data-status="to ship">To Ship</button>
-            <button data-status="shipped">Shipped</button>
-            <button data-status="received">Received</button>
-            <button data-status="reviewed">Reviewed</button>
+            <button data-status="Pending">Pending</button>
+            <button data-status="To Ship">To Ship</button>
+            <button data-status="Shipped">Shipped</button>
+            <button data-status="Region">Received</button>
+            <button data-status="Reviewed">Reviewed</button>
         </div>
         <div id="payment-method-buttons" class="btn-group">
             <button data-method="all" class="active">All</button>
-            <button data-method="cod">COD</button>
-            <button data-method="bank">Bank</button>
-            <button data-method="gcash">GCash</button>
+            <button data-method="COD">COD</button>
+            <button data-method="BANK">Bank</button>
+            <button data-method="GCASH">GCash</button>
         </div>
     </div>
 	<div id="modal" class="modal">
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Attach event listeners to all confirm buttons
+        document.querySelectorAll(".confirm").forEach(button => {
+            button.addEventListener("click", async (event) => {
+                event.preventDefault();
+                
+                // Extract order ID from data-route
+                const orderId = button.getAttribute("data-route").split('/').pop();
+
+                try {
+                    const response = await fetch(`/orders/${orderId}/confirm_order`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    const data = await response.json();
+
+                    if (data.status === "success") {
+                        // Update the status text in the DOM without a full page refresh
+                        const statusElement = button.closest('.order').querySelector('.status h2');
+                        statusElement.textContent = "To Ship";
+                        statusElement.classList.add('to-ship');
+                        alert(data.message);
+                    } else {
+                        alert("Failed to update status.");
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                    alert("Error updating order status.");
+                }
+            });
+        });
+    });
+</script>

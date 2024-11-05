@@ -3,7 +3,7 @@
 	    <span id="close" class="close">&#x2715</span>
 	</div>
 	<div>
-	    <form method="post" action="{{ url_for('orders.schedule_shipment', order_id=order.order_id) }}">
+	    <form method="post" action="{{ url_for('orders.confirm_order', order_id=order.order_id) }}">
 	        <div class="heading-2">Confirm Order Details</div>
             <hr>
             <div class="info-box">

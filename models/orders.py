@@ -118,7 +118,7 @@ class Orders:
                 INSERT INTO Orders 
                 (user_id, order_date, status, total_amount, shipping_address, payment_method, 
                 billing_address, order_number, contact_info) 
-                VALUES (%s, NOW(), 'pending', %s, %s, %s, %s, %s, %s)
+                VALUES (%s, NOW(), 'Pending', %s, %s, %s, %s, %s, %s)
                 ''', (user_id, total, shipping_address, payment_method, billing_address, order_number, contact_info))
             mysql.connection.commit()
             order_id = cursor.lastrowid
@@ -160,11 +160,29 @@ class Orders:
                 'status_code': 500
                 }
 
+
     @staticmethod
-    def schedule_shipment(order_id):
-        return {
-                'order_id': order_id,
-                'message': "Order has been confirmed.",
+    def confirm_order(order_id):
+        try:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            print(f"Attempting to update order {order_id} status to 'To Ship'")
+            cursor.execute('''
+                UPDATE Orders 
+                SET status = 'To Ship'
+                WHERE order_id = %s
+            ''', (order_id,))
+            mysql.connection.commit()
+            cursor.close()
+            print(f"Order {order_id} status updated successfully to 'To Ship'")
+            return {
+                'message': "Order status updated to 'To Ship'.",
                 'status': "success",
                 'status_code': 200
-                }
+            }
+        except Exception as e:
+            print(f"Failed to update status for order {order_id}: {e}")
+            return {
+                'message': f"Failed to update status: {e}",
+                'status': "error",
+                'status_code': 500
+            }
