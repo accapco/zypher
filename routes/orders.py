@@ -12,17 +12,23 @@ def getall():
     return jsonify({"html": html, "message": orders_data.get('message')}), orders_data['status_code']
 
 
-@orders_bp.route('<int:order_id>/confirm_order', methods=['POST'])
+@orders_bp.route('/<int:order_id>/confirm_order', methods=['GET', 'POST'])
 def confirm_order(order_id):
-    result = Orders.confirm_order(order_id)
+    if request.method == 'POST':
+        result = Orders.confirm_order(order_id)
+        result['redirect'] = url_for('.getall')
 
-    if result['status'] == "success":
-        print(f"Order {order_id} successfully confirmed.")
-    else:
-        print(f"Order {order_id} confirmation failed: {result['message']}")
+        if result['status'] == "success":
+            print(f"Order {order_id} successfully confirmed.")
+        else:
+            print(f"Order {order_id} confirmation failed: {result['message']}")
 
-    # Send only the success or failure message
-    return jsonify({"message": result['message'], "status": result['status']}), result['status_code']
+        # Send only the success or failure message
+        return jsonify(result), result['status_code']
+    # GET
+    order_data = Orders.get(order_id)
+    html = render_template("orders/confirm_order.html", order=order_data['order'])
+    return jsonify({"html": html, "message": order_data.get('message')}), order_data['status_code']
 
 
 

@@ -27,7 +27,7 @@
                 </div>
     
                 <div class="status">
-                    <h2 class="{{order.status}}">{{ order.status }}</h2>
+                    <h2 class="{{order.status|lower}}">{{ order.status }}</h2>
                 </div>
     
                 <div class="expand">
@@ -87,13 +87,15 @@
                         </div>
                     </div>
                     <div class="buttons">
-                        {% if order.status == 'Pending' %}
+                        {% if order.status|lower == 'pending' %}
                         <button class="cancel">Cancel Order</button>
-                        <button data-route="/orders/{{order.order_id}}/confirm_order" class="action confirm">Confirm</button>
-                        {% elif order.status == 'To Ship' %}
+                        <button data-route="/orders/{{order.order_id}}/confirm_order" 
+                                class="action confirm"
+                                >Confirm</button>
+                        {% elif order.status|lower == 'to ship' %}
                             <button class="action cancel">Cancel Order</button>
                             <button class="action confirm">Mark as Shipped</button>
-                        {% elif order.status == 'Shipped' %}
+                        {% elif order.status|lower == 'shipped' %}
                             <button class="action view">Status</button>
                         {% else %}
                             <button class="action view">Details</button>

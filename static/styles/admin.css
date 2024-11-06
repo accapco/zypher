@@ -545,13 +545,17 @@
                 font-weight: normal;
                 text-transform: uppercase;
                 border-radius: 20px;
-                padding: 6px 12px;
+                padding: 8px 12px;
                 margin: 0px;
+                background-color: rgb(80, 82, 84);
+                color: white;
+                width: 38%;
+                text-align: center;
 
                 &.pending {
                     background-color: rgb(43, 69, 84);
                     color: white;
-                } 
+                }
             }
 
             h3 {
