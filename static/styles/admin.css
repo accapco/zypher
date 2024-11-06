@@ -28,6 +28,10 @@
         }
 
         .parent-btn {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 16px;
             height: 64px;
             border: none;
             font-size: 14px;
@@ -46,6 +50,26 @@
                 background-color: rgba(184, 135, 11, 0.1);
                 border-left: 8px solid darkgoldenrod;
                 font-weight: bold;
+            }
+
+            .icon {
+                content: "";
+                width: 24px;
+                height: 24px;
+                background-size: 24px 24px;
+    
+                &#orders-icon {
+                    background-image: url("../icons/admin-orders.svg");
+                }
+                &#categories-icon  {
+                    background-image: url("../icons/admin-categories.svg");
+                }
+                &#products-icon  {
+                    background-image: url("../icons/admin-products.svg");
+                }
+                &#users-icon  {
+                    background-image: url("../icons/admin-users.svg");
+                }
             }
         }
 

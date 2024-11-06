@@ -160,7 +160,6 @@ class Orders:
                 'status_code': 500
                 }
 
-
     @staticmethod
     def confirm_order(order_id):
         try:
